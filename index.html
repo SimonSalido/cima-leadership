@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIMA Leadership Institute — Marcelo Michel Leaño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --negro:#0c0c0e;
+  --grafito:#16161a;
+  --grafito2:#1e1e24;
+  --naranja:#e64018;
+  --naranja2:#ff6a3c;
+  --blanco:#ffffff;
+  --gris:#a0a0aa;
+  --gris2:#6b6b73;
+  --linea:rgba(255,255,255,0.08);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--negro);color:var(--blanco);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+p{text-align:justify;}
+
+/* NAV */
+nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--linea);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:104px;position:sticky;top:0;z-index:100;}
+.nav-brand{display:flex;align-items:center;line-height:1;}
+.nav-brand img{height:88px;width:auto;display:block;}
+.nav-brand-top{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);}
+.nav-brand-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--blanco);}
+.nav-links{display:flex;}
+.nav-link{padding:0 16px;height:104px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--gris);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.nav-link:hover{color:var(--blanco);}
+.nav-link.active{color:var(--blanco);border-bottom-color:var(--naranja);}
+.nav-cta{background:var(--naranja);color:#fff;padding:10px 22px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;transition:background .2s;}
+.nav-cta:hover{background:var(--naranja2);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SHARED */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;display:block;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--blanco);line-height:1.05;margin-bottom:16px;}
+.sec-title em{font-style:italic;color:var(--naranja2);}
+.sec-sub{font-size:15px;color:var(--gris);line-height:1.8;max-width:600px;}
+
+/* ======= HOME ======= */
+.home-hero{display:grid;grid-template-columns:1fr 1fr;min-height:560px;position:relative;overflow:hidden;background:radial-gradient(120% 130% at 80% 0%, #241008 0%, var(--negro) 55%);}
+.home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 400px at 88% 20%, rgba(230,64,24,0.35), transparent 60%);pointer-events:none;}
+.hero-left{padding:80px 52px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--naranja);}
+.hero-left h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,5vw,5rem);font-weight:900;line-height:1.0;color:var(--blanco);margin-bottom:28px;}
+.hero-left h1 em{font-style:italic;background:linear-gradient(90deg,var(--naranja2),#ffb38a);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-desc{font-size:16px;color:var(--gris);line-height:1.9;max-width:460px;margin-bottom:40px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--naranja);color:#fff;padding:14px 28px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+.btn-primary:hover{background:var(--naranja2);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--blanco);border:1px solid rgba(255,255,255,0.25);padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,0.07);}
+.hero-right{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:52px;}
+.hero-quote-box{border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);backdrop-filter:blur(8px);padding:48px;max-width:440px;border-radius:4px;}
+.hero-quote-box p{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:900;font-style:italic;color:var(--blanco);line-height:1.15;margin-bottom:20px;}
+.hero-quote-box p em{color:var(--naranja2);font-style:normal;}
+.hero-quote-box cite{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gris2);}
+
+/* SERVICES */
+.services-section{padding:80px 52px;background:var(--grafito);}
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);margin-top:48px;}
+.svc-card{background:var(--grafito2);padding:32px 26px;cursor:pointer;transition:background .2s;}
+.svc-card:hover{background:#26262c;}
+.svc-icon{width:46px;height:46px;border-radius:10px;background:rgba(230,64,24,0.12);color:var(--naranja);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;}
+.svc-card h3{font-size:1rem;font-weight:700;color:var(--blanco);margin-bottom:10px;line-height:1.3;}
+.svc-card p{font-size:13px;color:var(--gris);line-height:1.7;}
+.svc-arrow{margin-top:20px;font-size:12px;font-weight:700;color:var(--naranja2);letter-spacing:.5px;display:flex;align-items:center;gap:6px;}
+
+/* ======= MARCELO ======= */
+.about-hero{display:grid;grid-template-columns:5fr 4fr;min-height:520px;}
+.about-left{padding:72px 52px;background:var(--grafito);}
+.about-left h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,3.5vw,3rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:8px;}
+.about-left h1 em{font-style:italic;color:var(--naranja2);}
+.about-subhead{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gris2);margin-bottom:32px;display:block;}
+.about-left p{font-size:15px;color:var(--gris);line-height:1.85;margin-bottom:16px;}
+.about-left p strong{color:var(--blanco);font-weight:600;}
+.about-right{position:relative;overflow:hidden;min-height:400px;}
+.about-right img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.quote-pull{background:var(--negro);padding:52px;border-top:1px solid var(--linea);}
+.quote-pull blockquote{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;line-height:1.7;color:rgba(255,255,255,0.85);margin-bottom:16px;max-width:800px;}
+.quote-pull cite{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--naranja2);}
+.timeline-sec{padding:72px 52px;background:var(--grafito);}
+.timeline-sec h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blanco);margin-bottom:40px;}
+.tl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);}
+.tl-card{background:var(--grafito2);padding:28px 24px;}
+.tl-year{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--naranja2);margin-bottom:10px;display:block;}
+.tl-card h3{font-size:1rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.tl-card p{font-size:13px;color:var(--gris);line-height:1.6;}
+.tl-card.dark-card{background:var(--naranja);}
+.tl-card.dark-card .tl-year{color:rgba(255,255,255,0.6);}
+.tl-card.dark-card h3{color:#fff;}
+.tl-card.dark-card p{color:rgba(255,255,255,0.75);}
+
+/* ======= CONFERENCIAS ======= */
+.conf-hero{background:radial-gradient(120% 120% at 80% 0%,#241008,var(--negro) 55%);padding:80px 52px;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;}
+.conf-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(500px 300px at 85% 30%,rgba(230,64,24,0.3),transparent 60%);pointer-events:none;}
+.conf-hero-inner{position:relative;z-index:2;max-width:680px;}
+.conf-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:20px;}
+.conf-hero p{font-size:17px;color:var(--gris);line-height:1.85;}
+.conf-hero-photo{position:relative;z-index:2;width:360px;max-width:38vw;aspect-ratio:4/3;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.1);}
+@media(max-width:860px){.conf-hero{grid-template-columns:1fr;}.conf-hero-photo{width:100%;max-width:100%;}}
+
+/* GALERÍA DE FOTOS */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;}
+.gallery-grid img{width:100%;height:100%;aspect-ratio:1/1;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:transform .25s,box-shadow .25s;}
+.gallery-grid img:hover{transform:scale(1.03);box-shadow:0 12px 28px rgba(0,0,0,0.5);}
+@media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:560px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* PRODUCT CARDS GRID */
+.products-section{padding:72px 52px;background:var(--grafito);}
+.products-section > .sec-label{margin-bottom:8px;}
+.products-intro{font-size:16.5px;color:var(--gris);line-height:1.85;max-width:680px;margin-bottom:48px;}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);}
+.prod-card{background:var(--grafito2);padding:32px 28px;display:flex;flex-direction:column;transition:background .2s;position:relative;overflow:hidden;}
+.prod-card:hover{background:#26262c;}
+.prod-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:transparent;transition:background .2s;}
+.prod-card:hover::after{background:var(--naranja);}
+.prod-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--naranja2);margin-bottom:16px;}
+.prod-icon{width:48px;height:48px;border-radius:10px;background:rgba(230,64,24,0.12);color:var(--naranja);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;}
+.prod-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--blanco);margin-bottom:10px;line-height:1.25;}
+.prod-card .prod-desc{font-size:13px;color:var(--gris);line-height:1.75;flex:1;}
+.prod-includes{margin-top:20px;padding-top:20px;border-top:1px solid var(--linea);}
+.prod-includes-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gris2);margin-bottom:10px;display:block;}
+.prod-include-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:7px;line-height:1.5;}
+.prod-include-item i{color:var(--naranja2);font-size:13px;margin-top:1px;flex-shrink:0;}
+.prod-price{margin-top:20px;padding-top:16px;border-top:1px solid var(--linea);}
+.prod-price-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--blanco);}
+.prod-price-sub{font-size:11px;color:var(--gris2);margin-top:2px;}
+
+/* LLAVE EN MANO CARD — full width, special */
+.prod-card.llave{grid-column:1/-1;background:linear-gradient(135deg,rgba(230,64,24,0.12) 0%,rgba(30,30,36,1) 60%);border:1px solid rgba(230,64,24,0.25);flex-direction:row;gap:40px;align-items:flex-start;}
+.prod-card.llave::after{display:none;}
+.prod-card.llave:hover{background:linear-gradient(135deg,rgba(230,64,24,0.18) 0%,rgba(38,38,44,1) 60%);}
+.llave-left{flex:1;}
+.llave-right{min-width:300px;display:flex;flex-direction:column;gap:10px;}
+.llave-badge{display:inline-flex;align-items:center;gap:6px;background:var(--naranja);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:16px;}
+.llave-feature{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:12px 16px;border-radius:4px;display:flex;align-items:center;gap:10px;}
+.llave-feature i{color:var(--naranja);font-size:16px;flex-shrink:0;}
+.llave-feature span{font-size:13px;color:rgba(255,255,255,0.75);}
+
+/* COTIZACIÓN CARD */
+.prod-card.cotizacion{background:var(--negro);border:1px solid rgba(230,64,24,0.2);}
+.cotizacion-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;}
+.ctag{font-size:11px;font-weight:600;color:var(--gris);background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);}
+
+/* TOPICS */
+.topics-section{padding:64px 52px;background:var(--negro);}
+.topics-section h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--blanco);margin-bottom:32px;}
+.topics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);}
+.topic-card{background:var(--grafito2);padding:28px 24px;}
+.topic-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:rgba(230,64,24,0.18);line-height:1;margin-bottom:12px;}
+.topic-card h3{font-size:14px;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.topic-card p{font-size:12px;color:var(--gris);line-height:1.65;}
+
+.conf-body{padding:72px 52px;background:var(--grafito);}
+.conf-list{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,0.06);}
+.conf-item{background:var(--grafito2);padding:28px 36px;display:grid;grid-template-columns:60px 1fr;gap:24px;align-items:start;transition:background .2s;}
+.conf-item:hover{background:#26262c;}
+.conf-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:rgba(230,64,24,0.25);line-height:1;}
+.conf-item h3{font-size:1.05rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.conf-item p{font-size:13px;color:var(--gris);line-height:1.7;}
+.conf-item.featured{background:rgba(230,64,24,0.08);border-left:3px solid var(--naranja);}
+.conf-item.featured .conf-num{color:var(--naranja);}
+.conf-item.featured h3{color:var(--naranja2);}
+.formats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);margin-top:40px;}
+.fmt-box{background:var(--grafito2);padding:24px;text-align:center;}
+.fmt-icon{font-size:22px;color:var(--naranja);margin-bottom:10px;}
+.fmt-box h4{font-size:13px;font-weight:600;color:var(--blanco);margin-bottom:4px;}
+.fmt-box p{font-size:12px;color:var(--gris);}
+.videos-sec{padding:72px 52px;background:var(--negro);}
+.videos-sec h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.videos-sub{font-size:14px;color:var(--gris);margin-bottom:36px;}
+.videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.video-wrap{display:block;position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#111;border-radius:4px;cursor:pointer;}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.video-facade{position:absolute;inset:0;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;}
+.video-facade::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.28);transition:background .2s;}
+.video-wrap:hover .video-facade::before{background:rgba(0,0,0,0.12);}
+.video-play{position:relative;z-index:2;width:62px;height:62px;border-radius:50%;background:var(--naranja);display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;box-shadow:0 6px 22px rgba(0,0,0,0.45);transition:transform .2s;}
+.video-wrap:hover .video-play{transform:scale(1.09);background:var(--naranja2);}
+.contact-cta{background:radial-gradient(120% 130% at 50% 0%,#241008,var(--negro));padding:72px 52px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;border-top:1px solid var(--linea);}
+.contact-cta h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.contact-cta p{font-size:14px;color:var(--gris);}
+
+/* ======= PODCAST ======= */
+.pod-hero{background:url('channels4_banner.jpg') center/cover no-repeat;padding:80px 52px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;}
+.pod-hero::before{content:'';position:absolute;inset:0;background:rgba(12,12,14,0.72);}
+.pod-hero-left{position:relative;z-index:2;}
+.pod-hero-right{position:relative;z-index:2;display:flex;align-items:center;justify-content:flex-end;}
+.pod-hero-right img{width:100%;max-width:560px;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);}
+@media(max-width:820px){.pod-hero-right{justify-content:center;margin-top:32px;}}
+.pod-hero-left h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:20px;}
+.pod-hero-left p{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.85;margin-bottom:32px;}
+.pod-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;}
+.pstat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:18px;text-align:center;}
+.pstat-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blanco);}
+.pstat-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.pod-links{display:flex;gap:10px;flex-wrap:wrap;}
+.pod-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.75);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;border-radius:100px;transition:all .2s;}
+.pod-btn:hover{background:var(--naranja);color:#fff;border-color:var(--naranja);}
+
+.season-btn{background:transparent;color:var(--gris);border:1px solid rgba(255,255,255,0.12);padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;transition:all .2s;}
+.season-btn:hover{color:var(--blanco);border-color:rgba(255,255,255,0.3);}
+.season-btn.active{background:var(--naranja);color:#fff;border-color:var(--naranja);}
+
+/* EPISODES */
+.episodes-sec{padding:72px 52px;background:var(--grafito);}
+.episodes-sec h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.episodes-sub{font-size:14px;color:var(--gris);margin-bottom:36px;}
+.episodes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.ep-card{background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);padding:22px;cursor:pointer;text-decoration:none;display:block;transition:all .2s;position:relative;border-radius:4px;}
+.ep-card:hover{border-color:var(--naranja);background:#26262c;transform:translateY(-2px);}
+.ep-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;margin-bottom:14px;display:block;background:#111;}
+.ep-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--naranja2);margin-bottom:10px;display:block;}
+.ep-card h3{font-size:.95rem;font-weight:600;color:var(--blanco);line-height:1.3;margin-bottom:6px;}
+.ep-guest{font-size:12px;color:var(--gris);}
+.ep-arrow{position:absolute;bottom:18px;right:18px;font-size:16px;color:var(--naranja);opacity:0;transition:opacity .2s;}
+.ep-card:hover .ep-arrow{opacity:1;}
+
+/* PODCAST CTA */
+.pod-cta{background:var(--negro);border-top:1px solid var(--linea);padding:72px 52px;}
+.pod-cta h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--blanco);margin-bottom:12px;}
+.pod-cta p{font-size:14px;color:var(--gris);max-width:500px;margin-bottom:36px;line-height:1.8;}
+.pod-cta-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-orange{background:var(--naranja);color:#fff;padding:13px 26px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:all .2s;}
+.btn-orange:hover{background:var(--naranja2);transform:translateY(-2px);}
+.btn-outline-light{background:transparent;color:var(--blanco);border:1px solid rgba(255,255,255,0.2);padding:13px 26px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:all .2s;}
+.btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,0.07);}
+
+/* ======= LIBRO ======= */
+.libro-hero{display:grid;grid-template-columns:1fr 1fr;min-height:520px;}
+.libro-left{padding:72px 52px;display:flex;flex-direction:column;justify-content:center;background:var(--grafito);}
+.libro-left h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,3.5vw,3rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:20px;}
+.libro-left p{font-size:15px;color:var(--gris);line-height:1.85;margin-bottom:16px;}
+.libro-buy-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;}
+.buy-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;font-size:13px;font-weight:600;border-radius:100px;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.buy-btn.primary{background:var(--naranja);color:#fff;border:1px solid var(--naranja);}
+.buy-btn.primary:hover{background:var(--naranja2);border-color:var(--naranja2);transform:translateY(-1px);}
+.buy-btn.secondary{background:transparent;color:var(--blanco);border:1px solid rgba(255,255,255,0.2);}
+.buy-btn.secondary:hover{border-color:#fff;background:rgba(255,255,255,0.07);}
+.libro-right{background:var(--negro);display:flex;align-items:center;justify-content:center;padding:52px;}
+.libro-info{padding:64px 52px;background:var(--negro);}
+.libro-info h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--blanco);margin-bottom:32px;}
+.libro-themes{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);}
+.theme-card{background:var(--grafito2);padding:28px 22px;}
+.theme-card i{font-size:22px;color:var(--naranja);margin-bottom:14px;display:block;}
+.theme-card h3{font-size:14px;font-weight:700;color:var(--blanco);margin-bottom:8px;}
+.theme-card p{font-size:13px;color:var(--gris);line-height:1.6;}
+
+/* ======= CONTACTO ======= */
+.contacto-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:580px;}
+.contacto-left{background:radial-gradient(120% 130% at 20% 0%,#241008,var(--negro) 60%);padding:72px 52px;color:var(--blanco);position:relative;overflow:hidden;}
+.contacto-left::before{content:'';position:absolute;inset:0;background:radial-gradient(400px 300px at 10% 10%,rgba(230,64,24,0.25),transparent 60%);pointer-events:none;}
+.contacto-left-inner{position:relative;z-index:2;}
+.contacto-left h1{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--blanco);margin-bottom:20px;line-height:1.05;}
+.contacto-left p{font-size:14px;color:var(--gris);line-height:1.8;margin-bottom:36px;}
+.cd-item{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+.cd-item i{color:var(--naranja2);font-size:17px;width:20px;}
+.contacto-right{background:var(--grafito);padding:72px 52px;}
+.contacto-right h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--blanco);margin-bottom:28px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gris2);margin-bottom:7px;}
+.fg input,.fg textarea,.fg select{width:100%;background:var(--grafito2);border:1px solid rgba(255,255,255,0.1);padding:12px 14px;font-size:14px;color:var(--blanco);font-family:'DM Sans',sans-serif;outline:none;border-radius:6px;transition:border .2s;}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--naranja);}
+.fg textarea{min-height:90px;resize:vertical;}
+.fg select option{background:var(--grafito2);}
+.submit-btn{background:var(--naranja);color:#fff;padding:14px 28px;font-size:14px;font-weight:700;border:none;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;margin-top:4px;border-radius:100px;transition:background .2s;}
+.submit-btn:hover{background:var(--naranja2);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <img src="MML_CIMA-04.png" alt="CIMA Leadership Institute">
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home',this)">Inicio</button>
+    <button class="nav-link" onclick="showPage('about',this)">Marcelo</button>
+    <button class="nav-link" onclick="showPage('conferencias',this)">Conferencias</button>
+    <button class="nav-link" onclick="showPage('podcast',this)">Podcast</button>
+    <button class="nav-link" onclick="showPage('libro',this)">Libros</button>
+    <button class="nav-link" onclick="showPage('contacto',this)">Contacto</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('contacto',null)">Contratar</button>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">CIMA Leadership Institute</div>
+      <p class="hero-desc">CIMA Leadership Institute nace de una convicción: que toda persona y todo equipo tiene la capacidad de alcanzar su máximo potencial y conseguir la excelencia. A través de la metodología de Marcelo Michel Leaño, construimos un ecosistema de transformación real — no motivación pasajera — para quienes están decididos a llegar a la cima de su vida personal y profesional, y alcanzar su high performance.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('conferencias',null)"><i class="ti ti-microphone-2"></i> Ver conferencias</button>
+        <button class="btn-ghost" onclick="showPage('about',null)"><i class="ti ti-user"></i> Conocer a Marcelo</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-quote-box">
+        <p>"El éxito es un<br><em>proceso,</em> no una<br>casualidad."</p>
+        <cite>— Marcelo Michel Leaño</cite>
+      </div>
+    </div>
+  </div>
+  <div class="services-section">
+    <span class="sec-label">Lo que ofrecemos</span>
+    <div class="sec-title">¿Cómo podemos<br><em>ayudarte?</em></div>
+    <div class="services-grid">
+      <div class="svc-card" onclick="showPage('conferencias',null)">
+        <div class="svc-icon"><i class="ti ti-microphone-2"></i></div>
+        <h3>Conferencias y Talleres</h3>
+        <p>Desde una conferencia de 1.5 hrs hasta talleres inmersivos de 2 días. Diseñados para transformar equipos y organizaciones.</p>
+        <div class="svc-arrow"><i class="ti ti-arrow-right"></i> Ver conferencias</div>
+      </div>
+      <div class="svc-card" onclick="showPage('contacto',null)">
+        <div class="svc-icon"><i class="ti ti-award"></i></div>
+        <h3>Coaching Empresarial y Personal</h3>
+        <p>Procesos personalizados de acompañamiento para directivos, líderes y equipos que buscan resultados extraordinarios.</p>
+        <div class="svc-arrow"><i class="ti ti-arrow-right"></i> Solicitar coaching</div>
+      </div>
+      <div class="svc-card" onclick="showPage('libro',null)">
+        <div class="svc-icon"><i class="ti ti-book"></i></div>
+        <h3>Libros</h3>
+        <p>Nos Vemos en la Cima, publicado por Editorial Porrúa, y tres nuevos títulos que se publicarán próximamente.</p>
+        <div class="svc-arrow"><i class="ti ti-arrow-right"></i> Conocer los libros</div>
+      </div>
+      <div class="svc-card" onclick="showPage('podcast',null)">
+        <div class="svc-icon"><i class="ti ti-headphones"></i></div>
+        <h3>Podcast</h3>
+        <p>Más de 18 episodios con invitados de alto impacto. Lorena Ochoa, Eduardo Strauch, Arturo Elías Ayub y más.</p>
+        <div class="svc-arrow"><i class="ti ti-arrow-right"></i> Escuchar podcast</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MARCELO ===== -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="about-left">
+      <span class="sec-label">Marcelo Michel Leaño</span>
+      <h1>Del <em>alto rendimiento deportivo</em><br>al liderazgo empresarial</h1>
+      <span class="about-subhead">Director técnico · Conferencista · Coach · Autor</span>
+      <p>Marcelo Michel Leaño ha construido una trayectoria poco común entre el alto rendimiento deportivo, el liderazgo empresarial y el desarrollo humano.</p>
+      <p>Durante más de 15 años formó parte del fútbol profesional, dirigiendo en <strong>Liga MX a Necaxa y Chivas de Guadalajara</strong>, y convirtiéndose en uno de los entrenadores más jóvenes en dirigir en la Primera División del fútbol mexicano.</p>
+      <p>Hoy lleva esa experiencia al mundo empresarial, acompañando a directores, líderes y equipos que buscan elevar su nivel de desempeño, fortalecer su cultura y responder mejor bajo presión.</p>
+      <p>Con más de 12 años impartiendo conferencias, cursos y talleres en México y el extranjero, Marcelo ha desarrollado una metodología propia que integra principios del deporte de élite, liderazgo, estrategia, mentalidad y propósito.</p>
+      <p>Es autor del libro <strong>"Nos Vemos en la Cima"</strong> de Editorial Porrúa y conductor del podcast del mismo nombre, una plataforma de conversaciones sobre liderazgo, alto rendimiento y transformación personal con más de <strong>293 mil seguidores y 20 mil oyentes mensuales</strong>.</p>
+    </div>
+    <div class="about-right">
+      <img src="marcelo-author.png" alt="Marcelo Michel Leaño" />
+    </div>
+  </div>
+  <div class="quote-pull">
+    <blockquote>"Mi vocación es inspirar a las personas a convertir el deseo de cambiar en acciones concretas."</blockquote>
+    <cite>— Marcelo Michel Leaño</cite>
+  </div>
+  <div class="timeline-sec">
+    <h2>Trayectoria</h2>
+    <div class="tl-grid">
+      <div class="tl-card">
+        <span class="tl-year">+15 años · Fútbol profesional</span>
+        <h3>Director Técnico en Liga MX</h3>
+        <p>Dirigió al Necaxa, con el que se coronó campeón, y a las Chivas de Guadalajara. Uno de los entrenadores más jóvenes en dirigir en la Primera División del Fútbol Mexicano.</p>
+      </div>
+      <div class="tl-card">
+        <span class="tl-year">+12 años · Conferencias</span>
+        <h3>Conferencista Internacional</h3>
+        <p>Más de 150 pláticas y talleres en México y distintos países. Entrevistas en televisión, radio y principales medios nacionales.</p>
+      </div>
+      <div class="tl-card">
+        <span class="tl-year">Autor</span>
+        <h3>"Nos Vemos en la Cima"</h3>
+        <p>Libro publicado por Editorial Porrúa que destila su metodología de vida y liderazgo, accesible para cualquier persona que busque su máximo potencial.</p>
+      </div>
+      <div class="tl-card">
+        <span class="tl-year">2024 · Podcast</span>
+        <h3>Nos Vemos en la Cima Podcast</h3>
+        <p>Más de 18 episodios T1 con líderes como Lorena Ochoa, Eduardo Strauch y Arturo Elías Ayub. 20K oyentes mensuales.</p>
+      </div>
+      <div class="tl-card">
+        <span class="tl-year">Hoy · CIMA Leadership Institute</span>
+        <h3>Coach Empresarial</h3>
+        <p>Programas de transformación organizacional y coaching para empresas que buscan llevar a sus equipos a un nivel superior.</p>
+      </div>
+      <div class="tl-card dark-card">
+        <span class="tl-year">La visión</span>
+        <h3>Nos vemos en la cima.</h3>
+        <p>El éxito es un proceso, no una casualidad. Marcelo acompaña a quienes están dispuestos a construirlo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFERENCIAS ===== -->
+<div class="page" id="page-conferencias">
+  <div class="conf-hero">
+    <div class="conf-hero-inner">
+      <span class="sec-label">Conferencias y Talleres</span>
+      <h1>Atrévete a llevar<br>a tu equipo<br>a la cima.</h1>
+      <p>Experiencias diseñadas para despertar el potencial de tu organización. Desde una conferencia de 1.5 horas hasta un evento de día completo donde nos encargamos de todo.</p>
+    </div>
+    <img class="conf-hero-photo" src="galeria/conferencia-1.jpg" alt="Marcelo Michel Leaño en conferencia" onerror="this.style.display='none'">
+  </div>
+
+  <!-- PRODUCTOS -->
+  <div class="products-section">
+    <span class="sec-label">Nuestros productos</span>
+    <p class="products-intro">Cada formato está diseñado con una metodología vivencial y práctica — no motivación pasajera. Elige el que mejor se adapte al momento y objetivo de tu organización.</p>
+
+    <div class="products-grid">
+
+      <!-- 01 CONFERENCIA -->
+      <div class="prod-card">
+        <div class="prod-badge"><i class="ti ti-clock"></i> 1.5 horas</div>
+        <div class="prod-icon"><i class="ti ti-microphone-2"></i></div>
+        <h3>Conferencia Presencial</h3>
+        <p class="prod-desc">Una experiencia de alto impacto para abrir o cerrar eventos corporativos, convenciones o kick-offs. Marcelo conecta con la audiencia desde la primera palabra y deja una huella duradera.</p>
+        <div class="prod-includes">
+          <span class="prod-includes-label">Incluye</span>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Conferencia magistral de 1.5 horas</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Personalización previa al objetivo de tu evento</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Sesión de fotos y convivio con el equipo</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Material de apoyo digital para los asistentes</span></div>
+        </div>
+      </div>
+
+      <!-- 02 VIRTUAL -->
+      <div class="prod-card">
+        <div class="prod-badge"><i class="ti ti-device-laptop"></i> Online</div>
+        <div class="prod-icon"><i class="ti ti-video"></i></div>
+        <h3>Conferencia Virtual</h3>
+        <p class="prod-desc">El mismo poder de la conferencia presencial en formato remoto. Ideal para equipos distribuidos en distintas ciudades o países que buscan una experiencia unificadora de alto nivel.</p>
+        <div class="prod-includes">
+          <span class="prod-includes-label">Incluye</span>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Conferencia en vivo vía Zoom / Teams / Meet</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Interacción en tiempo real con la audiencia</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Sesión de preguntas y respuestas</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Grabación del evento (opcional)</span></div>
+        </div>
+      </div>
+
+      <!-- 03 TALLER 3H -->
+      <div class="prod-card">
+        <div class="prod-badge"><i class="ti ti-tools"></i> 3 horas</div>
+        <div class="prod-icon"><i class="ti ti-users-group"></i></div>
+        <h3>Taller Nos Vemos en la Cima</h3>
+        <p class="prod-desc">El programa insignia de Marcelo. Más que una conferencia: un proceso vivencial que mueve conciencias, activa el máximo potencial y transforma grupos en equipos de alto rendimiento.</p>
+        <div class="prod-includes">
+          <span class="prod-includes-label">Incluye</span>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Taller vivencial de 3 horas intensivas</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Ejercicios individuales y grupales</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Espacios de reflexión y definición de propósito</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Plan de acción personal por participante</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Material de trabajo impreso</span></div>
+        </div>
+      </div>
+
+      <!-- 04 TALLER 1 DÍA -->
+      <div class="prod-card">
+        <div class="prod-badge"><i class="ti ti-calendar-event"></i> 1 día</div>
+        <div class="prod-icon"><i class="ti ti-mountain"></i></div>
+        <h3>Taller de Alineamiento — Un Día</h3>
+        <p class="prod-desc">Un día completo de inmersión para alinear propósito, valores y estrategia de equipo. El formato más profundo para organizaciones que quieren un cambio real y duradero en su cultura.</p>
+        <div class="prod-includes">
+          <span class="prod-includes-label">Incluye</span>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Jornada completa de 8 horas con Marcelo</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Diagnóstico previo del equipo y objetivos</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Dinámicas, ejercicios y momentos de reflexión</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Definición colectiva de propósito y compromisos</span></div>
+          <div class="prod-include-item"><i class="ti ti-check"></i><span>Cierre con plan de acción grupal e individual</span></div>
+        </div>
+      </div>
+
+      <!-- 05 COTIZACIÓN A LA MEDIDA -->
+      <div class="prod-card cotizacion">
+        <div class="prod-badge"><i class="ti ti-sparkles"></i> A tu medida</div>
+        <div class="prod-icon"><i class="ti ti-adjustments-horizontal"></i></div>
+        <h3>Experiencia Personalizada</h3>
+        <p class="prod-desc">Tu organización es única — y tu conferencia también puede serlo. Diseñamos juntos una experiencia completamente a la medida: tema, duración, audiencia, formato y objetivos específicos.</p>
+        <div class="prod-includes">
+          <span class="prod-includes-label">Ideal para</span>
+          <div class="prod-include-item"><i class="ti ti-arrow-right"></i><span>Temas específicos de tu industria o sector</span></div>
+          <div class="prod-include-item"><i class="ti ti-arrow-right"></i><span>Audiencias muy grandes o con perfil particular</span></div>
+          <div class="prod-include-item"><i class="ti ti-arrow-right"></i><span>Combinaciones de formatos (conferencia + taller)</span></div>
+          <div class="prod-include-item"><i class="ti ti-arrow-right"></i><span>Eventos internacionales o fuera de México</span></div>
+        </div>
+        <div class="cotizacion-tags">
+          <span class="ctag">Tema a la medida</span>
+          <span class="ctag">Duración flexible</span>
+          <span class="ctag">Cualquier industria</span>
+          <span class="ctag">Nacional e internacional</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-price-num" style="font-size:1.1rem;color:var(--naranja2);">Precio según propuesta</div>
+          <div class="prod-price-sub">Contáctanos para recibir cotización</div>
+        </div>
+      </div>
+
+      <!-- 06 LLAVE EN MANO — full width -->
+      <div class="prod-card llave">
+        <div class="llave-left">
+          <div class="llave-badge"><i class="ti ti-star"></i> Producto Premium</div>
+          <div class="prod-icon" style="background:rgba(255,255,255,0.1);color:#fff;"><i class="ti ti-building-community"></i></div>
+          <h3 style="font-size:1.5rem;margin-bottom:12px;">Evento Llave en Mano</h3>
+          <p class="prod-desc" style="font-size:14px;max-width:560px;">El producto más completo de CIMA Leadership Institute. Nosotros nos encargamos de absolutamente todo: desde la selección del venue hasta la coordinación en sitio el día del evento. Tú solo llevas a tu equipo — nosotros hacemos el resto.</p>
+          <p class="prod-desc" style="font-size:13px;color:var(--gris2);max-width:560px;margin-top:10px;">Un taller de día completo con producción profesional, logística integrada y la metodología Marcelo Michel Leaño® en su máxima expresión.</p>
+          <div class="prod-price" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:24px;padding-top:16px;">
+            <div class="prod-price-num" style="color:var(--naranja2);">Deléganos la operación de tu evento</div>
+            <div class="prod-price-sub">Cotización personalizada según aforo, venue y alcance logístico</div>
+          </div>
+        </div>
+        <div class="llave-right">
+          <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gris2);margin-bottom:8px;">Todo incluido</p>
+          <div class="llave-feature"><i class="ti ti-map-pin"></i><span>Selección y contratación del venue / salón</span></div>
+          <div class="llave-feature"><i class="ti ti-coffee"></i><span>Catering y coffee breaks durante el día</span></div>
+          <div class="llave-feature"><i class="ti ti-palette"></i><span>Diseño y producción del evento (branding, pantallas, decoración)</span></div>
+          <div class="llave-feature"><i class="ti ti-headset"></i><span>Coordinación completa en sitio el día del evento</span></div>
+          <div class="llave-feature"><i class="ti ti-microphone-2"></i><span>Equipo de audio y video profesional</span></div>
+          <div class="llave-feature"><i class="ti ti-camera"></i><span>Fotografía y/o video del evento (opcional)</span></div>
+          <div style="margin-top:16px;">
+            <button class="btn-primary" onclick="showPage('contacto',null)" style="width:100%;justify-content:center;"><i class="ti ti-mail"></i> Solicitar cotización</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /products-grid -->
+  </div><!-- /products-section -->
+
+  <!-- TEMAS DE CONFERENCIA -->
+  <div class="topics-section">
+    <h2>Temas disponibles</h2>
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="topic-num">01</div>
+        <h3>Mentalidad Ganadora y Enfoque</h3>
+        <p>Cómo entrenar el enfoque y sostenerlo bajo presión. No solo motivar: instalar un sistema. Ideal para kick-offs y convenciones de ventas.</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">02</div>
+        <h3>Resiliencia y Manejo de la Presión</h3>
+        <p>El tema #1 que piden las empresas hoy. Cómo rinden los atletas de élite cuando todo está en juego, aplicado a equipos que enfrentan adversidad y metas exigentes.</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">03</div>
+        <h3>Liderazgo de Alto Rendimiento</h3>
+        <p>El modelo del técnico de élite: claridad, comunicación y propósito para dirigir equipos. Conecta con la demanda de liderazgo descentralizado y desarrollo de líderes.</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">04</div>
+        <h3>Cultura y Trabajo en Equipo de Élite</h3>
+        <p>Cómo se construye una cultura ganadora y se convierte un grupo en un equipo que compite al máximo nivel. Employee engagement y team building.</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">05</div>
+        <h3>Adaptación al Cambio</h3>
+        <p>Competir cuando las reglas cambian. La mentalidad del equipo que se adapta para seguir ganando, incluido el lado humano de la transformación (IA, reorganizaciones).</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">06</div>
+        <h3>Disciplina y Hábitos que Sostienen Resultados</h3>
+        <p>El sistema detrás del éxito, no la motivación pasajera. El diferenciador frente a speakers que "solo inspiran".</p>
+      </div>
+      <div class="topic-card">
+        <div class="topic-num">07</div>
+        <h3>Metas Retadoras y Ejecución</h3>
+        <p>La mentalidad de "pretemporada" para lograr objetivos ambiciosos en plazos definidos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="videos-sec">
+    <h2>Contenido</h2>
+    <p class="videos-sub">Mira algunos ejemplos de las conferencias y charlas de Marcelo.</p>
+    <div class="videos-grid">
+      <a class="video-wrap" href="https://www.youtube.com/watch?v=k2HsxTpboLM" target="_blank" rel="noopener"><div class="video-facade" style="background-image:url('https://i.ytimg.com/vi/k2HsxTpboLM/hqdefault.jpg')"><div class="video-play"><i class="ti ti-player-play-filled"></i></div></div></a>
+      <a class="video-wrap" href="https://www.youtube.com/watch?v=f4jGHxIsaBc&t=271s" target="_blank" rel="noopener"><div class="video-facade" style="background-image:url('https://i.ytimg.com/vi/f4jGHxIsaBc/hqdefault.jpg')"><div class="video-play"><i class="ti ti-player-play-filled"></i></div></div></a>
+      <a class="video-wrap" href="https://www.youtube.com/watch?v=L11l8kHh63c" target="_blank" rel="noopener"><div class="video-facade" style="background-image:url('https://i.ytimg.com/vi/L11l8kHh63c/hqdefault.jpg')"><div class="video-play"><i class="ti ti-player-play-filled"></i></div></div></a>
+    </div>
+
+    <h2 style="margin-top:56px;">Galería</h2>
+    <p class="videos-sub">Momentos en escenario, eventos y trayectoria.</p>
+    <div class="gallery-grid">
+      <img src="galeria/foto-01.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-02.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-03.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-04.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-05.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-06.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-07.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-08.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-09.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-10.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-11.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-12.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-13.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-14.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-15.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+      <img src="galeria/foto-16.jpg" alt="Marcelo Michel Leaño" loading="lazy" onerror="this.style.display='none'">
+    </div>
+  </div>
+  <div class="contact-cta">
+    <div>
+      <h2>¿Listo para llevar a tu equipo a la cima?</h2>
+      <p>Contáctanos y diseñamos la experiencia ideal para tu organización.</p>
+    </div>
+    <a href="mailto:ssalido@nosvemosenlacima.com.mx" class="btn-primary"><i class="ti ti-mail"></i> Contáctanos</a>
+  </div>
+</div>
+
+<!-- ===== PODCAST ===== -->
+<div class="page" id="page-podcast">
+  <div class="pod-hero">
+    <div class="pod-hero-left">
+      <span class="sec-label">Podcast</span>
+      <h1>Nos Vemos<br>en la Cima</h1>
+      <p>Conversaciones transformadoras con líderes, emprendedores y personas extraordinarias que han alcanzado la cima en sus respectivos campos.</p>
+      <div class="pod-stats-grid">
+        <div class="pstat"><div class="pstat-num">+293K</div><div class="pstat-label">Seguidores</div></div>
+        <div class="pstat"><div class="pstat-num">+20K</div><div class="pstat-label">Oyentes/mes</div></div>
+        <div class="pstat"><div class="pstat-num">+18</div><div class="pstat-label">Episodios T1</div></div>
+      </div>
+      <div class="pod-links">
+        <a href="https://www.youtube.com/@nosvemosenlacimapodcast" target="_blank" class="pod-btn"><i class="ti ti-brand-youtube"></i> YouTube</a>
+        <a href="https://www.instagram.com/nosvemosenlacima.podcast" target="_blank" class="pod-btn"><i class="ti ti-brand-instagram"></i> Instagram</a>
+        <a href="https://open.spotify.com/show/07GpHwT5ONmTjUU5Df3pN9?si=b9b7fe3f07224c83" target="_blank" class="pod-btn"><i class="ti ti-brand-spotify"></i> Spotify</a>
+        <a href="https://www.tiktok.com/@nosvemosenlacima_podcast?is_from_webapp=1&sender_device=pc" target="_blank" class="pod-btn"><i class="ti ti-brand-tiktok"></i> TikTok</a>
+      </div>
+    </div>
+    <div class="pod-hero-right">
+      <img src="podcast-cover.jpg" alt="Nos Vemos en la Cima — Podcast">
+    </div>
+  </div>
+
+  <div class="episodes-sec">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h2>Episodios</h2>
+        <p class="episodes-sub" style="margin-bottom:0;">18 episodios con personas que han construido su camino desde la disciplina, la visión y la constancia.</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="switchSeason(1,this)" class="season-btn active">Temporada 1</button>
+        <button onclick="switchSeason(2,this)" class="season-btn">Temporada 2</button>
+      </div>
+    </div>
+
+    <div id="season-1" style="margin-top:32px;">
+      <div class="episodes-grid">
+      <a href="https://www.youtube.com/watch?v=T812tvs5wDU" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/T812tvs5wDU/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #01</span><h3>¿Cómo tomar las riendas de tu destino?</h3><p class="ep-guest">Fernando Landeros</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=A-Ujq75RJeo" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/A-Ujq75RJeo/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #02</span><h3>El empresario más feliz del mundo</h3><p class="ep-guest">Simon Cohen</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=jB8Gg39hDnU" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/jB8Gg39hDnU/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #03</span><h3>Sobreviviente de los Andes</h3><p class="ep-guest">Eduardo Strauch</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=_J9UxhaDA2U" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/_J9UxhaDA2U/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #04</span><h3>De los campos de golf al propósito de vida</h3><p class="ep-guest">Lorena Ochoa</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=IaJWiFpgzl4" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/IaJWiFpgzl4/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #05</span><h3>Del miedo al motor que impulsa el capital</h3><p class="ep-guest">René Saul</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=dQCFQjJ1RuM" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/dQCFQjJ1RuM/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #06</span><h3>Plata olímpica y sueños cumplidos</h3><p class="ep-guest">Juan Celaya y Osmar Olvera</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=wNv-SJZK4u8" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/wNv-SJZK4u8/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #07</span><h3>Sumergirse en el miedo para volver a respirar</h3><p class="ep-guest">Gerardo del Villar</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=YBSn_jEi7oU" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/YBSn_jEi7oU/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #08</span><h3>Menos drama, más resultados</h3><p class="ep-guest">Daniel Marcos</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=tqXXn6Si_EU" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/tqXXn6Si_EU/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #09</span><h3>Haz que te pasen cosas buenas</h3><p class="ep-guest">Marian Rojas</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=pXd_QOBczOs" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/pXd_QOBczOs/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #10</span><h3>La verdad sin filtros: éxito, redes y lo que nadie te dice</h3><p class="ep-guest">Alejandro Sago</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=zrJbe8XN8ug" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/zrJbe8XN8ug/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #11</span><h3>Liderar desde el impacto, no desde el puesto</h3><p class="ep-guest">Eduardo Marti</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=4S63h4PQvyg" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/4S63h4PQvyg/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #12</span><h3>Inteligencia natural: consejos para una vida verde y saludable</h3><p class="ep-guest">Lucía Moreno</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=ItJddPgnJXI" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/ItJddPgnJXI/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #13</span><h3>De la adversidad al propósito real</h3><p class="ep-guest">Raymundo Martínez</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=HbPyka8nInM" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/HbPyka8nInM/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #14</span><h3>Cuando vivir se convierte en servir</h3><p class="ep-guest">Carlos Álvarez Bermejillo</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=aCT3qmbi-2w" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/aCT3qmbi-2w/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #15</span><h3>La visión sin ejecución es solo un sueño</h3><p class="ep-guest">Jorge Combe</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=42xqIuFea1s" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/42xqIuFea1s/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #16</span><h3>El éxito no es la fama, es la evolución</h3><p class="ep-guest">Farid Dieck</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/@nosvemosenlacimapodcast" target="_blank" class="ep-card"><img class="ep-thumb" src="podcast-cover.jpg" alt="" loading="lazy"><span class="ep-tag">Capítulo #17</span><h3>Talento y valor: el propósito de un legado empresarial</h3><p class="ep-guest">José Luis González Íñigo</p><i class="ti ti-player-play ep-arrow"></i></a>
+      <a href="https://www.youtube.com/watch?v=HupzoorHVuk" target="_blank" class="ep-card"><img class="ep-thumb" src="https://i.ytimg.com/vi/HupzoorHVuk/hqdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='podcast-cover.jpg'"><span class="ep-tag">Capítulo #18</span><h3>Transformar con propósito, no con presupuesto</h3><p class="ep-guest">Alberto Achar</p><i class="ti ti-player-play ep-arrow"></i></a>
+      </div>
+    </div>
+
+    <div id="season-2" style="display:none;margin-top:32px;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+          <i class="ti ti-clock" style="font-size:28px;color:var(--naranja);"></i>
+        </div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Temporada 2</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">Próximamente</h3>
+        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">La segunda temporada de <em>Nos Vemos en la Cima</em> está en camino. Nuevas conversaciones, nuevos invitados, nuevas cimas por alcanzar.</p>
+        <div style="margin-top:28px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://open.spotify.com/show/07GpHwT5ONmTjUU5Df3pN9?si=b9b7fe3f07224c83" target="_blank" class="pod-btn" style="border-radius:100px;">
+            <i class="ti ti-brand-spotify"></i> Seguir en Spotify
+          </a>
+          <a href="https://www.youtube.com/@nosvemosenlacimapodcast" target="_blank" class="pod-btn" style="border-radius:100px;">
+            <i class="ti ti-brand-youtube"></i> Suscribirse en YouTube
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pod-cta">
+    <h2>¿Quieres ser parte del podcast?</h2>
+    <p>Si buscas patrocinar el podcast, aparecer como invitado, o explorar cualquier tipo de alianza con Nos Vemos en la Cima, escríbenos.</p>
+    <div class="pod-cta-btns">
+      <a href="mailto:ssalido@nosvemosenlacima.com.mx?subject=Patrocinio Podcast" class="btn-orange"><i class="ti ti-building-store"></i> Quiero patrocinar</a>
+      <a href="mailto:ssalido@nosvemosenlacima.com.mx?subject=Quiero ser invitado al podcast" class="btn-outline-light"><i class="ti ti-microphone-2"></i> Quiero ser invitado</a>
+      <a href="mailto:ssalido@nosvemosenlacima.com.mx?subject=Alianza Podcast" class="btn-outline-light"><i class="ti ti-handshake"></i> Proponer alianza</a>
+      <a href="mailto:ssalido@nosvemosenlacima.com.mx?subject=Propuesta de invitado para el podcast" class="btn-outline-light"><i class="ti ti-user-plus"></i> Proponer invitado</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LIBROS ===== -->
+<div class="page" id="page-libro">
+
+  <!-- Selector de libros -->
+  <div style="padding:28px 52px 0;background:var(--grafito);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <span class="sec-label" style="margin-bottom:0;">Libros</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="switchBook(1,this)" class="season-btn active">Nos Vemos en la Cima</button>
+      <button onclick="switchBook(2,this)" class="season-btn">La Velocidad del Alma</button>
+      <button onclick="switchBook(3,this)" class="season-btn">Atleta Total</button>
+      <button onclick="switchBook(4,this)" class="season-btn">No busques tu propósito</button>
+    </div>
+  </div>
+
+  <!-- LIBRO 1 -->
+  <div id="book-1">
+  <div class="libro-hero">
+    <div class="libro-left">
+      <span class="sec-label">Libro</span>
+      <h1>Nos Vemos<br>en la Cima</h1>
+      <p>En este libro, Marcelo Michel Leaño comparte las lecciones más importantes de su vida: desde su experiencia como el director técnico más joven de la Primera División del Fútbol Mexicano, hasta su filosofía personal sobre el liderazgo, la perseverancia y el camino hacia la excelencia.</p>
+      <p>A través de historias personales, reflexiones profundas y estrategias prácticas, <em style="font-style:italic;color:rgba(255,255,255,0.85);">"Nos Vemos en la Cima"</em> te guiará en tu propio viaje hacia el éxito, enseñándote que el secreto no está en no caer, sino en no permanecer caído.</p>
+      <div>
+        <span class="sec-label" style="margin-top:24px;">Consíguelo en</span>
+        <div class="libro-buy-btns">
+          <a href="https://www.amazon.com.mx/vemos-cima-Marcelo-Michel-Lea%C3%B1o/dp/6070940962" target="_blank" class="buy-btn primary"><i class="ti ti-brand-amazon"></i> Amazon</a>
+          <a href="https://www.mercadolibre.com.mx/nos-vemos-en-la-cima-el-camino-hacia-la-excelencia-de-michel-leano-marcelo-men-omen-vol-1-editorial-editorial-porrua-mexico-tapa-blanda-edicion-1ra-en-espanol-2022/p/MLM49548672" target="_blank" class="buy-btn secondary"><i class="ti ti-shopping-cart"></i> Mercado Libre</a>
+          <a href="https://www.gandhi.com.mx/nos-vemos-en-la-cima/p?srsltid=AfmBOoqh2yu5pq1Izj_9sCOAGJD015m4FAmpPPdqniljOV8kZrJGAERz" target="_blank" class="buy-btn secondary"><i class="ti ti-book"></i> Gandhi</a>
+        </div>
+      </div>
+    </div>
+    <div class="libro-right">
+      <img src="book-cover.png" alt="Nos Vemos en la Cima — Marcelo Michel Leaño" style="max-width:320px;width:100%;display:block;filter:drop-shadow(0 24px 48px rgba(0,0,0,0.7));" />
+    </div>
+  </div>
+  <div class="libro-info">
+    <h2>Temas del libro</h2>
+    <div class="libro-themes">
+      <div class="theme-card"><i class="ti ti-users"></i><h3>Liderazgo</h3><p>Aprende las claves del liderazgo efectivo que llevaron a Marcelo a dirigir equipos de alto rendimiento.</p></div>
+      <div class="theme-card"><i class="ti ti-mountain"></i><h3>Perseverancia</h3><p>Descubre cómo superar los obstáculos y mantenerte enfocado en tus metas a pesar de las adversidades.</p></div>
+      <div class="theme-card"><i class="ti ti-trending-up"></i><h3>Crecimiento Personal</h3><p>Estrategias prácticas para desarrollar tu potencial y alcanzar la excelencia en todas las áreas de tu vida.</p></div>
+      <div class="theme-card"><i class="ti ti-brain"></i><h3>Mentalidad Ganadora</h3><p>Las herramientas mentales que utilizan los grandes líderes para lograr resultados extraordinarios.</p></div>
+    </div>
+  </div>
+  </div><!-- /book-1 -->
+
+  <!-- LIBRO 2 -->
+  <div id="book-2" style="display:none;">
+    <div class="libro-info" style="background:var(--negro);">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+        </div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">La Velocidad del Alma</h3>
+        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIBRO 3 -->
+  <div id="book-3" style="display:none;">
+    <div class="libro-info" style="background:var(--negro);">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+        </div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">Atleta Total</h3>
+        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIBRO 4 -->
+  <div id="book-4" style="display:none;">
+    <div class="libro-info" style="background:var(--negro);">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+        </div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">No busques tu propósito, descúbrelo en los demás</h3>
+        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CONTACTO ===== -->
+<div class="page" id="page-contacto">
+  <div class="contacto-wrap">
+    <div class="contacto-left">
+      <div class="contacto-left-inner">
+        <span class="sec-label" style="color:var(--naranja2);">Contacto</span>
+        <h1>Hablemos<br>de tu equipo.</h1>
+        <p>Ya sea una conferencia, un taller, un proceso de coaching o una alianza con el podcast — diseñamos la experiencia ideal para llevarte a la cima.</p>
+        <div>
+          <div class="cd-item"><i class="ti ti-microphone-2"></i><span>Conferencias · Talleres · Keynotes</span></div>
+          <div class="cd-item"><i class="ti ti-award"></i><span>Coaching empresarial personalizado</span></div>
+          <div class="cd-item"><i class="ti ti-device-laptop"></i><span>Presencial y virtual disponible</span></div>
+          <div class="cd-item"><i class="ti ti-world"></i><span>México e internacional</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="contacto-right">
+      <h2>Envíanos un mensaje</h2>
+
+      <!-- FORMULARIO ACTIVO -->
+      <div id="contact-form-wrap">
+        <div class="form-row">
+          <div class="fg">
+            <label>Nombre</label>
+            <input id="cf-nombre" type="text" placeholder="Tu nombre" />
+          </div>
+          <div class="fg">
+            <label>Empresa</label>
+            <input id="cf-empresa" type="text" placeholder="Tu empresa" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>Email</label>
+          <input id="cf-email" type="email" placeholder="tu@empresa.com" />
+        </div>
+        <div class="fg">
+          <label>Tipo de solicitud</label>
+          <select id="cf-tipo">
+            <option>Conferencia presencial (1.5 hrs)</option>
+            <option>Conferencia virtual</option>
+            <option>Taller Nos Vemos en la Cima (3 hrs)</option>
+            <option>Taller de Alineamiento (1 día)</option>
+            <option>Evento Llave en Mano</option>
+            <option>Coaching empresarial</option>
+            <option>Patrocinio de podcast</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Mensaje</label>
+          <textarea id="cf-mensaje" placeholder="Cuéntanos sobre tu equipo, el evento y lo que necesitas..."></textarea>
+        </div>
+        <div id="cf-error" style="display:none;background:rgba(230,64,24,0.12);border:1px solid var(--naranja);color:#ffaa88;font-size:13px;padding:12px 16px;border-radius:6px;margin-bottom:14px;">
+          Hubo un problema al enviar. Por favor intenta de nuevo o escríbenos directamente a ssalido@nosvemosenlacima.com.mx
+        </div>
+        <button class="submit-btn" id="cf-btn" onclick="enviarFormulario()">Enviar solicitud →</button>
+      </div>
+
+      <!-- ESTADO DE ÉXITO -->
+      <div id="contact-success" style="display:none;text-align:center;padding:48px 20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--naranja);">✓</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--blanco);margin-bottom:10px;">¡Mensaje enviado!</h3>
+        <p style="font-size:14px;color:var(--gris);line-height:1.8;max-width:340px;margin:0 auto 28px;">Recibimos tu solicitud. Nos pondremos en contacto contigo a la brevedad.</p>
+        <button onclick="resetFormulario()" style="background:transparent;color:var(--naranja2);border:1px solid rgba(230,64,24,0.4);padding:10px 22px;font-size:13px;font-weight:600;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;">Enviar otra solicitud</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchSeason(num, btn) {
+  document.getElementById('season-1').style.display = num === 1 ? 'block' : 'none';
+  document.getElementById('season-2').style.display = num === 2 ? 'block' : 'none';
+  document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function playVideo(wrap, id, extra) {
+  const src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0' + (extra || '');
+  wrap.innerHTML = '<iframe src="' + src + '" title="Video" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+}
+
+function switchBook(num, btn) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('book-' + i).style.display = (num === i) ? 'block' : 'none';
+  }
+  btn.parentElement.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const map = {home:0,about:1,conferencias:2,podcast:3,libro:4,contacto:5};
+    const btns = document.querySelectorAll('.nav-link');
+    if (btns[map[id]]) btns[map[id]].classList.add('active');
+  }
+  window.scrollTo(0,0);
+}
+
+async function enviarFormulario() {
+  const nombre  = document.getElementById('cf-nombre').value.trim();
+  const empresa = document.getElementById('cf-empresa').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const tipo    = document.getElementById('cf-tipo').value;
+  const mensaje = document.getElementById('cf-mensaje').value.trim();
+  const btn     = document.getElementById('cf-btn');
+  const errBox  = document.getElementById('cf-error');
+
+  // Validación básica
+  if (!nombre || !email || !mensaje) {
+    errBox.textContent = 'Por favor completa al menos tu nombre, email y mensaje.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  // Estado de carga
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  errBox.style.display = 'none';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xbdedyoe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        nombre,
+        empresa: empresa || '—',
+        email,
+        tipo_solicitud: tipo,
+        mensaje,
+        _subject: `Nueva solicitud: ${tipo} — ${nombre}`
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('contact-form-wrap').style.display = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+    } else {
+      throw new Error('Error del servidor');
+    }
+  } catch(e) {
+    errBox.textContent = 'Hubo un problema al enviar. Por favor intenta de nuevo o escríbenos a ssalido@nosvemosenlacima.com.mx';
+    errBox.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enviar solicitud →';
+  }
+}
+
+function resetFormulario() {
+  document.getElementById('cf-nombre').value = '';
+  document.getElementById('cf-empresa').value = '';
+  document.getElementById('cf-email').value = '';
+  document.getElementById('cf-mensaje').value = '';
+  document.getElementById('cf-error').style.display = 'none';
+  document.getElementById('cf-btn').disabled = false;
+  document.getElementById('cf-btn').textContent = 'Enviar solicitud →';
+  document.getElementById('contact-form-wrap').style.display = 'block';
+  document.getElementById('contact-success').style.display = 'none';
+}
+</script>
+</body>
+</html>
