@@ -109,8 +109,8 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
 .conf-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(500px 300px at 85% 30%,rgba(230,64,24,0.3),transparent 60%);pointer-events:none;}
 .conf-hero-inner{position:relative;z-index:2;max-width:680px;}
 .conf-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:20px;}
-.conf-hero p{font-size:17px;color:var(--gris);line-height:1.85;}
-.conf-hero-photo{position:relative;z-index:2;width:360px;max-width:38vw;aspect-ratio:4/3;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.1);}
+.conf-hero p{font-size:15px;color:var(--gris);line-height:1.8;max-width:420px;}
+.conf-hero-photo{position:relative;z-index:2;width:560px;max-width:48vw;aspect-ratio:4/3;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.1);}
 @media(max-width:860px){.conf-hero{grid-template-columns:1fr;}.conf-hero-photo{width:100%;max-width:100%;}}
 
 /* GALERÍA DE FOTOS */
@@ -416,7 +416,9 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
       <h1>Atrévete a llevar<br>a tu equipo<br>a la cima.</h1>
       <p>Experiencias diseñadas para despertar el potencial de tu organización. Desde una conferencia de 1.5 horas hasta un evento de día completo donde nos encargamos de todo.</p>
     </div>
-    <img class="conf-hero-photo" src="conferencia-1.jpg" alt="Marcelo Michel Leaño en conferencia" onerror="this.style.display='none'">
+    <video class="conf-hero-photo" id="conf-hero-video" autoplay muted loop playsinline poster="marcelo-orador-poster.jpg">
+      <source src="marcelo-orador.mp4" type="video/mp4">
+    </video>
   </div>
 
   <!-- PRODUCTOS -->
@@ -908,6 +910,16 @@ function showPage(id, btn) {
     if (btns[map[id]]) btns[map[id]].classList.add('active');
   }
   window.scrollTo(0,0);
+
+  const confVideo = document.getElementById('conf-hero-video');
+  if (confVideo) {
+    if (id === 'conferencias') {
+      confVideo.currentTime = 0;
+      confVideo.play().catch(()=>{});
+    } else {
+      confVideo.pause();
+    }
+  }
 }
 
 async function enviarFormulario() {
