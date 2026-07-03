@@ -301,13 +301,14 @@ body.nav-open-lock{overflow:hidden;}
 /* Tablets / móvil grande */
 @media(max-width:860px){
   /* --- NAV MÓVIL --- */
-  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--negro);flex-direction:column;align-items:stretch;padding:112px 28px 40px;gap:2px;z-index:101;overflow-y:auto;}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--negro);border-bottom:1px solid var(--linea);flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:18px 20px 22px;z-index:101;box-shadow:0 16px 32px rgba(0,0,0,0.45);max-height:calc(100vh - 76px);overflow-y:auto;}
   .nav-links.open{display:flex;}
-  .nav-link{height:auto;padding:18px 6px;width:100%;justify-content:flex-start;font-size:16px;border-bottom:1px solid var(--linea);}
+  .nav-link{height:auto;padding:11px 18px;width:auto;flex:0 1 auto;justify-content:center;font-size:13px;border:1px solid rgba(255,255,255,0.14);border-radius:100px;}
+  .nav-link.active{border-color:var(--naranja);}
   .nav-cta-desktop{display:none;}
-  .nav-cta-mobile{display:inline-flex;justify-content:center;margin-top:20px;padding:15px 22px;font-size:14px;}
+  .nav-cta-mobile{display:inline-flex;justify-content:center;flex:1 1 100%;margin-top:6px;padding:14px 22px;font-size:14px;}
   .nav-burger{display:flex;}
-  .nav-overlay.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;}
+  .nav-overlay.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99;}
 
   /* --- HEROES A UNA COLUMNA --- */
   .home-hero,.about-hero,.pod-hero,.libro-hero,.contacto-wrap,.conf-hero{grid-template-columns:1fr;min-height:auto;}
@@ -332,7 +333,7 @@ body.nav-open-lock{overflow:hidden;}
 @media(max-width:700px){
   nav{padding:0 18px;height:76px;}
   .nav-brand img{height:50px;}
-  .nav-links{padding-top:92px;}
+  .nav-links{max-height:calc(100vh - 76px);}
 
   .services-section,.timeline-sec,.products-section,.topics-section,.conf-body,.videos-sec,.episodes-sec,.pod-cta,.libro-info,.quote-pull,
   .hero-left,.hero-right,.about-left,.conf-hero,.pod-hero,.libro-left,.contacto-left,.contacto-right,.contact-cta{padding:48px 20px;}
