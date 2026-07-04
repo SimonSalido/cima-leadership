@@ -17,7 +17,7 @@
   .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
   header.top{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--cima);padding-bottom:14px;margin-bottom:6px;flex-wrap:wrap}
   .logo{display:flex;align-items:center;gap:11px}
-  .logo svg{height:36px;width:auto;display:block;flex:0 0 auto}
+  .logo svg,.logo img{height:36px;width:auto;display:block;flex:0 0 auto}
   .logo .wm{font-weight:800;font-size:15px;letter-spacing:.2px;color:var(--ink);line-height:1.05}
   .logo .wm .o{color:var(--cima)}
   .logo .wm small{display:block;font-weight:700;font-size:12px;color:var(--slate);letter-spacing:0}
@@ -66,6 +66,7 @@
   /* results report (print only) */
   .report{display:none}
   .rep-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--cima);padding-bottom:12px;margin-bottom:16px}
+  .rep-head img,.rep-head svg{height:34px;width:auto;display:block}
   .rep-title{font-family:var(--serif);font-size:24px;margin:6px 0 2px}
   .rep-meta{color:var(--slate);font-size:13px;margin-bottom:18px}
   .rep-grid{display:flex;gap:26px;align-items:flex-start}
@@ -130,8 +131,8 @@
 <div id="report" class="report"></div>
 
 <script>
-const LOGO_SVG=`<svg viewBox="0 0 170 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CIMA Leadership Institute"><g fill="#FA4B1E"><rect x="8" y="4" width="3.4" height="52"/><rect x="15" y="4" width="3.4" height="66"/><rect x="22" y="4" width="3.4" height="40"/><rect x="29" y="4" width="3.4" height="74"/><rect x="36" y="4" width="3.4" height="58"/><rect x="43" y="4" width="3.4" height="82"/><rect x="50" y="4" width="3.4" height="48"/><rect x="57" y="4" width="3.4" height="70"/><circle cx="24" cy="52" r="9"/><path d="M6,134 L66,42 L80,26 L80,50 L90,50 L90,36 L98,36 L98,58 L106,58 L106,30 L150,30 L150,134 L112,134 L112,118 L100,118 L100,134 L72,134 L72,118 L60,118 L60,134 Z"/></g></svg>`;
-const LOGO_HTML=LOGO_SVG+'<div class="wm"><span class="o">CIMA</span>®<small>Leadership Institute</small></div>';
+const LOGO_SVG=`<img src="logo-cima-naranja.png" alt="CIMA Leadership Institute">`;
+const LOGO_HTML=LOGO_SVG;
 document.getElementById("brandLogo").innerHTML=LOGO_HTML;
 const DIMS=[
  {k:"C",name:"Conciencia"},
