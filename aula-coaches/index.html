@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIMA Institute Certification · Aula de Formación de Coaches</title>
+<style>
+  :root{
+    --ink:#1A1A1A;--paper:#FCFBF9;--paper2:#F4F1EC;--cima:#FA4B1E;--cima-d:#D63A12;
+    --slate:#5C5C5C;--rule:#E2DDD4;--white:#fff;--peach:#FDEAE2;--cream:#FFE7DD;
+    --green:#2E7D52;--greenbg:#e3f1e9;--red:#B23A48;--redbg:#fbe3e6;
+    --serif:"Georgia","Cambria",serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55}
+  header.top{display:flex;align-items:center;gap:14px;padding:12px 22px;background:var(--white);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+  header .logo{display:flex;align-items:center;gap:10px}
+  header .logo svg{height:30px;width:auto}
+  header .logo .wm{font-weight:800;font-size:14px}
+  header .logo .wm .o{color:var(--cima)} header .logo .wm small{display:block;font-weight:700;font-size:11px;color:var(--slate)}
+  header .title{font-family:var(--serif);font-size:15px;color:var(--slate);margin-left:4px}
+  header .prog{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--slate)}
+  header .pbar{width:150px;height:8px;background:var(--paper2);border-radius:6px;overflow:hidden}
+  header .pbar>i{display:block;height:100%;background:var(--cima);width:0;transition:width .3s}
+  .shell{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 56px)}
+  @media(max-width:860px){.shell{grid-template-columns:1fr}.side{position:static!important;height:auto!important}}
+  /* sidebar */
+  .side{background:var(--white);border-right:1px solid var(--rule);padding:16px 12px;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
+  .side h4{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--cima);margin:6px 8px 10px}
+  .moditem{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;margin-bottom:3px}
+  .moditem:hover{background:var(--paper2)}
+  .moditem.active{background:var(--peach)}
+  .modnum{width:26px;height:26px;border-radius:7px;background:var(--paper2);color:var(--slate);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .moditem.active .modnum{background:var(--cima);color:#fff}
+  .moditem.done .modnum{background:var(--green);color:#fff}
+  .moditem .mt{font-size:13px;font-weight:600;line-height:1.2}
+  .moditem .ms{font-size:11px;color:var(--slate)}
+  /* main */
+  main{padding:26px 34px 90px;max-width:900px}
+  @media(max-width:860px){main{padding:20px 18px 80px}}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--cima)}
+  h1.mod{font-family:var(--serif);font-size:30px;margin:6px 0 2px}
+  .modsub{color:var(--cima-d);font-style:italic;font-family:var(--serif);font-size:16px;margin-bottom:18px}
+  .sec{background:var(--white);border:1px solid var(--rule);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .sec h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--cima)}
+  .sec p{margin:0 0 10px;font-size:15px}
+  .obj{display:flex;gap:10px;align-items:flex-start;margin:7px 0;font-size:15px}
+  .obj .b{width:20px;height:20px;border-radius:6px;background:var(--cima);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}
+  .concept{margin:0 0 12px}
+  .concept b{color:var(--ink)}
+  /* video */
+  .video{background:#141210;border-radius:12px;padding:28px;text-align:center;color:#fff;border:1px dashed #4a453f}
+  .video .play{width:52px;height:52px;border-radius:50%;background:var(--cima);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .video .play svg{margin-left:3px}
+  .video .vt{font-weight:700;font-size:15px}
+  .video .vd{font-size:12.5px;color:#b8b2a8;margin-top:4px}
+  .videowrap{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
+  .videowrap iframe,.videowrap video{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* caso */
+  .caso .esc{background:var(--paper2);border-radius:10px;padding:13px 15px;font-size:14.5px;margin-bottom:12px}
+  .preg{font-weight:700;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--rule);background:var(--white);border-radius:10px;padding:11px 14px;margin-bottom:8px;font-size:14px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--cima)}
+  .opt.correct{background:var(--greenbg);border-color:var(--green)}
+  .opt.wrong{background:var(--redbg);border-color:var(--red)}
+  .opt.dim{opacity:.6}
+  .fb{font-size:13.5px;margin:2px 0 10px;padding:9px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:var(--greenbg);color:#1f6e46} .fb.no{background:var(--redbg);color:#8f2b38}
+  .mirada{display:none;margin-top:10px;background:var(--cream);border-left:3px solid var(--cima);border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px}
+  .mirada.show{display:block} .mirada b{color:var(--cima-d)}
+  .reveal-btn{background:none;border:1px solid var(--cima);color:var(--cima-d);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px}
+  /* reflexion */
+  textarea{width:100%;border:1px solid var(--rule);border-radius:10px;padding:11px 13px;font-family:var(--sans);font-size:14px;min-height:96px;resize:vertical}
+  .saved{font-size:12px;color:var(--green);margin-top:6px;display:none}
+  /* quiz */
+  .qq{margin-bottom:16px}
+  .qq .q{font-weight:700;font-size:14.5px;margin-bottom:8px}
+  .qexp{font-size:13px;color:var(--slate);margin-top:4px;display:none}
+  .qexp.show{display:block}
+  /* footer nav */
+  .navbar{display:flex;gap:10px;align-items:center;margin-top:20px}
+  .btn{border:1px solid var(--rule);background:var(--white);border-radius:10px;padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink)}
+  .btn.primary{background:var(--cima);color:#fff;border-color:var(--cima)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.done{background:var(--green);border-color:var(--green);color:#fff}
+  .spacer{flex:1}
+  .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--cima);background:var(--peach);border-radius:20px;padding:3px 10px;margin-bottom:8px}
+  .final{text-align:center;padding:40px 20px}
+  .final .big{font-family:var(--serif);font-size:30px;color:var(--cima)}
+  /* password gate */
+  #gate{position:fixed;inset:0;background:#141210;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px}
+  #gate .card{background:#1c1815;border:1px solid #322c26;border-radius:16px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
+  #gate .glogo svg{height:40px}
+  #gate h2{color:#fff;font-family:var(--serif);font-size:21px;margin:16px 0 4px}
+  #gate p{color:#b8b2a8;font-size:13px;margin:0 0 20px}
+  #gate input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #45403a;background:#0f0d0b;color:#fff;font-size:15px;text-align:center;outline:none}
+  #gate input:focus{border-color:var(--cima)}
+  #gate button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--cima);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+  #gate .err{color:#ff8a6b;font-size:13px;margin-top:12px;min-height:16px}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card"><div class="glogo" id="gateLogo"></div><h2>Aula de Formación de Coaches</h2><p>Módulo privado · acceso con contraseña</p><input id="gatePass" type="password" placeholder="Contraseña" autocomplete="current-password"><button onclick="tryLogin()">Entrar</button><div class="err" id="gateErr"></div></div></div>
+<header class="top">
+  <div class="logo" id="brandLogo"></div>
+  <span class="title">Aula · Formación de Coaches</span>
+  <div class="prog"><span id="progTxt">0%</span><div class="pbar"><i id="pbar"></i></div></div>
+</header>
+<div class="shell">
+  <aside class="side"><h4>Módulos</h4><div id="sidebar"></div></aside>
+  <main id="main"></main>
+</div>
+
+<script>
+const LOGO_SVG=`<svg viewBox="0 0 170 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CIMA"><g fill="#FA4B1E"><rect x="8" y="4" width="3.4" height="52"/><rect x="15" y="4" width="3.4" height="66"/><rect x="22" y="4" width="3.4" height="40"/><rect x="29" y="4" width="3.4" height="74"/><rect x="36" y="4" width="3.4" height="58"/><rect x="43" y="4" width="3.4" height="82"/><rect x="50" y="4" width="3.4" height="48"/><rect x="57" y="4" width="3.4" height="70"/><circle cx="24" cy="52" r="9"/><path d="M6,134 L66,42 L80,26 L80,50 L90,50 L90,36 L98,36 L98,58 L106,58 L106,30 L150,30 L150,134 L112,134 L112,118 L100,118 L100,134 L72,134 L72,118 L60,118 L60,134 Z"/></g></svg>`;
+document.getElementById("brandLogo").innerHTML=LOGO_SVG+'<div class="wm"><span class="o">CIMA</span>®<small>Institute Certification</small></div>';
+
+/* ===================== ACCESO CON CONTRASEÑA =====================
+   Contraseña por defecto:  cima2026
+   Para cambiarla:
+   1) Abre esta página publicada (https) y presiona F12 → pestaña Console.
+   2) Pega:  await sha256("TU_NUEVA_CONTRASEÑA")
+   3) Copia el texto largo que aparece y reemplaza el valor de PASSWORD_HASH abajo.
+   Nota: es una puerta de cortesía (protección por JavaScript), no una caja fuerte.
+   Para seguridad real, usa la protección por contraseña del hosting (Vercel/servidor).
+================================================================= */
+const PASSWORD_HASH="b4a9cf1d3a9e8d2b76a197094d9742c274dabe27d1a5f569ff8dbaef5830938c"; // = sha256("cima2026")
+async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+async function tryLogin(){
+  const v=document.getElementById("gatePass").value;
+  try{
+    const h=await sha256(v);
+    if(h===PASSWORD_HASH){ try{sessionStorage.setItem("cima_aula_ok","1");}catch(e){} document.getElementById("gate").style.display="none"; }
+    else { document.getElementById("gateErr").textContent="Contraseña incorrecta."; }
+  }catch(e){ document.getElementById("gateErr").textContent="El acceso funciona en el sitio publicado (https)."; }
+}
+document.getElementById("gateLogo").innerHTML=LOGO_SVG;
+document.getElementById("gatePass").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
+try{ if(sessionStorage.getItem("cima_aula_ok")==="1") document.getElementById("gate").style.display="none"; }catch(e){}
+
+/* ===================== TUS VIDEOS =====================
+   Pega el enlace de cada módulo entre las comillas (índice 0 a 8).
+   Sirve YouTube, Vimeo o un archivo .mp4 directo.
+   Deja "" (vacío) para mostrar el marcador "por grabar".
+   Ejemplo:  0:"https://youtu.be/AbCdEf12345",
+====================================================== */
+const VIDEOS={
+  0:"",
+  1:"",
+  2:"",
+  3:"",
+  4:"",
+  5:"",
+  6:"",
+  7:"",
+  8:""
+};
+function videoEmbed(i,v){
+  const url=(VIDEOS[i]||"").trim();
+  if(!url){
+    return `<div class="video"><div class="play"><svg width="20" height="20" viewBox="0 0 20 20" fill="#fff"><path d="M5 3l12 7-12 7z"/></svg></div><div class="vt">${v.t}</div><div class="vd">${v.d}</div></div>`;
+  }
+  const yt=url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+  const vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if(/\.(mp4|webm|ogg)(\?|#|$)/i.test(url)) return `<div class="videowrap"><video controls src="${url}"></video></div>`;
+  let src=url;
+  if(yt) src="https://www.youtube.com/embed/"+yt[1];
+  else if(vm) src="https://player.vimeo.com/video/"+vm[1];
+  return `<div class="videowrap"><iframe src="${src}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+}
+
+const COURSE=[
+{num:"0",title:"Tu propia travesía",sub:"Antes de guiar, subir.",
+ objetivos:["Entender por qué el coach primero se transforma.","Levantar tu propio CIMA Index® como línea base.","Escribir tu Declaración de Cima como coach."],
+ video:{t:"Bienvenida y el juramento del coach",d:"Aquí irá tu video de apertura (por grabar)."},
+ conceptos:[
+  {h:"Solo guía la cima quien ya la ha subido",p:"No puedes acompañar a alguien a un lugar donde no has estado. Tu credibilidad no viene del título: viene de tu travesía. El primer trabajo del coach no es aprender técnica, es transformarse."},
+  {h:"Tu instrumento eres tú",p:"Como el Atleta Total, tu herramienta principal es tu propia energía, conciencia y congruencia. Un instrumento desafinado no puede afinar a otro."},
+  {h:"Tu CIMA Index® es tu línea base",p:"Un coach revisa su propio radar (Conciencia, Identidad, Mentalidad, Alma, Sistemas) antes de leer el de otro. Vivir el método es requisito, no adorno."}],
+ caso:{esc:"Un candidato quiere certificarse pero no ha trabajado su propia sombra. En su primera práctica, cada vez que el cliente se emociona de verdad, él cambia de tema y vuelve a la técnica.",
+  preg:"¿Qué le falta principalmente?",
+  ops:[{t:"Más técnicas y herramientas de coaching.",ok:false,fb:"La técnica no cubre lo que el coach no ha mirado en sí mismo. Huye de la emoción porque le incomoda la suya."},
+       {t:"Trabajar su propia conciencia y su relación con la emoción.",ok:true,fb:"Exacto. No puede sostener en otro lo que no ha sostenido en sí mismo."},
+       {t:"Un guion para conversaciones emocionales.",ok:false,fb:"Un guion no sostiene una emoción real; la esquiva con más elegancia."}],
+  mirada:"El coach no puede sostener en otro lo que no ha sostenido en sí. Antes de facilitar el Vestidor Invisible de un cliente, tiene que haber entrado al suyo."},
+ reflexion:"¿Cuál es tu cima como coach y qué te está costando sostenerla hoy?",
+ quiz:[{q:"El primer trabajo del coach CIMA es…",ops:["Dominar las herramientas.","Vivir su propia travesía.","Conseguir clientes."],c:1,e:"El orden no se salta: primero se transforma, luego facilita, luego forma."},
+       {q:"Tu instrumento principal como coach es…",ops:["El kit de herramientas.","Tú mismo.","La teoría del método."],c:1,e:"Tu energía, conciencia y congruencia son la herramienta."}]},
+
+{num:"1",title:"Fundamentos",sub:"El sistema CIMA + S.",
+ objetivos:["Explicar el Método CIMA + S con tus palabras.","Distinguir lo invisible (C·I·M·A) de lo visible (S).","Enunciar la tesis y la máxima del sistema."],
+ video:{t:"El sistema CIMA + S explicado",d:"Aquí irá tu video de fundamentos (por grabar)."},
+ conceptos:[
+  {h:"CIMA + S",p:"Cuatro dimensiones humanas e invisibles —Conciencia, Identidad, Mentalidad, Alma— donde ocurre la transformación, sostenidas por una quinta visible: Sistemas = Talento + Procesos."},
+  {h:"La tesis",p:"Toda cima externa exige una transformación interna y un sistema capaz de sostenerla. No basta con metas más grandes."},
+  {h:"La máxima de +S",p:"No te elevas al nivel de tus metas: caes al nivel de tus sistemas. Lo que depende del ánimo no sostiene una cima."}],
+ caso:{esc:"Un cliente logró una meta enorme —duplicó la empresa— y a los seis meses colapsó: rotación, caos y agotamiento personal.",
+  preg:"¿Qué faltó, en clave CIMA?",
+  ops:[{t:"Mentalidad: no era lo bastante resiliente.",ok:false,fb:"No es un problema de aguante. Creció más rápido de lo que su estructura y su ritmo podían sostener."},
+       {t:"Alma y Sistemas: creció sin ritmo sostenible ni estructura de talento y procesos.",ok:true,fb:"Correcto. La inspiración lo llevó arriba; sin sistema ni alma, no pudo quedarse."},
+       {t:"Identidad: no tenía valores claros.",ok:false,fb:"Puede haber algo, pero el colapso fue de sostenimiento: faltó S (y cuidado del ritmo)."}],
+  mirada:"Una cima sin sistema se convierte en desgaste. La meta inspira; el sistema sostiene."},
+ reflexion:"¿En qué dimensión (C·I·M·A·S) sueles enfocarte tú, y cuál sueles descuidar como coach?",
+ quiz:[{q:"Sistemas es igual a…",ops:["Talento + Procesos.","Estrategia + Metas.","Disciplina + Motivación."],c:0,e:"Las personas correctas con los procesos correctos sostienen la cima correcta."},
+       {q:"Lo invisible en el método es…",ops:["Los Sistemas.","Conciencia, Identidad, Mentalidad y Alma.","La marca."],c:1,e:"Lo invisible es donde ocurre la transformación; S es lo visible que la sostiene."}]},
+
+{num:"2",title:"Conciencia y el espacio de verdad",sub:"No se transforma lo que no se mira.",
+ objetivos:["Crear un espacio donde la verdad se pueda decir.","Facilitar el Vestidor Invisible.","Aplicar e interpretar el CIMA Index®."],
+ video:{t:"Cómo se crea un espacio de verdad",d:"Aquí irá tu video sobre facilitar la conciencia (por grabar)."},
+ conceptos:[
+  {h:"La conciencia despierta",p:"Nada cambia hasta que alguien se atreve a ver lo que evitaba. El diagnóstico honesto es el punto de partida de toda transformación."},
+  {h:"Seguridad + reto",p:"La gente dice la verdad cuando no será castigada por decirla. El coach sostiene un espacio seguro y, a la vez, no deja que la verdad se esconda."},
+  {h:"El CIMA Index® y el Mapa de Brechas",p:"La brecha entre cómo se ve la persona (autoevaluación) y cómo la ven los demás (360) es, en sí misma, un dato: mide su nivel de conciencia."}],
+ caso:{esc:"En una sesión con un equipo directivo, todos evitan nombrar el problema real: el estilo del líder. Hay tensión, miradas, silencios… pero nadie lo dice.",
+  preg:"Como coach, ¿qué haces?",
+  ops:[{t:"Forzar a alguien a que lo diga en voz alta.",ok:false,fb:"Forzar rompe la seguridad y castiga al valiente. La verdad forzada no transforma."},
+       {t:"Nombrar con cuidado lo que percibes y devolver la pregunta al grupo.",ok:true,fb:"Sí: pones sobre la mesa lo no dicho sin señalar, y abres el espacio para que el equipo lo trabaje."},
+       {t:"Cambiar de tema para no incomodar.",ok:false,fb:"Evitar la verdad es traicionar el propósito de la sesión. Lo que no se mira, gobierna."}],
+  mirada:"El coach no dispara la verdad de los demás: crea las condiciones para que aparezca sin que nadie tenga que pagar por decirla."},
+ reflexion:"¿Qué verdad sueles evitar mirar en ti mismo? ¿Cómo afecta eso tu forma de facilitar?",
+ quiz:[{q:"El espacio de verdad se construye con…",ops:["Presión y exigencia.","Seguridad y reto a la vez.","Solo empatía."],c:1,e:"Seguridad para hablar + reto para no esconderse."},
+       {q:"El Mapa de Brechas mide…",ops:["El talento del equipo.","La diferencia entre cómo se ve la persona y cómo la ven.","La rentabilidad."],c:1,e:"Esa brecha es una medida de conciencia."}]},
+
+{num:"3",title:"Identidad y Código",sub:"Quiénes necesitan ser.",
+ objetivos:["Guiar la Declaración de Cima.","Construir el Código (estándares no negociables).","Trabajar la camiseta y la pertenencia."],
+ video:{t:"Facilitar identidad y el Código",d:"Aquí irá tu video sobre identidad (por grabar)."},
+ conceptos:[
+  {h:"La identidad ordena",p:"La estrategia define lo que se hará; la identidad define quién lo hará. Bajo presión, nadie actúa según sus metas: actúa según quién cree que es."},
+  {h:"La presión revela la identidad",p:"Los valores de la pared no valen nada si no se sostienen cuando cuesta. El Código son los comportamientos no negociables, no las palabras bonitas."},
+  {h:"La camiseta",p:"La identidad que se porta, no el discurso que se presume. Trabajar pertenencia y orgullo real."}],
+ caso:{esc:"Un equipo tiene cinco valores hermosos pintados en la pared. En la práctica, nadie los vive y todos lo saben. El líder te pide 'reforzar los valores'.",
+  preg:"¿Qué facilitas?",
+  ops:[{t:"Un taller para memorizar y comunicar mejor los valores.",ok:false,fb:"Comunicar mejor una mentira no la vuelve verdad. El problema no es de difusión."},
+       {t:"Que definan el Código real: comportamientos no negociables, y lo firmen.",ok:true,fb:"Sí: aterrizas la identidad en conductas observables y en un compromiso firmado, no en adjetivos."},
+       {t:"Reescribir los valores con palabras más inspiradoras.",ok:false,fb:"Más adjetivos no cierran la brecha entre discurso y comportamiento."}],
+  mirada:"La identidad no se declara: se demuestra cuando llega la presión. El Código convierte valores en estándares que se pueden sostener y exigir."},
+ reflexion:"¿Cuál es tu propio Código no negociable como coach? Escribe 3 comportamientos.",
+ quiz:[{q:"La identidad se demuestra…",ops:["En el discurso.","Cuando llega la presión.","En la misión escrita."],c:1,e:"La presión revela quién eres de verdad."},
+       {q:"El Código es…",ops:["Los estándares no negociables de comportamiento.","La lista de metas.","El organigrama."],c:0,e:"Comportamientos observables, firmados y exigibles."}]},
+
+{num:"4",title:"Mentalidad bajo presión",sub:"La presión revela.",
+ objetivos:["Aplicar el Protocolo de Presión.","Ayudar a reencuadrar la dificultad.","Trabajar la relación con el error."],
+ video:{t:"Entrenar la mentalidad bajo presión",d:"Aquí irá tu video sobre mentalidad (por grabar)."},
+ conceptos:[
+  {h:"La mentalidad fortalece",p:"No es optimismo: es la forma entrenada de pensar, decidir y responder bajo presión. Convierte la dificultad en entrenamiento o en amenaza."},
+  {h:"La historia bajo presión",p:"Dos personas con el mismo talento y la misma presión rinden distinto según la historia que se cuentan sobre lo que les pasa."},
+  {h:"El error como maestro",p:"Aprender del error en vez de culpar. La relación con el error define la velocidad de recuperación."}],
+ caso:{esc:"Tu cliente, un directivo muy capaz, se paraliza antes de las decisiones importantes. Pide más y más información y aun así no decide. La fecha límite se acerca.",
+  preg:"¿Qué trabajas primero?",
+  ops:[{t:"Le consigues más datos para que decida con certeza.",ok:false,fb:"La parálisis no es falta de datos: más información alimenta la evitación."},
+       {t:"La historia que se cuenta bajo presión y su miedo al error.",ok:true,fb:"Sí: el nudo es interno. Trabajas su relación con el error y el reencuadre de la presión."},
+       {t:"Decides tú por él para destrabar la situación.",ok:false,fb:"Rescatarlo lo debilita: refuerza que no puede sostener la decisión."}],
+  mirada:"La presión no construye carácter, lo revela. El coach no da certezas: entrena la mente que decide sin ellas."},
+ reflexion:"¿Qué historia te cuentas tú cuando estás bajo presión facilitando? ¿Te impulsa o te frena?",
+ quiz:[{q:"La mentalidad es…",ops:["Optimismo.","La forma entrenada de responder bajo presión.","Inteligencia."],c:1,e:"Se entrena, no se improvisa."},
+       {q:"Ante un cliente paralizado por miedo al error, trabajas…",ops:["Más información.","Su relación con el error y su historia interna.","Decidir por él."],c:1,e:"El nudo es interno, no de datos."}]},
+
+{num:"5",title:"Alma y ritmo",sub:"Subir entero.",
+ objetivos:["Custodiar el alma del proceso.","Trabajar propósito y sentido.","Proteger el ritmo: la velocidad del alma."],
+ video:{t:"Custodiar el alma y el ritmo",d:"Aquí irá tu video sobre alma y sostenibilidad (por grabar)."},
+ conceptos:[
+  {h:"El alma da sentido",p:"Conecta el logro con el para qué. Evita que el alto rendimiento se convierta en pura aceleración. Crecer sin alma es otra forma de perder."},
+  {h:"La velocidad del alma",p:"No se trata de ir más rápido, sino de subir entero. El ritmo sostenible —descanso, recuperación, presencia— es parte del rendimiento, no su enemigo."},
+  {h:"El precio",p:"El coach ayuda a nombrar el precio que se está pagando y a decidir si vale la pena."}],
+ caso:{esc:"Cliente exitoso, rentable, admirado. En sesión confiesa que se siente vacío, no duerme y siente que se está perdiendo a sí mismo en el ascenso.",
+  preg:"¿Qué priorizas como coach?",
+  ops:[{t:"Ayudarlo a fijar metas aún más grandes para reconectar la ilusión.",ok:false,fb:"Más de lo mismo profundiza el vacío. El problema no es falta de metas."},
+       {t:"Reconectar propósito y proteger su ritmo y recuperación.",ok:true,fb:"Sí: trabajas el alma (para qué) y el ritmo (cómo sostenerse) antes que la siguiente cima."},
+       {t:"Diseñarle un sistema de productividad más eficiente.",ok:false,fb:"Optimizar la aceleración sin alma acelera el desgaste."}],
+  mirada:"Llegar alto no vale la pena si en el ascenso pierdes el alma. El coach custodia que la cima no cueste a la persona."},
+ reflexion:"¿Estás creciendo como coach a un ritmo que te permite seguir siendo tú? ¿Qué precio estás pagando?",
+ quiz:[{q:"La velocidad del alma significa…",ops:["Ir más rápido.","Subir entero, a un ritmo sostenible.","Rendir sin descansar."],c:1,e:"El ritmo sostenible es parte del rendimiento."},
+       {q:"Ante un cliente exitoso pero vacío, priorizas…",ops:["Metas más grandes.","Reconectar propósito y proteger el ritmo.","Más productividad."],c:1,e:"Alma y ritmo antes que la siguiente cima."}]},
+
+{num:"6",title:"Sistemas: Talento + Procesos",sub:"Sostener lo que la inspiración inicia.",
+ objetivos:["Diagnosticar Talento + Procesos.","Diseñar sistemas que sostengan la cima.","Instalar el Ritual de Sostenimiento 30/60/90."],
+ video:{t:"Diseñar sistemas que sostienen",d:"Aquí irá tu video sobre Sistemas (por grabar)."},
+ conceptos:[
+  {h:"Los sistemas sostienen",p:"La transformación interna sin sistema se evapora. Talento (personas correctas, roles, madurez) + Procesos (reuniones, decisiones, seguimiento, rituales)."},
+  {h:"Del héroe al sistema",p:"Lo que depende de una sola persona no es un logro sostenible: es un riesgo. El coach ayuda a pasar del héroe al sistema."},
+  {h:"30 / 60 / 90",p:"El ritmo de sostenimiento convierte los acuerdos en ejecución y evita que la inspiración se apague."}],
+ caso:{esc:"En una empresa todo depende del fundador: si él no está unos días, las decisiones se detienen y la operación se traba.",
+  preg:"¿Qué diseñas con él?",
+  ops:[{t:"Que trabaje más horas y esté más disponible.",ok:false,fb:"Eso agrava la dependencia y acelera su desgaste. No es sistema, es más heroísmo."},
+       {t:"Sistemas de talento y procesos que reduzcan la dependencia de él.",ok:true,fb:"Sí: personas correctas en roles claros + procesos de decisión y seguimiento que operen sin él."},
+       {t:"Contratar más gente rápidamente.",ok:false,fb:"Más gente sin roles ni procesos claros añade caos, no sistema."}],
+  mirada:"Una cima sin sistema se convierte en desgaste. El sistema es la verdad práctica de la ambición: si no depende de una persona, se sostiene."},
+ reflexion:"¿Qué parte de tu práctica como coach depende hoy de tu ánimo y aún no es sistema?",
+ quiz:[{q:"Sistemas sostienen porque…",ops:["Motivan al equipo.","Convierten la inspiración en resultado repetible.","Reemplazan al líder."],c:1,e:"Talento + Procesos vuelven repetible lo que la inspiración inicia."},
+       {q:"Cuando todo depende del fundador, diseñas…",ops:["Que trabaje más.","Talento y procesos que reduzcan la dependencia.","Más contrataciones sin estructura."],c:1,e:"Del héroe al sistema."}]},
+
+{num:"7",title:"El oficio",sub:"Facilitar con maestría.",
+ objetivos:["Conducir conversaciones difíciles.","Manejar la dinámica de grupo.","Sostener la ética y la confidencialidad."],
+ video:{t:"El oficio del facilitador",d:"Aquí irá tu video sobre el oficio y la ética (por grabar)."},
+ conceptos:[
+  {h:"Ni rescatas ni juzgas: sostienes",p:"El coach no salva al cliente ni lo evalúa moralmente. Sostiene el proceso y devuelve la responsabilidad a la persona."},
+  {h:"El poder del rol",p:"El coach tiene poder (confianza, información, influencia). Usarlo para el cliente, nunca para el ego o el interés propio."},
+  {h:"El vestidor es sagrado",p:"La confidencialidad no se negocia. Sin ella, no hay verdad; sin verdad, no hay transformación."}],
+ caso:{esc:"Trabajas con un directivo en sus sesiones 1:1. Él te comparte algo delicado que, si el dueño de la empresa lo supiera, cambiaría todo. El dueño es quien te contrató y te paga.",
+  preg:"¿Qué haces?",
+  ops:[{t:"Se lo cuentas al dueño: es quien te paga.",ok:false,fb:"Romper la confidencialidad destruye el vestidor y tu integridad como coach. Nunca."},
+       {t:"Sostienes la confidencialidad y trabajas para que el propio cliente lo aborde.",ok:true,fb:"Sí: proteges el vestidor y acompañas al cliente a asumir su responsabilidad. Los límites de confidencialidad se acuerdan desde el inicio."},
+       {t:"Renuncias de inmediato para no comprometerte.",ok:false,fb:"Huir abandona al cliente. El encuadre de confidencialidad debió pactarse desde el contrato inicial, no resolverse huyendo."}],
+  mirada:"El coach protege a la persona por encima del resultado o de quien paga. La confidencialidad del vestidor es un no-negociable del Código del Coach CIMA."},
+ reflexion:"¿Dónde sientes la mayor tensión ética en tu práctica? ¿Qué límite necesitas dejar claro desde el inicio?",
+ quiz:[{q:"El rol del coach en una conversación difícil es…",ops:["Rescatar al cliente.","Juzgar lo correcto.","Sostener y devolver la responsabilidad."],c:2,e:"Ni rescata ni juzga: sostiene."},
+       {q:"La confidencialidad del vestidor…",ops:["Se rompe si el que paga lo pide.","Es un no-negociable.","Depende del caso."],c:1,e:"Sin confidencialidad no hay verdad ni transformación."}]},
+
+{num:"8",title:"Práctica y certificación",sub:"Demostrar, no suponer.",
+ objetivos:["Entender la rúbrica de competencias.","Preparar tu portafolio de práctica.","Conocer el proceso y los criterios de certificación."],
+ video:{t:"Cómo te vas a certificar",d:"Aquí irá tu video sobre el proceso de certificación (por grabar)."},
+ conceptos:[
+  {h:"La competencia se demuestra",p:"No se certifica intención ni asistencia: se certifica competencia demostrada con evidencia real (sesiones observadas, casos, portafolio, tu propio CIMA Index®)."},
+  {h:"La rúbrica",p:"Cada competencia se evalúa en cuatro niveles: Emergente, En desarrollo, Competente y Maestro. Para certificar, mínimo 'Competente' en las competencias núcleo."},
+  {h:"Congruencia",p:"No puedes certificarte guiando lo que no vives. Tu propio CIMA Index® debe estar al menos en nivel 'Sólido'."}],
+ caso:{esc:"Para tu evaluación debes entregar la grabación de una sesión real. Tienes tres opciones para elegir cuál mandar.",
+  preg:"¿Cuál eliges?",
+  ops:[{t:"La más fácil y lucida, donde todo salió redondo.",ok:false,fb:"Lo pulido no muestra tu competencia real: muestra tu suerte. El evaluador busca cómo sostienes lo difícil."},
+       {t:"Una real con un momento de verdad, donde sostuviste bien la incomodidad.",ok:true,fb:"Sí: la competencia se demuestra en el momento difícil bien sostenido, no en la sesión perfecta."},
+       {t:"Una ensayada y actuada para que se vea impecable.",ok:false,fb:"Actuar rompe la ética y no demuestra nada real. La rúbrica evalúa presencia auténtica."}],
+  mirada:"Un coach maduro elige mostrarse en el momento difícil, no en el fácil. La maestría se ve en cómo sostienes, no en cómo luces."},
+ reflexion:"De las 10 competencias, ¿cuál sientes más fuerte hoy y cuál necesitas desarrollar antes de certificarte?",
+ quiz:[{q:"Para certificarte, tu propio CIMA Index® debe estar al menos en…",ops:["Frágil.","Sólido.","No importa."],c:1,e:"No puedes guiar lo que no vives."},
+       {q:"El nivel mínimo para certificar una competencia es…",ops:["En desarrollo.","Competente.","Maestro."],c:1,e:"Competente (3 de 4) en las competencias núcleo."}]}
+];
+
+// ---------- state ----------
+const KEY="cima_course_v1";
+let state={mod:0,done:{},reflex:{}};
+try{const s=localStorage.getItem(KEY); if(s) state=Object.assign(state,JSON.parse(s));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+function progress(){const d=Object.keys(state.done).filter(k=>state.done[k]).length; return Math.round(d/COURSE.length*100);}
+function renderProgress(){const p=progress(); document.getElementById("progTxt").textContent=p+"%"; document.getElementById("pbar").style.width=p+"%";}
+
+function renderSidebar(){
+  const sb=document.getElementById("sidebar"); sb.innerHTML="";
+  COURSE.forEach((m,i)=>{
+    const el=document.createElement("div");
+    el.className="moditem"+(i===state.mod?" active":"")+(state.done[i]?" done":"");
+    el.innerHTML=`<div class="modnum">${state.done[i]?"✓":m.num}</div><div><div class="mt">${m.title}</div><div class="ms">Módulo ${m.num}</div></div>`;
+    el.onclick=()=>{state.mod=i;save();renderAll();window.scrollTo(0,0);};
+    sb.appendChild(el);
+  });
+}
+
+function renderMain(){
+  const m=COURSE[state.mod]; const main=document.getElementById("main");
+  let html=`<div class="eyebrow">Módulo ${m.num}</div><h1 class="mod">${m.title}</h1><div class="modsub">"${m.sub}"</div>`;
+  // objetivos
+  html+=`<div class="sec"><h3>Objetivos de aprendizaje</h3>`+m.objetivos.map((o,i)=>`<div class="obj"><div class="b">${i+1}</div><div>${o}</div></div>`).join("")+`</div>`;
+  // video
+  html+=`<div class="sec"><h3>Video del módulo</h3>${videoEmbed(state.mod, m.video)}</div>`;
+  // conceptos
+  html+=`<div class="sec"><h3>Conceptos clave</h3>`+m.conceptos.map(c=>`<div class="concept"><b>${c.h}.</b> ${c.p}</div>`).join("")+`</div>`;
+  // caso
+  html+=`<div class="sec caso"><span class="tag">Caso práctico</span><div class="esc">${m.caso.esc}</div><div class="preg">${m.caso.preg}</div><div id="casoOpts">`+
+    m.caso.ops.map((o,i)=>`<button class="opt" data-i="${i}" onclick="answerCaso(${i})">${o.t}</button>`).join("")+
+    `</div><div class="fb" id="casoFb"></div><div class="mirada" id="casoMirada"><b>La mirada CIMA.</b> ${m.caso.mirada}</div></div>`;
+  // reflexion
+  const rv=state.reflex[state.mod]||"";
+  html+=`<div class="sec"><h3>Ejercicio de reflexión</h3><p>${m.reflexion}</p><textarea id="reflex" placeholder="Escribe aquí… (se guarda solo)">${rv.replace(/</g,"&lt;")}</textarea><div class="saved" id="savedMsg">Guardado ✓</div></div>`;
+  // quiz
+  html+=`<div class="sec"><h3>Verificación de conocimiento</h3>`+m.quiz.map((q,qi)=>{
+    return `<div class="qq"><div class="q">${qi+1}. ${q.q}</div>`+
+      q.ops.map((o,oi)=>`<button class="opt" data-q="${qi}" data-o="${oi}" onclick="answerQuiz(${qi},${oi})">${o}</button>`).join("")+
+      `<div class="qexp" id="qexp${qi}">${q.e}</div></div>`;
+  }).join("")+`</div>`;
+  // nav
+  const isDone=!!state.done[state.mod];
+  html+=`<div class="navbar">
+     <button class="btn" onclick="go(-1)" ${state.mod===0?"disabled":""}>← Anterior</button>
+     <button class="btn ${isDone?"done":"primary"}" onclick="complete()">${isDone?"Módulo completado ✓":"Marcar como completado"}</button>
+     <div class="spacer"></div>
+     <button class="btn" onclick="go(1)" ${state.mod===COURSE.length-1?"disabled":""}>Siguiente →</button>
+  </div>`;
+  main.innerHTML=html;
+  // wire reflex autosave
+  const ta=document.getElementById("reflex");
+  if(ta){let t; ta.addEventListener("input",()=>{state.reflex[state.mod]=ta.value; clearTimeout(t); t=setTimeout(()=>{save(); const sm=document.getElementById("savedMsg"); sm.style.display="block"; setTimeout(()=>sm.style.display="none",1200);},400);});}
+}
+function answerCaso(i){
+  const m=COURSE[state.mod]; const opts=document.querySelectorAll("#casoOpts .opt"); const o=m.caso.ops[i];
+  opts.forEach((el,ix)=>{el.classList.add("dim"); el.onclick=null; if(m.caso.ops[ix].ok) el.classList.add("correct"); });
+  opts[i].classList.remove("dim"); opts[i].classList.add(o.ok?"correct":"wrong");
+  const fb=document.getElementById("casoFb"); fb.className="fb show "+(o.ok?"ok":"no"); fb.textContent=o.fb;
+  document.getElementById("casoMirada").classList.add("show");
+}
+function answerQuiz(qi,oi){
+  const m=COURSE[state.mod]; const q=m.quiz[qi];
+  const opts=document.querySelectorAll(`#main .opt[data-q="${qi}"]`);
+  opts.forEach((el,ix)=>{el.onclick=null; el.classList.add("dim"); if(ix===q.c) el.classList.add("correct");});
+  opts[oi].classList.remove("dim"); opts[oi].classList.add(oi===q.c?"correct":"wrong");
+  document.getElementById("qexp"+qi).classList.add("show");
+}
+function complete(){ state.done[state.mod]=true; save(); renderSidebar(); renderProgress();
+  const allDone=Object.keys(state.done).filter(k=>state.done[k]).length===COURSE.length;
+  if(state.mod<COURSE.length-1){ state.mod++; save(); renderAll(); window.scrollTo(0,0); }
+  else { renderMain(); if(allDone) showFinal(); }
+}
+function go(d){ const n=state.mod+d; if(n>=0&&n<COURSE.length){state.mod=n;save();renderAll();window.scrollTo(0,0);} }
+function showFinal(){
+  document.getElementById("main").innerHTML=`<div class="final"><div class="tag">Curso completado</div><div class="big">Nos vemos en la cima.</div><p style="max-width:520px;margin:14px auto;color:var(--slate)">Terminaste los 9 módulos del aula. El siguiente paso de tu certificación es la práctica supervisada y la evaluación con un Maestro CIMA.</p><button class="btn primary" onclick="state.mod=0;save();renderAll();window.scrollTo(0,0)">Volver al inicio</button></div>`;
+}
+function renderAll(){ renderSidebar(); renderMain(); renderProgress(); }
+renderAll();
+</script>
+</body>
+</html>

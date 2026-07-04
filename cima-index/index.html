@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment del CIMA Index® · CIMA Leadership Institute</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --paper:#FCFBF9; --paper2:#F4F1EC; --cima:#FA4B1E; --cima-d:#D63A12;
+    --slate:#5C5C5C; --rule:#E2DDD4; --white:#fff; --peach:#FDEAE2; --cream:#FFE7DD;
+    --green:#2E7D52; --amber:#C98A2B;
+    --serif:"Georgia","Cambria",serif; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
+  header.top{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--cima);padding-bottom:14px;margin-bottom:6px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:11px}
+  .logo svg{height:36px;width:auto;display:block;flex:0 0 auto}
+  .logo .wm{font-weight:800;font-size:15px;letter-spacing:.2px;color:var(--ink);line-height:1.05}
+  .logo .wm .o{color:var(--cima)}
+  .logo .wm small{display:block;font-weight:700;font-size:12px;color:var(--slate);letter-spacing:0}
+  h1{font-family:var(--serif);font-size:27px;margin:14px 0 2px}
+  .sub{color:var(--slate);font-size:14px;max-width:760px;margin-bottom:14px}
+  /* version toggle */
+  .toggle{display:inline-flex;background:var(--paper2);border:1px solid var(--rule);border-radius:30px;padding:4px;margin:6px 0 4px}
+  .toggle button{border:none;background:transparent;padding:8px 18px;border-radius:24px;font-size:13px;font-weight:700;color:var(--slate);cursor:pointer}
+  .toggle button.on{background:var(--cima);color:#fff}
+  .scale-legend{font-size:12.5px;color:var(--slate);background:var(--paper2);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;margin:12px 0}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media(max-width:880px){.layout{grid-template-columns:1fr}}
+  /* dimension blocks */
+  .dim{margin:20px 0 10px}
+  .dim-h{display:flex;align-items:center;gap:10px;margin:18px 0 8px}
+  .chip{width:30px;height:30px;border-radius:7px;background:var(--cima);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px;font-family:var(--serif)}
+  .dim-h h2{font-size:18px;margin:0;font-family:var(--serif)}
+  .item{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:13px 15px;margin-bottom:9px;box-shadow:var(--shadow)}
+  .item .tag{font-size:10px;font-weight:800;color:var(--cima);text-transform:uppercase;letter-spacing:.5px}
+  .item .q{font-size:14.5px;margin:3px 0 10px}
+  .scalerow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .seg{flex:1;min-width:34px;border:1px solid var(--rule);background:var(--paper);border-radius:8px;padding:9px 0;text-align:center;font-weight:700;font-size:14px;color:var(--slate);cursor:pointer;transition:.12s;user-select:none}
+  .seg:hover{border-color:var(--cima)}
+  .seg.sel{background:var(--cima);color:#fff;border-color:var(--cima)}
+  .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--slate);margin-top:4px}
+  /* results panel */
+  .panel{position:sticky;top:16px;background:var(--white);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+  .panel h3{margin:0 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--cima)}
+  .prog{font-size:12px;color:var(--slate);margin-bottom:10px}
+  canvas{display:block;margin:6px auto 4px;max-width:100%}
+  .global{text-align:center;margin:6px 0 12px}
+  .global .n{font-family:var(--serif);font-size:46px;font-weight:800;line-height:1;color:var(--cima)}
+  .global .lbl{font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.5px}
+  .global .lvl{font-size:13px;font-weight:700;margin-top:3px}
+  .dimscore{display:flex;align-items:center;gap:8px;margin:7px 0}
+  .dimscore .l{width:18px;height:18px;border-radius:5px;background:var(--cima);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .dimscore .bar{flex:1;height:8px;background:var(--paper2);border-radius:6px;overflow:hidden}
+  .dimscore .bar > i{display:block;height:100%;background:var(--cima);width:0;transition:width .25s}
+  .dimscore .v{width:34px;text-align:right;font-weight:700;font-size:12.5px;color:var(--slate)}
+  .lvlchip{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:0}
+  .btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .btns button{flex:1;border:1px solid var(--rule);background:var(--paper);border-radius:9px;padding:9px;font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer}
+  .btns button.primary{background:var(--cima);color:#fff;border-color:var(--cima)}
+  .note{font-size:11.5px;color:var(--slate);margin-top:10px}
+  .legendline{font-size:11px;color:var(--slate);text-align:center;margin-top:2px}
+  /* results report (print only) */
+  .report{display:none}
+  .rep-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--cima);padding-bottom:12px;margin-bottom:16px}
+  .rep-title{font-family:var(--serif);font-size:24px;margin:6px 0 2px}
+  .rep-meta{color:var(--slate);font-size:13px;margin-bottom:18px}
+  .rep-grid{display:flex;gap:26px;align-items:flex-start}
+  .rep-radar img{width:290px;height:290px}
+  .rep-g .n{font-family:var(--serif);font-size:44px;font-weight:800;color:var(--cima);line-height:1}
+  .rep-g .lbl{font-size:12px;color:var(--slate);text-transform:uppercase;letter-spacing:.5px}
+  .rep-dim{display:flex;align-items:center;gap:9px;margin:9px 0}
+  .rep-dim .l{width:20px;height:20px;border-radius:5px;background:var(--cima);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .rep-dim .nm{width:96px;font-size:12.5px}
+  .rep-dim .bar{flex:1;height:9px;background:var(--paper2);border-radius:6px;overflow:hidden}
+  .rep-dim .bar > i{display:block;height:100%;background:var(--cima)}
+  .rep-dim .v{width:66px;text-align:right;font-size:12px;font-weight:700;color:var(--slate)}
+  .rep-foot{margin-top:22px;font-size:11px;color:var(--slate);border-top:1px solid var(--rule);padding-top:8px}
+  @media print{
+    @page{margin:14mm}
+    body{background:#fff}
+    body *{visibility:hidden}
+    #report,#report *{visibility:visible}
+    #report{display:block;position:absolute;left:0;top:0;width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo" id="brandLogo"></div>
+  </header>
+  <h1>Assessment del CIMA Index®</h1>
+  <p class="sub">Contesta cada afirmación pensando en los últimos 3 meses. El CIMA Index®, los puntajes por dimensión y el radar se calculan en vivo. <b>Método CIMA + S.</b></p>
+
+  <div class="toggle" id="toggle">
+    <button data-v="personal" class="on">Versión Personal</button>
+    <button data-v="colectiva">Versión Equipo</button>
+  </div>
+  <div class="scale-legend"><b>Escala 1–7:</b> &nbsp;1 = Nunca / Totalmente en desacuerdo &nbsp;·&nbsp; 4 = A veces / Neutral &nbsp;·&nbsp; 7 = Siempre / Totalmente de acuerdo.</div>
+
+  <div class="layout">
+    <div id="form"></div>
+    <div>
+      <div class="panel">
+        <h3>Tu CIMA Index®</h3>
+        <div class="prog" id="prog">0 de 30 respondidas</div>
+        <canvas id="radar" width="300" height="300"></canvas>
+        <div class="legendline">Radar de las 5 dimensiones (0–100)</div>
+        <div class="global">
+          <div class="n" id="gNum">—</div>
+          <div class="lbl">CIMA Index® global</div>
+          <div class="lvl" id="gLvl">Responde para ver tu nivel</div>
+        </div>
+        <div id="dimScores"></div>
+        <div class="btns">
+          <button class="primary" onclick="makePdf()">Descargar PDF</button>
+          <button onclick="copyResults()">Copiar resultados</button>
+        </div>
+        <button class="" style="width:100%;margin-top:8px;border:1px solid var(--rule);background:var(--paper);border-radius:9px;padding:8px;font-size:12px;font-weight:700;cursor:pointer" onclick="resetAll()">Reiniciar respuestas</button>
+        <div class="note">El puntaje por dimensión = ((promedio de sus ítems − 1) ÷ 6) × 100. El global es el promedio de las 5.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="report" class="report"></div>
+
+<script>
+const LOGO_SVG=`<svg viewBox="0 0 170 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CIMA Leadership Institute"><g fill="#FA4B1E"><rect x="8" y="4" width="3.4" height="52"/><rect x="15" y="4" width="3.4" height="66"/><rect x="22" y="4" width="3.4" height="40"/><rect x="29" y="4" width="3.4" height="74"/><rect x="36" y="4" width="3.4" height="58"/><rect x="43" y="4" width="3.4" height="82"/><rect x="50" y="4" width="3.4" height="48"/><rect x="57" y="4" width="3.4" height="70"/><circle cx="24" cy="52" r="9"/><path d="M6,134 L66,42 L80,26 L80,50 L90,50 L90,36 L98,36 L98,58 L106,58 L106,30 L150,30 L150,134 L112,134 L112,118 L100,118 L100,134 L72,134 L72,118 L60,118 L60,134 Z"/></g></svg>`;
+const LOGO_HTML=LOGO_SVG+'<div class="wm"><span class="o">CIMA</span>®<small>Leadership Institute</small></div>';
+document.getElementById("brandLogo").innerHTML=LOGO_HTML;
+const DIMS=[
+ {k:"C",name:"Conciencia"},
+ {k:"I",name:"Identidad"},
+ {k:"M",name:"Mentalidad"},
+ {k:"A",name:"Alma"},
+ {k:"S",name:"Sistemas"}
+];
+const TAGS={
+ personal:{C:["Verdad","Verdad","Decisiones","Decisiones","Coherencia","Coherencia"],
+  I:["Estándares","Estándares","Presión","Autenticidad","Camiseta","Coherencia"],
+  M:["Presión","Recuperación","Enfoque","Diálogo","Error","Decisión"],
+  A:["Propósito","Paz","Integración","Coherencia","Ritmo","Servicio"],
+  S:["Agenda","Recuperación","Revisión","Apoyo","Hábito","Continuidad"]},
+ colectiva:{C:["Verdad","Verdad","Decisiones","Tensiones","Coherencia","Costos"],
+  I:["Código","Pertenencia","Visión","Presión","Responsabilidad","Cultura"],
+  M:["Presión","Aprendizaje","Exigencia","Adaptación","Enfoque","Responsabilidad"],
+  A:["Propósito","Sentido","Personas","Ritmo","Confianza","Legado"],
+  S:["Talento","Procesos","Reuniones","Prioridades","Continuidad","Talento"]}
+};
+const ITEMS={
+ personal:{
+  C:["Conozco con claridad mi nivel real de energía y qué la afecta.",
+     "Me atrevo a mirar lo que no me gusta de mi situación actual, sin maquillarlo.",
+     "No pospongo las decisiones importantes, aunque sean incómodas.",
+     "Reconozco mis contradicciones y los patrones que se repiten en mí.",
+     "Lo que digo que es importante para mí coincide con cómo uso mi tiempo.",
+     "Pido y recibo retroalimentación honesta, aunque me incomode."],
+  I:["Tengo claros mis valores y mis estándares no negociables.",
+     "Sé en quién necesito convertirme para sostener la etapa que viene.",
+     "Bajo presión actúo conforme a quien quiero ser, no solo por reaccionar.",
+     "Mi cima es auténtica (mía), no la que se espera de mí.",
+     "Me siento orgulloso de cómo porto la camiseta cuando nadie me ve.",
+     "Mis decisiones reflejan mis valores, incluso cuando cuestan."],
+  M:["Interpreto la presión como entrenamiento, no como amenaza.",
+     "Me recupero rápido después de un golpe o un error.",
+     "Sostengo el foco en lo que importa sin dispersarme.",
+     "Mi diálogo interno me impulsa en lugar de frenarme.",
+     "Aprendo del error en vez de culparme o culpar a otros.",
+     "Tomo buenas decisiones incluso en momentos de alta exigencia."],
+  A:["Tengo un propósito claro que da sentido a mi esfuerzo.",
+     "Vivo con un nivel de paz interior que puedo sostener.",
+     "Integro mi vida personal y profesional sin sacrificar lo esencial.",
+     "Mi éxito es coherente con mis valores y mis relaciones más importantes.",
+     "Crezco a un ritmo que me permite seguir siendo yo.",
+     "Tengo claro a quién y para qué sirve lo que estoy construyendo."],
+  S:["Mi agenda y mis rutinas sostienen mi rendimiento sin depender del ánimo.",
+     "Cuido deliberadamente mi recuperación (sueño, descanso, energía).",
+     "Tengo una revisión periódica (semanal) de mis prioridades y avances.",
+     "Cuento con personas de apoyo o mentores que me sostienen.",
+     "Lo importante para mí está convertido en hábito, no en intención.",
+     "Si yo no estuviera unos días, lo esencial seguiría funcionando."]
+ },
+ colectiva:{
+  C:["En este equipo se dicen las verdades, aunque incomoden.",
+     "Conocemos con honestidad nuestra cultura real, no la del discurso.",
+     "No evitamos las conversaciones difíciles ni las decisiones incómodas.",
+     "Reconocemos abiertamente nuestras tensiones y problemas.",
+     "Lo que predicamos coincide con lo que hacemos.",
+     "Sabemos cuáles son nuestros costos invisibles y los enfrentamos."],
+  I:["Tenemos claros nuestros estándares no negociables (nuestro código).",
+     "Existe un fuerte sentido de pertenencia y orgullo de equipo.",
+     "Sabemos qué tipo de equipo necesitamos llegar a ser.",
+     "Bajo presión actuamos conforme a nuestros valores.",
+     "La responsabilidad es compartida, no solo del líder.",
+     "Vivimos nuestra cultura, no solo la declaramos."],
+  M:["Como equipo, la presión nos enfoca en lugar de quebrarnos.",
+     "Aprendemos de los errores sin buscar culpables.",
+     "Nos exigimos sanamente y nos ayudamos a mejorar.",
+     "Nos adaptamos rápido ante los cambios.",
+     "Mantenemos el foco en las prioridades correctas.",
+     "Asumimos responsabilidad por los resultados, buenos y malos."],
+  A:["Tenemos claro el propósito por el que existe este equipo o empresa.",
+     "Lo que hacemos tiene sentido más allá del resultado económico.",
+     "Cuidamos a las personas mientras buscamos resultados.",
+     "Nuestra forma de crecer es sostenible, no a costa de la gente.",
+     "Hay confianza real entre nosotros.",
+     "Tenemos claro el legado que queremos dejar."],
+  S:["Tenemos a las personas correctas en los roles correctos.",
+     "Nuestros acuerdos se ejecutan y se les da seguimiento.",
+     "Nuestras reuniones son útiles y deciden.",
+     "Las prioridades están claras para todos.",
+     "La operación no depende de una sola persona.",
+     "Desarrollamos talento y preparamos la sucesión."]
+ }
+};
+
+let version="personal";
+let answers={}; // key dimIndex_itemIndex -> 1..7
+
+function levelOf(v){
+  if(v===null||isNaN(v)) return {t:"—",c:"var(--slate)",bg:"var(--paper2)"};
+  if(v<=40) return {t:"Frágil",c:"#B23A48",bg:"#fbe3e6"};
+  if(v<=70) return {t:"En construcción",c:"#9a5a12",bg:"#f6e7d6"};
+  if(v<=85) return {t:"Sólido",c:"#2E7D52",bg:"#e3f1e9"};
+  return {t:"Cima sostenible",c:"#1f6e46",bg:"#d8efe1"};
+}
+
+function buildForm(){
+  const f=document.getElementById("form"); f.innerHTML="";
+  DIMS.forEach((d,di)=>{
+    const block=document.createElement("div"); block.className="dim";
+    block.innerHTML=`<div class="dim-h"><div class="chip">${d.k}</div><h2>${d.k} — ${d.name}</h2></div>`;
+    ITEMS[version][d.k].forEach((q,ii)=>{
+      const tag=TAGS[version][d.k][ii];
+      const item=document.createElement("div"); item.className="item";
+      let segs="";
+      for(let s=1;s<=7;s++) segs+=`<div class="seg" data-d="${di}" data-i="${ii}" data-s="${s}">${s}</div>`;
+      item.innerHTML=`<div class="tag">${tag}</div><div class="q">${q}</div>
+        <div class="scalerow">${segs}</div>
+        <div class="ends"><span>Nunca</span><span>Siempre</span></div>`;
+      block.appendChild(item);
+    });
+    f.appendChild(block);
+  });
+  f.querySelectorAll(".seg").forEach(seg=>{
+    seg.addEventListener("click",()=>{
+      const di=seg.dataset.d, ii=seg.dataset.i, s=+seg.dataset.s;
+      answers[di+"_"+ii]=s;
+      seg.parentElement.querySelectorAll(".seg").forEach(x=>x.classList.remove("sel"));
+      seg.classList.add("sel");
+      update();
+    });
+  });
+}
+
+function dimScore(di){
+  let sum=0,n=0;
+  for(let ii=0;ii<6;ii++){const v=answers[di+"_"+ii]; if(v){sum+=v;n++;}}
+  if(n===0) return null;
+  return Math.round(((sum/n)-1)/6*100);
+}
+function answeredCount(){return Object.keys(answers).length;}
+
+function update(){
+  const scores=DIMS.map((d,di)=>dimScore(di));
+  // global
+  const valid=scores.filter(s=>s!==null);
+  const g=valid.length?Math.round(valid.reduce((a,b)=>a+b,0)/valid.length):null;
+  document.getElementById("prog").textContent=answeredCount()+" de 30 respondidas";
+  document.getElementById("gNum").textContent=g===null?"—":g;
+  const gl=levelOf(g); const gLvl=document.getElementById("gLvl");
+  gLvl.textContent=g===null?"Responde para ver tu nivel":gl.t; gLvl.style.color=gl.c;
+  // dim scores
+  const ds=document.getElementById("dimScores"); ds.innerHTML="";
+  DIMS.forEach((d,di)=>{
+    const s=scores[di]; const lv=levelOf(s);
+    const row=document.createElement("div"); row.className="dimscore";
+    row.innerHTML=`<div class="l">${d.k}</div>
+      <div class="bar"><i style="width:${s||0}%"></i></div>
+      <div class="v">${s===null?"—":s}</div>`;
+    ds.appendChild(row);
+  });
+  drawRadar(scores);
+}
+
+function drawRadar(scores){
+  const cv=document.getElementById("radar"); const dpr=window.devicePixelRatio||1;
+  const size=300; cv.width=size*dpr; cv.height=size*dpr; cv.style.width=size+"px"; cv.style.height=size+"px";
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,size,size);
+  const cx=size/2, cy=size/2+6, R=104;
+  const n=5; const ang=i=>(-Math.PI/2)+i*2*Math.PI/n;
+  // rings
+  ctx.strokeStyle="#E2DDD4"; ctx.lineWidth=1;
+  [25,50,75,100].forEach(r=>{
+    ctx.beginPath();
+    for(let i=0;i<n;i++){const x=cx+R*r/100*Math.cos(ang(i)), y=cy+R*r/100*Math.sin(ang(i)); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.closePath(); ctx.stroke();
+  });
+  // spokes + labels
+  ctx.fillStyle="#FA4B1E"; ctx.font="700 13px Georgia,serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+  for(let i=0;i<n;i++){
+    const x=cx+R*Math.cos(ang(i)), y=cy+R*Math.sin(ang(i));
+    ctx.strokeStyle="#E2DDD4"; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    const lx=cx+(R+16)*Math.cos(ang(i)), ly=cy+(R+16)*Math.sin(ang(i));
+    ctx.fillStyle="#FA4B1E"; ctx.fillText(DIMS[i].k,lx,ly);
+  }
+  // polygon (use 0 for unanswered)
+  const vals=scores.map(s=>s===null?0:s);
+  ctx.beginPath();
+  for(let i=0;i<n;i++){const r=R*vals[i]/100; const x=cx+r*Math.cos(ang(i)), y=cy+r*Math.sin(ang(i)); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+  ctx.closePath();
+  ctx.fillStyle="rgba(250,75,30,0.16)"; ctx.fill();
+  ctx.strokeStyle="#FA4B1E"; ctx.lineWidth=2; ctx.stroke();
+  for(let i=0;i<n;i++){const r=R*vals[i]/100; const x=cx+r*Math.cos(ang(i)), y=cy+r*Math.sin(ang(i)); ctx.fillStyle="#FA4B1E"; ctx.beginPath(); ctx.arc(x,y,3,0,7); ctx.fill();}
+}
+
+function copyResults(){
+  const scores=DIMS.map((d,di)=>dimScore(di));
+  const valid=scores.filter(s=>s!==null);
+  const g=valid.length?Math.round(valid.reduce((a,b)=>a+b,0)/valid.length):null;
+  let txt="CIMA INDEX® — "+(version==="personal"?"Versión Personal":"Versión Equipo")+"\n";
+  txt+="Índice global: "+(g===null?"—":g+" / 100  ("+levelOf(g).t+")")+"\n\n";
+  DIMS.forEach((d,di)=>{const s=scores[di]; txt+=d.k+" · "+d.name+": "+(s===null?"—":s+"/100 ("+levelOf(s).t+")")+"\n";});
+  txt+="\nRespondidas: "+answeredCount()+"/30";
+  navigator.clipboard.writeText(txt).then(()=>alert("Resultados copiados al portapapeles.")).catch(()=>{
+    const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{document.execCommand("copy"); alert("Resultados copiados.");}catch(e){alert(txt);} ta.remove();
+  });
+}
+function makePdf(){
+  const scores=DIMS.map((d,di)=>dimScore(di));
+  const valid=scores.filter(s=>s!==null);
+  const g=valid.length?Math.round(valid.reduce((a,b)=>a+b,0)/valid.length):null;
+  const gl=levelOf(g);
+  const dateStr=new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+  let radarData=""; try{radarData=document.getElementById("radar").toDataURL("image/png");}catch(e){}
+  let dims="";
+  DIMS.forEach((d,di)=>{const s=scores[di]; const lv=levelOf(s);
+    dims+=`<div class="rep-dim"><div class="l">${d.k}</div><div class="nm">${d.name}</div><div class="bar"><i style="width:${s||0}%"></i></div><div class="v">${s===null?"—":s+" · "+lv.t}</div></div>`;});
+  document.getElementById("report").innerHTML=`
+    <div class="rep-head">${LOGO_HTML}</div>
+    <div class="rep-title">Resultados del CIMA Index®</div>
+    <div class="rep-meta">${version==="personal"?"Versión Personal":"Versión Equipo"} · ${dateStr} · ${answeredCount()}/30 respondidas</div>
+    <div class="rep-grid">
+      <div class="rep-radar">${radarData?`<img src="${radarData}" alt="Radar CIMA">`:""}</div>
+      <div class="rep-g" style="flex:1">
+        <div class="lbl">CIMA Index® global</div>
+        <div class="n">${g===null?"—":g}<span style="font-family:var(--sans);font-size:15px;color:var(--ink);font-weight:700"> /100${g===null?"":" · "+gl.t}</span></div>
+        <div style="height:10px"></div>
+        ${dims}
+      </div>
+    </div>
+    <div class="rep-foot">CIMA Performance System® · CIMA Index® · Método CIMA + S · Human Performance &amp; Collective Excellence®</div>`;
+  setTimeout(()=>window.print(),60);
+}
+function resetAll(){ if(confirm("¿Borrar todas las respuestas?")){answers={}; buildForm(); update();} }
+
+document.getElementById("toggle").querySelectorAll("button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    if(b.dataset.v===version) return;
+    document.querySelectorAll("#toggle button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+    version=b.dataset.v; answers={}; buildForm(); update();
+  });
+});
+
+buildForm(); update();
+</script>
+</body>
+</html>

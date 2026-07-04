@@ -199,6 +199,21 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
 .contact-cta h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--blanco);margin-bottom:8px;}
 .contact-cta p{font-size:14px;color:var(--gris);}
 
+/* ======= CIMA INDEX ======= */
+.cimaindex-hero{background:radial-gradient(120% 120% at 80% 0%,#241008,var(--negro) 55%);padding:80px 52px;position:relative;overflow:hidden;}
+.cimaindex-hero-inner{position:relative;z-index:2;max-width:680px;}
+.cimaindex-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:900;line-height:1.05;color:var(--blanco);margin-bottom:20px;}
+.cimaindex-hero h1 sup{font-size:0.45em;top:-0.6em;color:var(--naranja2);}
+.cimaindex-hero p{font-size:16px;color:var(--gris);line-height:1.85;max-width:560px;}
+.cimaindex-frame-section{padding:0 52px 64px;background:var(--negro);}
+.cimaindex-frame-wrap{max-width:900px;margin:-40px auto 0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.1);position:relative;z-index:3;}
+.cimaindex-frame-wrap iframe{display:block;width:100%;height:1500px;border:0;}
+.coach-access{background:var(--grafito);border-top:1px solid var(--linea);padding:40px 52px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.coach-access-inner{display:flex;align-items:center;gap:18px;}
+.coach-access-inner i{font-size:24px;color:var(--naranja2);flex-shrink:0;}
+.coach-access-inner h3{font-size:1rem;font-weight:700;color:var(--blanco);margin-bottom:4px;}
+.coach-access-inner p{font-size:13px;color:var(--gris);}
+
 /* ======= PODCAST ======= */
 .pod-hero{background:url('channels4_banner.jpg') center/cover no-repeat;padding:80px 52px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;}
 .pod-hero::before{content:'';position:absolute;inset:0;background:rgba(12,12,14,0.72);}
@@ -296,10 +311,7 @@ body.nav-open-lock{overflow:hidden;}
 @media(max-width:1024px){
   nav{padding:0 28px;}
   .services-grid,.topics-grid,.formats-strip,.tl-grid,.products-grid,.episodes-grid,.libro-themes,.videos-grid{grid-template-columns:repeat(2,1fr);}
-}
 
-/* Tablets / móvil grande */
-@media(max-width:860px){
   /* --- NAV MÓVIL --- */
   .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--negro);border-bottom:1px solid var(--linea);flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:18px 20px 22px;z-index:101;box-shadow:0 16px 32px rgba(0,0,0,0.45);max-height:calc(100vh - 76px);overflow-y:auto;}
   .nav-links.open{display:flex;}
@@ -309,13 +321,20 @@ body.nav-open-lock{overflow:hidden;}
   .nav-cta-mobile{display:inline-flex;justify-content:center;flex:1 1 100%;margin-top:6px;padding:14px 22px;font-size:14px;}
   .nav-burger{display:flex;}
   .nav-overlay.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99;}
+}
 
+/* Tablets / móvil grande */
+@media(max-width:860px){
   /* --- HEROES A UNA COLUMNA --- */
   .home-hero,.about-hero,.pod-hero,.libro-hero,.contacto-wrap,.conf-hero{grid-template-columns:1fr;min-height:auto;}
   .about-right{min-height:280px;}
   .hero-right{padding-top:0;}
   .contact-cta{grid-template-columns:1fr;text-align:center;gap:24px;}
   .contact-cta .btn-primary{margin:0 auto;}
+
+  /* --- CIMA INDEX --- */
+  .cimaindex-frame-wrap{margin-top:-24px;}
+  .coach-access{flex-direction:column;text-align:center;}
 
   /* --- GRIDS --- */
   .services-grid,.topics-grid,.formats-strip,.tl-grid,.products-grid,.episodes-grid,.libro-themes{grid-template-columns:repeat(2,1fr);}
@@ -342,6 +361,13 @@ body.nav-open-lock{overflow:hidden;}
 
   .prod-card,.prod-card.llave{padding:24px 20px;}
   .conf-item{padding:22px 20px;grid-template-columns:44px 1fr;gap:14px;}
+
+  /* --- CIMA INDEX --- */
+  .cimaindex-hero{padding:48px 20px 32px;}
+  .cimaindex-frame-section{padding:0 12px 40px;}
+  .cimaindex-frame-wrap{border-radius:8px;}
+  .cimaindex-frame-wrap iframe{height:2100px;}
+  .coach-access{padding:32px 20px;}
 }
 
 /* Móvil chico */
@@ -356,6 +382,8 @@ body.nav-open-lock{overflow:hidden;}
   .conf-hero-photo{aspect-ratio:16/10;}
   .gallery-grid{gap:8px;}
   .conf-num{font-size:1.8rem;}
+  .cimaindex-hero h1{font-size:2rem;}
+  .coach-access-inner{flex-direction:column;text-align:center;}
 }
 </style>
 </head>
@@ -371,6 +399,7 @@ body.nav-open-lock{overflow:hidden;}
     <button class="nav-link" onclick="showPage('conferencias',this)">Conferencias</button>
     <button class="nav-link" onclick="showPage('podcast',this)">Podcast</button>
     <button class="nav-link" onclick="showPage('libro',this)">Libros</button>
+    <button class="nav-link" onclick="showPage('cimaindex',this)">Cima Index<sup>®</sup></button>
     <button class="nav-link" onclick="showPage('contacto',this)">Contacto</button>
     <button class="nav-cta nav-cta-mobile" onclick="showPage('contacto',null)">Contratar</button>
   </div>
@@ -888,6 +917,34 @@ body.nav-open-lock{overflow:hidden;}
 
 </div>
 
+<!-- ===== CIMA INDEX ===== -->
+<div class="page" id="page-cimaindex">
+  <div class="cimaindex-hero">
+    <div class="cimaindex-hero-inner">
+      <span class="sec-label">Herramienta gratuita</span>
+      <h1>CIMA Index<sup>®</sup></h1>
+      <p>Un assessment interactivo de 30 preguntas que mide, en 5 dimensiones, qué tan cerca está tu liderazgo o tu equipo de su máximo potencial. Calcula tu índice en vivo, dibuja tu radar C·I·M·A·S y te deja descargar tu reporte en PDF.</p>
+    </div>
+  </div>
+
+  <div class="cimaindex-frame-section">
+    <div class="cimaindex-frame-wrap">
+      <iframe id="assessmentFrame" src="cima-index/index.html" title="Assessment CIMA Index®" loading="lazy" onload="autosizeIframe(this)"></iframe>
+    </div>
+  </div>
+
+  <div class="coach-access">
+    <div class="coach-access-inner">
+      <i class="ti ti-lock"></i>
+      <div>
+        <h3>¿Eres coach en formación con CIMA?</h3>
+        <p>Entra al Aula de Formación de Coaches con tu contraseña de acceso.</p>
+      </div>
+    </div>
+    <a href="aula-coaches/index.html" target="_blank" rel="noopener nofollow" class="btn-ghost">Entrar al Aula <i class="ti ti-arrow-right"></i></a>
+  </div>
+</div>
+
 <!-- ===== CONTACTO ===== -->
 <div class="page" id="page-contacto">
   <div class="contacto-wrap">
@@ -958,6 +1015,25 @@ body.nav-open-lock{overflow:hidden;}
 </div>
 
 <script>
+function autosizeIframe(iframe) {
+  try {
+    const doc = iframe.contentWindow.document;
+    const resize = () => {
+      const h = doc.documentElement.scrollHeight;
+      if (h && h > 300) iframe.style.height = h + 'px';
+    };
+    resize();
+    if (window.ResizeObserver) {
+      new ResizeObserver(resize).observe(doc.body);
+    } else {
+      iframe.contentWindow.addEventListener('resize', resize);
+      setInterval(resize, 1000);
+    }
+  } catch (e) {
+    // Acceso bloqueado (ej. abierto como file:// local): se queda con la altura por CSS.
+  }
+}
+
 function switchSeason(num, btn) {
   document.getElementById('season-1').style.display = num === 1 ? 'block' : 'none';
   document.getElementById('season-2').style.display = num === 2 ? 'block' : 'none';
@@ -1008,7 +1084,7 @@ function showPage(id, btn) {
   if (btn) {
     btn.classList.add('active');
   } else {
-    const map = {home:0,about:1,conferencias:2,podcast:3,libro:4,contacto:5};
+    const map = {home:0,about:1,conferencias:2,podcast:3,libro:4,cimaindex:5,contacto:6};
     const btns = document.querySelectorAll('.nav-link');
     if (btns[map[id]]) btns[map[id]].classList.add('active');
   }
