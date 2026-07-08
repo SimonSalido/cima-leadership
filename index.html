@@ -53,7 +53,8 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
 .sec-sub{font-size:15px;color:var(--gris);line-height:1.8;max-width:600px;}
 
 /* ======= HOME ======= */
-.home-hero{display:grid;grid-template-columns:1fr 1fr;min-height:560px;position:relative;overflow:hidden;background:radial-gradient(120% 130% at 80% 0%, #241008 0%, var(--negro) 55%);}
+.home-hero{display:grid;grid-template-columns:1fr auto 1fr;min-height:560px;position:relative;overflow:hidden;background:radial-gradient(120% 130% at 80% 0%, #241008 0%, var(--negro) 55%);}
+.hero-center{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:40px 16px;}
 .home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 400px at 88% 20%, rgba(230,64,24,0.35), transparent 60%);pointer-events:none;}
 .hero-left{padding:80px 52px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
 .hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
@@ -67,6 +68,7 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
 .btn-ghost{background:transparent;color:var(--blanco);border:1px solid rgba(255,255,255,0.25);padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:100px;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
 .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,0.07);}
 .hero-right{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:52px;}
+.hero-logo{width:100%;max-width:300px;height:auto;display:block;}
 .hero-quote-box{border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);backdrop-filter:blur(8px);padding:48px;max-width:440px;border-radius:4px;}
 .hero-quote-box p{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:900;font-style:italic;color:var(--blanco);line-height:1.15;margin-bottom:20px;}
 .hero-quote-box p em{color:var(--naranja2);font-style:normal;}
@@ -390,7 +392,7 @@ body.nav-open-lock{overflow:hidden;}
 <body>
 
 <nav>
-  <div class="nav-brand">
+  <div class="nav-brand" onclick="showPage('home',null)" style="cursor:pointer;" title="Ir al inicio">
     <img src="MML_CIMA-04.png" alt="CIMA Leadership Institute">
   </div>
   <div class="nav-links" id="navLinks">
@@ -420,6 +422,9 @@ body.nav-open-lock{overflow:hidden;}
         <button class="btn-primary" onclick="showPage('conferencias',null)"><i class="ti ti-microphone-2"></i> Ver conferencias</button>
         <button class="btn-ghost" onclick="showPage('about',null)"><i class="ti ti-user"></i> Conocer a Marcelo</button>
       </div>
+    </div>
+    <div class="hero-center">
+      <img class="hero-logo" src="MML_CIMA-04.png" alt="CIMA Leadership Institute">
     </div>
     <div class="hero-right">
       <div class="hero-quote-box">
