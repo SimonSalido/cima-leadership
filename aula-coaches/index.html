@@ -98,48 +98,101 @@
   #gate p{color:#b8b2a8;font-size:13px;margin:0 0 20px}
   #gate input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #45403a;background:#0f0d0b;color:#fff;font-size:15px;text-align:center;outline:none}
   #gate input:focus{border-color:var(--cima)}
+  #gate input + input{margin-top:10px}
   #gate button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--cima);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
   #gate .err{color:#ff8a6b;font-size:13px;margin-top:12px;min-height:16px}
 </style>
 </head>
 <body>
-<div id="gate"><div class="card"><div class="glogo" id="gateLogo"></div><h2>Aula de Formación de Coaches</h2><p>Módulo privado · acceso con contraseña</p><input id="gatePass" type="password" placeholder="Contraseña" autocomplete="current-password"><button onclick="tryLogin()">Entrar</button><div class="err" id="gateErr"></div></div></div>
+<div id="gate"><div class="card"><div class="glogo" id="gateLogo"></div><h2>Aula de Formación de Coaches</h2><p id="gateSub">Módulo privado · acceso con contraseña</p><input id="gateEmail" type="email" placeholder="Correo" autocomplete="username"><input id="gatePass" type="password" placeholder="Contraseña" autocomplete="current-password"><button onclick="tryLogin()">Entrar</button><div class="err" id="gateErr"></div></div></div>
 <header class="top">
   <div class="logo" id="brandLogo"></div>
   <span class="title">Aula · Formación de Coaches</span>
   <div class="prog"><span id="progTxt">0%</span><div class="pbar"><i id="pbar"></i></div></div>
+  <button onclick="cerrarSesion()" style="margin-left:14px;background:none;border:1px solid #45403a;color:#b8b2a8;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer">Cerrar sesión</button>
 </header>
 <div class="shell">
   <aside class="side"><h4>Módulos</h4><div id="sidebar"></div></aside>
   <main id="main"></main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const LOGO_SVG=`<img src="logo-cima-naranja.png" alt="CIMA Leadership Institute">`;
 document.getElementById("brandLogo").innerHTML=LOGO_SVG;
 
-/* ===================== ACCESO CON CONTRASEÑA =====================
-   Contraseña por defecto:  cima2026
-   Para cambiarla:
-   1) Abre esta página publicada (https) y presiona F12 → pestaña Console.
-   2) Pega:  await sha256("TU_NUEVA_CONTRASEÑA")
-   3) Copia el texto largo que aparece y reemplaza el valor de PASSWORD_HASH abajo.
-   Nota: es una puerta de cortesía (protección por JavaScript), no una caja fuerte.
-   Para seguridad real, usa la protección por contraseña del hosting (Vercel/servidor).
-================================================================= */
+/* ===================== ACCESO DE COACHES (Supabase) =====================
+   Cuentas individuales por coach. Pasos:
+   1) Crea un proyecto gratis en https://supabase.com
+   2) En el proyecto: Settings → API. Copia "Project URL" y la key "anon public".
+   3) Pégalas abajo en SUPABASE_URL y SUPABASE_ANON_KEY.
+   4) Da de alta a cada coach en: Authentication → Users → Add user
+      (correo + contraseña). Ahí también puedes eliminar o resetear a cualquiera.
+   5) Recomendado: Authentication → Providers → Email → desactiva "Allow new users
+      to sign up", para que SOLO tú puedas crear coaches.
+
+   Mientras NO pegues tus datos de Supabase, el Aula sigue usando la contraseña
+   temporal (cima2026) para no bloquear el acceso. Al pegarlos, cambia automática-
+   mente a login por cuenta individual.
+======================================================================= */
+const SUPABASE_URL      = "https://siaykigdlgnjjcklxaoc.supabase.co";   // Project URL de CIMA
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpYXlraWdkbGduampja2x4YW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4ODQzNDAsImV4cCI6MjA5NzQ2MDM0MH0.oVYu-aANUbtyK3TnsFijDs9z-ql7SLrl_sp-SBzWTiI";  // anon public key
+
+const SB_READY = !SUPABASE_URL.includes("TU-PROYECTO") && !SUPABASE_ANON_KEY.includes("TU_ANON");
+let sb = null;
+if (SB_READY && window.supabase) { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+
+const gateEmail = document.getElementById("gateEmail");
+const gateSub   = document.getElementById("gateSub");
+if (SB_READY) {
+  if (gateSub) gateSub.textContent = "Módulo privado · acceso con tu cuenta de coach";
+} else {
+  if (gateEmail) gateEmail.style.display = "none";
+  if (gateSub)  gateSub.textContent = "Módulo privado · acceso con contraseña";
+}
+
+/* Fallback temporal por contraseña (solo si Supabase aún no está configurado) */
 const PASSWORD_HASH="b4a9cf1d3a9e8d2b76a197094d9742c274dabe27d1a5f569ff8dbaef5830938c"; // = sha256("cima2026")
 async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+
+function hideGate(){ document.getElementById("gate").style.display="none"; }
+
 async function tryLogin(){
-  const v=document.getElementById("gatePass").value;
-  try{
-    const h=await sha256(v);
-    if(h===PASSWORD_HASH){ try{sessionStorage.setItem("cima_aula_ok","1");}catch(e){} document.getElementById("gate").style.display="none"; }
-    else { document.getElementById("gateErr").textContent="Contraseña incorrecta."; }
-  }catch(e){ document.getElementById("gateErr").textContent="El acceso funciona en el sitio publicado (https)."; }
+  const err=document.getElementById("gateErr");
+  const pass=document.getElementById("gatePass").value;
+  if (SB_READY && sb) {
+    const email=(gateEmail.value||"").trim();
+    if(!email||!pass){ err.textContent="Escribe tu correo y contraseña."; return; }
+    err.textContent="Entrando…";
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { err.textContent="Correo o contraseña incorrectos."; return; }
+    err.textContent=""; hideGate();
+  } else {
+    try{
+      const h=await sha256(pass);
+      if(h===PASSWORD_HASH){ try{sessionStorage.setItem("cima_aula_ok","1");}catch(e){} hideGate(); }
+      else { err.textContent="Contraseña incorrecta."; }
+    }catch(e){ err.textContent="El acceso funciona en el sitio publicado (https)."; }
+  }
 }
+
+async function cerrarSesion(){
+  try{ if (SB_READY && sb) await sb.auth.signOut(); }catch(e){}
+  try{ sessionStorage.removeItem("cima_aula_ok"); }catch(e){}
+  location.reload();
+}
+
 document.getElementById("gateLogo").innerHTML=LOGO_SVG;
 document.getElementById("gatePass").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
-try{ if(sessionStorage.getItem("cima_aula_ok")==="1") document.getElementById("gate").style.display="none"; }catch(e){}
+if (gateEmail) gateEmail.addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
+
+(async function initGate(){
+  if (SB_READY && sb) {
+    try{ const { data } = await sb.auth.getSession(); if (data && data.session) hideGate(); }catch(e){}
+  } else {
+    try{ if(sessionStorage.getItem("cima_aula_ok")==="1") hideGate(); }catch(e){}
+  }
+})();
 
 /* ===================== TUS VIDEOS =====================
    Pega el enlace de cada módulo entre las comillas (índice 0 a 8).
