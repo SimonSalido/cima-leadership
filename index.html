@@ -402,6 +402,7 @@ body.nav-open-lock{overflow:hidden;}
     <button class="nav-link" onclick="showPage('podcast',this)">Podcast</button>
     <button class="nav-link" onclick="showPage('libro',this)">Libros</button>
     <button class="nav-link" onclick="showPage('cimaindex',this)">Cima Index<sup>®</sup></button>
+    <a class="nav-link" href="aula-coaches/index.html" target="_blank" rel="noopener nofollow">Coach CIMA <i class="ti ti-lock" style="font-size:13px;margin-left:5px;"></i></a>
     <button class="nav-link" onclick="showPage('contacto',this)">Contacto</button>
     <button class="nav-cta nav-cta-mobile" onclick="showPage('contacto',null)">Contratar</button>
   </div>
@@ -1090,7 +1091,7 @@ function showPage(id, btn) {
     btn.classList.add('active');
   } else {
     const map = {home:0,about:1,conferencias:2,podcast:3,libro:4,cimaindex:5,contacto:6};
-    const btns = document.querySelectorAll('.nav-link');
+    const btns = document.querySelectorAll('button.nav-link');
     if (btns[map[id]]) btns[map[id]].classList.add('active');
   }
   window.scrollTo(0,0);
