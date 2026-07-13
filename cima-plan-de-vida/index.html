@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Vida · CIMA Leadership Institute®</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../favicon.png">
+<meta name="theme-color" content="#FA4B1E">
+<style>
+  :root{
+    --ink:#1A1A1A;--paper:#FCFBF9;--paper2:#F4F1EC;--cima:#FA4B1E;--cima-d:#D63A12;
+    --slate:#5C5C5C;--rule:#E2DDD4;--white:#fff;--peach:#FDEAE2;--cream:#FFE7DD;--green:#2E7D52;
+    --serif:"Georgia","Cambria",serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55}
+  header.top{position:sticky;top:0;z-index:30;background:var(--white);border-bottom:1px solid var(--rule);padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px} .logo svg{height:30px} .logo .wm{font-weight:800;font-size:14px}
+  .logo .wm .o{color:var(--cima)} .logo .wm small{display:block;font-weight:700;font-size:11px;color:var(--slate)}
+  header .ttl{font-family:var(--serif);font-size:15px;color:var(--slate)}
+  header .sp{flex:1}
+  header .saved{font-size:12px;color:var(--green);opacity:0;transition:.2s}
+  header button{border:1px solid var(--rule);background:var(--paper);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink)}
+  header button.primary{background:var(--cima);color:#fff;border-color:var(--cima)}
+  .nav{position:sticky;top:53px;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);padding:8px 20px;display:flex;gap:6px;flex-wrap:wrap;overflow:auto}
+  .nav a{font-size:12px;font-weight:700;color:var(--slate);text-decoration:none;padding:6px 11px;border-radius:20px;white-space:nowrap}
+  .nav a:hover{background:var(--paper2);color:var(--cima)}
+  main{max-width:920px;margin:0 auto;padding:26px 20px 100px}
+  .intro{background:var(--white);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);padding:24px 26px;margin-bottom:26px}
+  h1{font-family:var(--serif);font-size:30px;margin:0 0 4px}
+  .intro .lead{color:var(--cima-d);font-style:italic;font-family:var(--serif);font-size:16px;margin-bottom:12px}
+  .intro p{font-size:14.5px;margin:0 0 10px;color:#333}
+  .pillars{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .pill{background:var(--peach);border-radius:20px;padding:6px 13px;font-size:12.5px;font-weight:700;color:var(--cima-d)}
+  .part{margin:34px 0 8px}
+  .part-h{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .part-n{width:38px;height:38px;border-radius:9px;background:var(--cima);color:#fff;font-weight:800;font-size:16px;font-family:var(--serif);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .part-h h2{font-family:var(--serif);font-size:22px;margin:0}
+  .part-sub{color:var(--slate);font-size:13.5px}
+  .part-desc{font-size:14px;color:#333;background:var(--paper2);border-radius:10px;padding:11px 14px;margin:10px 0 16px}
+  .dim{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:15px 17px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .dim .dh{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .dim .dn{width:24px;height:24px;border-radius:6px;background:var(--cima);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .dim .dt{font-weight:800;font-size:15px}
+  .dim .guia{font-size:12.5px;color:var(--slate);font-style:italic;margin:2px 0 9px}
+  textarea,input[type=text]{width:100%;border:1px solid var(--rule);border-radius:9px;padding:10px 12px;font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--paper)}
+  textarea{min-height:74px;resize:vertical}
+  textarea:focus,input:focus{outline:none;border-color:var(--cima)}
+  table.matriz{width:100%;border-collapse:collapse;font-size:13px}
+  table.matriz th{background:var(--cima);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px;text-align:left}
+  table.matriz td{border:1px solid var(--rule);padding:4px;vertical-align:top}
+  table.matriz td.dimcol{background:var(--paper2);font-weight:700;font-size:12px;width:120px;padding:8px}
+  table.matriz textarea{min-height:52px;border:none;background:transparent;padding:6px}
+  .meta-block{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .meta-block .mbt{font-weight:800;color:var(--cima-d);margin-bottom:8px}
+  .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  @media(max-width:620px){.qgrid{grid-template-columns:1fr}}
+  .qcard{background:var(--paper2);border-radius:9px;padding:10px}
+  .qcard .ql{font-size:11px;font-weight:800;color:var(--cima);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+  .qcard textarea{min-height:48px;background:var(--white)}
+  .lbl{font-size:11px;font-weight:800;color:var(--cima-d);text-transform:uppercase;letter-spacing:.4px;margin:2px 0 5px;display:block}
+  .rit{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:15px 17px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .rit h3{margin:0 0 6px;font-size:15px}
+  .rit ol{margin:6px 0 0;padding-left:20px;font-size:13.5px} .rit li{margin-bottom:3px}
+  .rit .when{font-size:12px;color:var(--cima);font-weight:700}
+  .ind-wrap{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+  @media(max-width:760px){.ind-wrap{grid-template-columns:1fr}}
+  .slider-row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .slider-row .sn{width:150px;font-size:13px;font-weight:600}
+  .slider-row input[type=range]{flex:1;accent-color:var(--cima)}
+  .slider-row .sv{width:26px;text-align:right;font-weight:800;color:var(--cima-d)}
+  .radarcard{background:var(--white);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);padding:14px;text-align:center;position:sticky;top:110px}
+  canvas{max-width:100%}
+  footer{text-align:center;color:var(--slate);font-size:12px;margin-top:30px}
+  @media print{
+    header.top,.nav,header button{display:none!important}
+    .intro,.dim,.rit,.meta-block,.radarcard{box-shadow:none;border-color:#ccc;break-inside:avoid}
+    textarea,input{border-color:#ccc}
+    body{background:#fff}
+  }
+  /* ===== Login de coaches (Supabase) ===== */
+  #gate{position:fixed;inset:0;background:#141210;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
+  #gate .card{background:#1c1815;border:1px solid #322c26;border-radius:16px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
+  #gate h2{color:#fff;font-family:var(--serif);font-size:21px;margin:8px 0 4px}
+  #gate p{color:#b8b2a8;font-size:13px;margin:0 0 20px}
+  #gate input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #45403a;background:#0f0d0b;color:#fff;font-size:15px;text-align:center;outline:none}
+  #gate input:focus{border-color:var(--cima)}
+  #gate input + input{margin-top:10px}
+  #gate button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--cima);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+  #gate .err{color:#ff8a6b;font-size:13px;margin-top:12px;min-height:16px}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card"><h2>CIMA · Plan de Vida</h2><p id="gateSub">Módulo privado · acceso con tu cuenta de coach</p><input id="gateEmail" type="email" placeholder="Correo" autocomplete="username"><input id="gatePass" type="password" placeholder="Contraseña" autocomplete="current-password"><button onclick="tryLogin()">Entrar</button><div class="err" id="gateErr"></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* Mismas cuentas que el Aula de Coaches (mismo proyecto Supabase).
+   Como el sitio está en el mismo dominio, la sesión se comparte:
+   si el coach ya entró al Aula, aquí entra directo. */
+const SUPABASE_URL      = "https://siaykigdlgnjjcklxaoc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpYXlraWdkbGduampja2x4YW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4ODQzNDAsImV4cCI6MjA5NzQ2MDM0MH0.oVYu-aANUbtyK3TnsFijDs9z-ql7SLrl_sp-SBzWTiI";
+let sb = null;
+if (window.supabase) { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+function hideGate(){ document.getElementById("gate").style.display="none"; }
+async function tryLogin(){
+  const err=document.getElementById("gateErr");
+  const email=(document.getElementById("gateEmail").value||"").trim();
+  const pass=document.getElementById("gatePass").value;
+  if(!email||!pass){ err.textContent="Escribe tu correo y contraseña."; return; }
+  if(!sb){ err.textContent="El acceso funciona en el sitio publicado (https)."; return; }
+  err.textContent="Entrando…";
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){ err.textContent="Correo o contraseña incorrectos."; return; }
+  err.textContent=""; hideGate();
+}
+async function cerrarSesion(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} location.reload(); }
+document.getElementById("gatePass").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
+document.getElementById("gateEmail").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
+(async function(){ try{ if(sb){ const { data } = await sb.auth.getSession(); if(data && data.session) hideGate(); } }catch(e){} })();
+</script>
+<header class="top">
+  <div class="logo" id="brandLogo"></div>
+  <span class="ttl">Plan de Vida</span>
+  <span class="sp"></span>
+  <span class="saved" id="saved">Guardado ✓</span>
+  <button onclick="saveFile()">Guardar mi avance</button>
+  <button onclick="document.getElementById('loadFile').click()">Retomar</button>
+  <input type="file" id="loadFile" accept=".cima,.json,application/json" style="display:none" onchange="loadFile(event)">
+  <button class="primary" onclick="window.print()">Descargar PDF</button>
+  <button onclick="resetAll()">Reiniciar</button>
+  <button onclick="cerrarSesion()">Cerrar sesión</button>
+</header>
+<div class="nav">
+  <a href="#inicio">Inicio</a>
+  <a href="#p1">1 · Visión 20 años</a>
+  <a href="#p2">2 · Metas 10/5/3</a>
+  <a href="#p3">3 · Plan de acción</a>
+  <a href="#p4">4 · Ritmos & Indicadores</a>
+</div>
+
+<main>
+  <section class="intro" id="inicio">
+    <h1>Plan de Vida</h1>
+    <div class="lead">Menos filosofía, más arquitectura. Tú, el arquitecto de tu propia cima.</div>
+    <p>Este no es un documento para soñar despierto: es una herramienta para <b>construir</b>. Aquí tu vida se diseña como se sube una cima —con un Norte claro, hitos medibles y un ritmo que lo sostiene—. Cada meta es un ladrillo, cada hábito el cemento y cada revisión la plomada que asegura que subes derecho.</p>
+    <p>En clave <b>CIMA Performance System®</b>: tu Plan de Vida trabaja tu <b>Alma</b> (el Norte y el sentido) y tus <b>Sistemas</b> (las metas, los proyectos y los ritmos que lo sostienen). Empieza sabiendo dónde estás: tu punto de partida es tu <b>CIMA Index®</b>.</p>
+    <div class="pillars"><span class="pill">Claridad radical</span><span class="pill">Acción enfocada</span><span class="pill">Revisión constante</span></div>
+  </section>
+
+  <div class="part" id="p1">
+    <div class="part-h"><div class="part-n">1</div><div><h2>El Fundamento · tu Visión a 20 años</h2><div class="part-sub">El Norte Magnético que informa cada giro del mapa.</div></div></div>
+    <div class="part-desc">Describe, en <b>tiempo presente</b> —como si ya estuvieras ahí—, la persona que serás y la vida que vivirás en dos décadas. Para cada dimensión, responde las preguntas guía. Sé audaz. Sé específico. Siente la descripción.</div>
+    <div id="vision"></div>
+  </div>
+
+  <div class="part" id="p2">
+    <div class="part-h"><div class="part-n">2</div><div><h2>El Mapa Estratégico · Metas a 10, 5 y 3 años</h2><div class="part-sub">De la visión a hitos concretos, trabajando en retrospectiva.</div></div></div>
+    <div class="part-desc">Para alcanzar tu visión a 20 años: ¿dónde debes estar en 10? ¿Y en 5? ¿Y en 3? Define, por dimensión, un <b>Resultado Clave</b> por horizonte: un logro medible, no una tarea. Pregunta: “¿Qué tendré que haber logrado para saber que voy en el camino correcto?”</div>
+    <div style="overflow:auto"><table class="matriz"><thead><tr><th>Dimensión</th><th>Meta a 10 años</th><th>Meta a 5 años</th><th>Meta a 3 años</th></tr></thead><tbody id="matriz"></tbody></table></div>
+  </div>
+
+  <div class="part" id="p3">
+    <div class="part-h"><div class="part-n">3</div><div><h2>El Plan de Acción · este año, por trimestres</h2><div class="part-sub">Convertir la estrategia en acción inmediata.</div></div></div>
+    <div class="part-desc">Basándote en tus metas a 3 años, elige las <b>3 más cruciales</b> para este año. Luego desglosa cada una en objetivos y acciones clave por trimestre.</div>
+    <label class="lbl">Año</label><input type="text" id="p3_anio" placeholder="Ej. 2026" style="max-width:160px">
+    <div id="planes" style="margin-top:14px"></div>
+  </div>
+
+  <div class="part" id="p4">
+    <div class="part-h"><div class="part-n">4</div><div><h2>El Sistema Operativo · Ritmos e Indicadores</h2><div class="part-sub">Un plan sin revisión es solo un deseo.</div></div></div>
+    <div class="part-desc">Los ritmos mantienen vivo el plan. Y los <b>Indicadores de Vida</b> te muestran, de un vistazo, tu equilibrio real entre las 8 dimensiones —tu radar personal, hermano del CIMA Index®.</div>
+
+    <div class="ind-wrap">
+      <div>
+        <div class="rit"><h3>Indicadores de Vida <span style="font-size:12px;color:var(--slate);font-weight:400">· puntúa 1–10 cómo vives hoy cada dimensión</span></h3><div id="sliders"></div></div>
+        <div class="rit"><h3>Revisión semanal <span class="when">· domingo, 30 min</span></h3>
+          <ol><li>¿Qué logré esta semana? (celebra las victorias)</li><li>¿Qué aprendí? (analiza los desafíos)</li><li>¿Cómo están mis Indicadores de Vida? (puntúa arriba)</li><li>¿Cuáles son mis 3 prioridades para la próxima semana?</li></ol>
+          <label class="lbl" style="margin-top:8px">Mis 3 prioridades de la semana</label><textarea id="p4_sem"></textarea>
+        </div>
+        <div class="rit"><h3>Revisión trimestral <span class="when">· fin de Q, 3 horas</span></h3>
+          <ol><li>Revisar avance de proyectos trimestrales y metas anuales.</li><li>Planificar los proyectos del próximo trimestre.</li><li>Ajustar el plan según lo aprendido.</li></ol></div>
+        <div class="rit"><h3>Revisión anual <span class="when">· fin de año, 1 día</span></h3>
+          <ol><li>Celebrar logros; revisar la Matriz de Metas (3/5/10) y releer la Visión a 20 años.</li><li>Definir las 3–5 metas principales del nuevo año.</li></ol></div>
+      </div>
+      <div class="radarcard">
+        <canvas id="radar" width="300" height="300"></canvas>
+        <div style="font-size:12px;color:var(--slate)">Tu equilibrio de vida (1–10)</div>
+        <div style="font-family:var(--serif);font-size:32px;font-weight:800;color:var(--cima);margin-top:6px" id="lifeAvg">—</div>
+        <div style="font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.5px">Índice de Vida promedio</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Plan de Vida · CIMA Performance System® · CIMA Leadership Institute® · Marcelo Michel Leaño<br>Tus respuestas se guardan solas en este navegador. Para continuar en otro dispositivo o no perder nada, usa <b>Guardar mi avance</b> (descarga un archivo .cima) y luego <b>Retomar</b> para volver a cargarlo. También puedes Descargar tu PDF.</footer>
+</main>
+
+<script>
+const LOGO_SVG=`<svg viewBox="0 0 170 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CIMA"><g fill="#FA4B1E"><rect x="8" y="4" width="3.4" height="52"/><rect x="15" y="4" width="3.4" height="66"/><rect x="22" y="4" width="3.4" height="40"/><rect x="29" y="4" width="3.4" height="74"/><rect x="36" y="4" width="3.4" height="58"/><rect x="43" y="4" width="3.4" height="82"/><rect x="50" y="4" width="3.4" height="48"/><rect x="57" y="4" width="3.4" height="70"/><circle cx="24" cy="52" r="9"/><path d="M6,134 L66,42 L80,26 L80,50 L90,50 L90,36 L98,36 L98,58 L106,58 L106,30 L150,30 L150,134 L112,134 L112,118 L100,118 L100,134 L72,134 L72,118 L60,118 L60,134 Z"/></g></svg>`;
+document.getElementById("brandLogo").innerHTML=LOGO_SVG+'<div class="wm"><span class="o">CIMA</span>®<small>Leadership Institute</small></div>';
+
+const DIMS=[
+ {n:"Profesional y Vocacional",g:"¿En qué te has convertido en un maestro? ¿Qué problemas resuelves? ¿Cómo es tu día a día? ¿Con quién trabajas? ¿Qué reputación construiste?"},
+ {n:"Económica y Financiera",g:"¿Qué significa libertad financiera para ti? ¿Cuántas fuentes de ingreso tienes? ¿Cómo fluye el dinero? ¿Para qué usas tus recursos?"},
+ {n:"Salud y Energía",g:"¿Cómo te sientes al despertar? ¿Qué nivel de energía tienes? ¿Qué actividades físicas disfrutas? ¿Cuál es tu estado mental y emocional?"},
+ {n:"Familiar y Relaciones",g:"¿Qué tipo de pareja, padre/madre, hijo/a y amigo/a eres? ¿Cómo son tus conversaciones? ¿Qué tradiciones crearon? ¿Qué rol juegas en su vida?"},
+ {n:"Crecimiento Personal",g:"¿Qué habilidad dominaste solo por gusto? ¿A qué dedicas tu tiempo libre? ¿Qué te causa curiosidad? ¿Qué te hace perder la noción del tiempo?"},
+ {n:"Espiritual y Paz Interior",g:"¿De dónde proviene tu paz? ¿Qué prácticas te mantienen centrado? ¿Cómo manejas la adversidad? ¿Cuál es tu fuente de fortaleza interior?"},
+ {n:"Contribución y Legado",g:"¿A quiénes has ayudado? ¿Qué construiste que perdurará más allá de ti? ¿Qué transmitiste? ¿Por qué el mundo es mejor porque estuviste aquí?"},
+ {n:"Plenitud y Gozo",g:"¿Qué lugares conociste? ¿Qué experiencias te marcaron? ¿Cómo es tu capacidad de reír y disfrutar? ¿Qué historia increíble cuentas sobre tu vida?"}
+];
+
+const KEY="cima_plandevida_v1";
+let store={};
+try{const s=localStorage.getItem(KEY); if(s) store=JSON.parse(s);}catch(e){}
+let saveT;
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}
+  const el=document.getElementById("saved"); el.style.opacity=1; clearTimeout(saveT); saveT=setTimeout(()=>el.style.opacity=0,1000); }
+function bind(el){ const id=el.id; if(store[id]!==undefined) el.value=store[id];
+  el.addEventListener("input",()=>{store[id]=el.value; save(); if(el.type==="range") drawRadar();}); }
+
+// PART 1 · visión
+const vis=document.getElementById("vision");
+DIMS.forEach((d,i)=>{
+  const div=document.createElement("div"); div.className="dim";
+  div.innerHTML=`<div class="dh"><div class="dn">${i+1}</div><div class="dt">${d.n}</div></div>
+    <div class="guia">${d.g}</div><textarea id="p1_${i}" placeholder="Escribe en tiempo presente, como si ya estuvieras ahí…"></textarea>`;
+  vis.appendChild(div);
+});
+// PART 2 · matriz
+const mb=document.getElementById("matriz");
+DIMS.forEach((d,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="dimcol">${i+1}. ${d.n}</td>
+   <td><textarea id="p2_${i}_10"></textarea></td>
+   <td><textarea id="p2_${i}_5"></textarea></td>
+   <td><textarea id="p2_${i}_3"></textarea></td>`;
+  mb.appendChild(tr);
+});
+// PART 3 · planes
+const planes=document.getElementById("planes");
+for(let m=1;m<=3;m++){
+  const div=document.createElement("div"); div.className="meta-block";
+  let qs="";
+  ["Q1","Q2","Q3","Q4"].forEach(q=>{
+    qs+=`<div class="qcard"><div class="ql">${q} · Objetivo</div><textarea id="p3_${m}_${q}_o"></textarea>
+      <div class="ql" style="margin-top:6px">Acciones clave</div><textarea id="p3_${m}_${q}_a"></textarea></div>`;
+  });
+  div.innerHTML=`<div class="mbt">Meta anual ${m}</div><input type="text" id="p3_${m}_meta" placeholder="Escribe tu meta anual ${m}…">
+    <div class="qgrid">${qs}</div>`;
+  planes.appendChild(div);
+}
+// PART 4 · sliders
+const sl=document.getElementById("sliders");
+DIMS.forEach((d,i)=>{
+  const row=document.createElement("div"); row.className="slider-row";
+  row.innerHTML=`<div class="sn">${i+1}. ${d.n}</div><input type="range" min="1" max="10" step="1" id="ind_${i}" value="${store['ind_'+i]||5}"><div class="sv" id="sv_${i}">${store['ind_'+i]||5}</div>`;
+  sl.appendChild(row);
+});
+
+// bind all inputs
+document.querySelectorAll("textarea,input").forEach(bind);
+DIMS.forEach((d,i)=>{ const r=document.getElementById("ind_"+i); r.addEventListener("input",()=>{document.getElementById("sv_"+i).textContent=r.value;}); });
+
+function drawRadar(){
+  const cv=document.getElementById("radar"); const dpr=window.devicePixelRatio||1; const size=300;
+  cv.width=size*dpr; cv.height=size*dpr; cv.style.width=size+"px"; cv.style.height=size+"px";
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,size,size);
+  const cx=size/2, cy=size/2, R=110, n=8; const ang=i=>(-Math.PI/2)+i*2*Math.PI/n;
+  ctx.strokeStyle="#E2DDD4"; ctx.lineWidth=1;
+  [2.5,5,7.5,10].forEach(r=>{ctx.beginPath();for(let i=0;i<n;i++){const x=cx+R*r/10*Math.cos(ang(i)),y=cy+R*r/10*Math.sin(ang(i));i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();});
+  ctx.fillStyle="#FA4B1E"; ctx.font="700 10px "+getComputedStyle(document.body).fontFamily; ctx.textAlign="center"; ctx.textBaseline="middle";
+  const short=["Prof.","Econ.","Salud","Familia","Crec.","Espir.","Legado","Gozo"];
+  let sum=0,cnt=0;
+  const vals=DIMS.map((d,i)=>{const v=+((document.getElementById("ind_"+i)||{}).value||store['ind_'+i]||5); sum+=v;cnt++;return v;});
+  for(let i=0;i<n;i++){ctx.strokeStyle="#E2DDD4";ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(ang(i)),cy+R*Math.sin(ang(i)));ctx.stroke();
+    ctx.fillStyle="#5C5C5C";ctx.fillText(short[i],cx+(R+16)*Math.cos(ang(i)),cy+(R+16)*Math.sin(ang(i)));}
+  ctx.beginPath();for(let i=0;i<n;i++){const r=R*vals[i]/10;const x=cx+r*Math.cos(ang(i)),y=cy+r*Math.sin(ang(i));i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();
+  ctx.fillStyle="rgba(250,75,30,0.16)";ctx.fill();ctx.strokeStyle="#FA4B1E";ctx.lineWidth=2;ctx.stroke();
+  for(let i=0;i<n;i++){const r=R*vals[i]/10;const x=cx+r*Math.cos(ang(i)),y=cy+r*Math.sin(ang(i));ctx.fillStyle="#FA4B1E";ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill();}
+  document.getElementById("lifeAvg").textContent=cnt?(sum/cnt).toFixed(1):"—";
+}
+function saveFile(){
+  const nombre=(store['p1_0']?store['p1_0'].slice(0,20):'')||'';
+  const data={_app:"CIMA Plan de Vida",_fecha:new Date().toISOString(),datos:store};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  const f=new Date(); const stamp=f.getFullYear()+"-"+String(f.getMonth()+1).padStart(2,'0')+"-"+String(f.getDate()).padStart(2,'0');
+  a.download="Mi-Plan-de-Vida-CIMA_"+stamp+".cima"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function loadFile(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{
+      const j=JSON.parse(r.result); const d=j.datos||j;
+      if(typeof d!=="object") throw 0;
+      store=d; save();
+      alert("✓ Tu Plan de Vida se cargó correctamente. Puedes seguir donde lo dejaste.");
+      location.reload();
+    }catch(e){ alert("No pude leer ese archivo. Asegúrate de subir el archivo .cima que descargaste antes."); }
+  };
+  r.readAsText(file);
+}
+function resetAll(){ if(confirm("¿Borrar todo tu Plan de Vida guardado en este navegador? (Descarga tu avance primero si quieres conservarlo)")){store={};save();location.reload();} }
+drawRadar();
+</script>
+</body>
+</html>
