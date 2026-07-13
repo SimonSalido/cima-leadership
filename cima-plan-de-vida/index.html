@@ -74,6 +74,19 @@
   .radarcard{background:var(--white);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);padding:14px;text-align:center;position:sticky;top:110px}
   canvas{max-width:100%}
   footer{text-align:center;color:var(--slate);font-size:12px;margin-top:30px}
+  @media(max-width:700px){
+    header.top{position:static;padding:10px 14px;gap:8px}
+    header .ttl{display:none}
+    header button{padding:7px 10px;font-size:12px}
+    .nav{position:static;top:auto;padding:8px 14px}
+    main{padding:18px 14px 80px}
+    h1{font-size:24px}
+    .intro{padding:18px 16px}
+    .part-h h2{font-size:19px}
+    .part-n{width:32px;height:32px;font-size:14px}
+    table.matriz{min-width:560px}
+    .slider-row .sn{width:120px;font-size:12px}
+  }
   @media print{
     @page{margin:12mm}
     html,body{background:#fff}
