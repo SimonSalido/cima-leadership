@@ -75,10 +75,16 @@
   canvas{max-width:100%}
   footer{text-align:center;color:var(--slate);font-size:12px;margin-top:30px}
   @media print{
-    header.top,.nav,header button{display:none!important}
-    .intro,.dim,.rit,.meta-block,.radarcard{box-shadow:none;border-color:#ccc;break-inside:avoid}
-    textarea,input{border-color:#ccc}
-    body{background:#fff}
+    @page{margin:12mm}
+    html,body{background:#fff}
+    header.top,.nav,header button,#gate{display:none!important}
+    .intro,.dim,.rit,.meta-block,.qcard{box-shadow:none;border-color:#ccc;break-inside:avoid}
+    .radarcard{box-shadow:none;border-color:#ccc;position:static!important;break-inside:avoid}
+    .part-h{break-after:avoid}
+    table.matriz tr{break-inside:avoid}
+    .slider-row{break-inside:avoid}
+    textarea,input{border-color:#ccc!important;color:#000!important}
+    textarea{overflow:hidden!important;resize:none}
   }
   /* ===== Login de coaches (Supabase) ===== */
   #gate{position:fixed;inset:0;background:#141210;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
@@ -119,6 +125,24 @@ async function cerrarSesion(){ try{ if(sb) await sb.auth.signOut(); }catch(e){} 
 document.getElementById("gatePass").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
 document.getElementById("gateEmail").addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin(); });
 (async function(){ try{ if(sb){ const { data } = await sb.auth.getSession(); if(data && data.session) hideGate(); } }catch(e){} })();
+
+/* Al imprimir/Descargar PDF: expandir los textareas para que se vea TODO el texto */
+function _expandTextareasForPrint(){
+  document.querySelectorAll('textarea').forEach(t=>{
+    t.dataset._prevH = t.style.height || '';
+    t.style.height = 'auto';
+    t.style.height = (t.scrollHeight + 2) + 'px';
+    t.style.overflow = 'hidden';
+  });
+}
+function _restoreTextareas(){
+  document.querySelectorAll('textarea').forEach(t=>{
+    t.style.height = t.dataset._prevH || '';
+    t.style.overflow = '';
+  });
+}
+window.addEventListener('beforeprint', _expandTextareasForPrint);
+window.addEventListener('afterprint', _restoreTextareas);
 </script>
 <header class="top">
   <div class="logo" id="brandLogo"></div>
