@@ -276,6 +276,9 @@ nav{background:rgba(12,12,14,0.88);backdrop-filter:blur(14px);border-bottom:1px 
 .buy-btn.secondary{background:transparent;color:var(--blanco);border:1px solid rgba(255,255,255,0.2);}
 .buy-btn.secondary:hover{border-color:#fff;background:rgba(255,255,255,0.07);}
 .libro-right{background:var(--negro);display:flex;align-items:center;justify-content:center;padding:52px;}
+.libro-cover{max-width:320px;width:100%;display:block;filter:drop-shadow(0 24px 48px rgba(0,0,0,0.7));border-radius:2px;}
+.prox-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(230,64,24,0.12);border:1px solid rgba(230,64,24,0.35);color:var(--naranja2);padding:11px 22px;font-size:11.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;border-radius:100px;}
+.libro-subtitle{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gris2);margin-bottom:22px;display:block;}
 .libro-info{padding:64px 52px;background:var(--negro);}
 .libro-info h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--blanco);margin-bottom:32px;}
 .libro-themes{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);}
@@ -869,7 +872,7 @@ body.nav-open-lock{overflow:hidden;}
       </div>
     </div>
     <div class="libro-right">
-      <img src="book-cover.png" alt="Nos Vemos en la Cima — Marcelo Michel Leaño" style="max-width:320px;width:100%;display:block;filter:drop-shadow(0 24px 48px rgba(0,0,0,0.7));" />
+      <img src="book-cover.png" alt="Nos Vemos en la Cima — Marcelo Michel Leaño" class="libro-cover" />
     </div>
   </div>
   <div class="libro-info">
@@ -885,45 +888,99 @@ body.nav-open-lock{overflow:hidden;}
 
   <!-- LIBRO 2 -->
   <div id="book-2" style="display:none;">
-    <div class="libro-info" style="background:var(--negro);">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
-        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+  <div class="libro-hero">
+    <div class="libro-left">
+      <span class="sec-label">Próximo libro</span>
+      <h1>La Velocidad<br>del Alma</h1>
+      <span class="libro-subtitle">Deja de correr. Vuelve a ti.</span>
+      <p>¿Estás viviendo a la velocidad de tu alma… o a la que otros te exigen? Acumulamos pendientes, notificaciones y logros, y al final del día nos queda una sensación que casi nadie se atreve a nombrar: la de estar haciendo mucho y no estar viviendo casi nada. La prisa se volvió identidad, y tiene un costo que se paga en una moneda invisible: la profundidad.</p>
+      <p>Este no es un libro contra la velocidad, ni contra el trabajo, ni contra la ambición. Es un libro contra algo más sutil y más grave: <em style="font-style:italic;color:rgba(255,255,255,0.85);">la pérdida del ritmo</em>. A través de las cuatro estaciones del alma, Marcelo Michel Leaño nos invita a volver: a trabajar mucho pero no vacíos, a estar vivos y no solo sobreviviendo.</p>
+      <p>No te promete una fórmula. Te invita a sostener una sola pausa real. Y a descubrir que eso que creías tiempo muerto era, en realidad, tiempo vivo.</p>
+      <div>
+        <span class="sec-label" style="margin-top:24px;">Disponibilidad</span>
+        <div class="libro-buy-btns">
+          <span class="prox-badge"><i class="ti ti-clock"></i> Disponible para compra próximamente</span>
         </div>
-        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
-        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">La Velocidad del Alma</h3>
-        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
       </div>
     </div>
+    <div class="libro-right">
+      <img src="libro-velocidad-alma.jpg" alt="La Velocidad del Alma — Marcelo Michel Leaño" class="libro-cover" loading="lazy" />
+    </div>
   </div>
+  <div class="libro-info">
+    <h2>Temas del libro</h2>
+    <div class="libro-themes">
+      <div class="theme-card"><i class="ti ti-clock-pause"></i><h3>El Ritmo Perdido</h3><p>Por qué la prisa se volvió identidad y cómo reconocer el costo invisible que estamos pagando por ella.</p></div>
+      <div class="theme-card"><i class="ti ti-leaf"></i><h3>Las Cuatro Estaciones del Alma</h3><p>Un recorrido por los ciclos naturales que ordenan la vida interior: cuándo florecer, cuándo soltar, cuándo esperar.</p></div>
+      <div class="theme-card"><i class="ti ti-users"></i><h3>Presencia Real</h3><p>Cómo recuperar las conversaciones que se volvieron transacciones y los vínculos que se volvieron roles.</p></div>
+      <div class="theme-card"><i class="ti ti-player-pause"></i><h3>La Pausa que Revela</h3><p>Sostener una sola pausa real y descubrir que eso que creías tiempo muerto era, en realidad, tiempo vivo.</p></div>
+    </div>
+  </div>
+  </div><!-- /book-2 -->
 
   <!-- LIBRO 3 -->
   <div id="book-3" style="display:none;">
-    <div class="libro-info" style="background:var(--negro);">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
-        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+  <div class="libro-hero">
+    <div class="libro-left">
+      <span class="sec-label">Próximo libro</span>
+      <h1>Atleta<br>Total</h1>
+      <span class="libro-subtitle">Entrena tu mente, domina tu juego, transforma tu vida</span>
+      <p>¿Qué separa a los buenos atletas de los legendarios? No es el talento. No son las horas de entrenamiento. No es la suerte. Es lo que sucede en <em style="font-style:italic;color:rgba(255,255,255,0.85);">los quince centímetros entre tus orejas</em>.</p>
+      <p>Durante más de dos décadas en el alto rendimiento, Marcelo Michel Leaño ha visto cómo la mayor parte del éxito se define en un campo invisible: la mente. Allí se deciden las medallas, los títulos y, sobre todo, el carácter.</p>
+      <p>Atleta Total no es un libro de frases motivacionales. Es un gimnasio mental, un manual de ingeniería interior forjado en vestuarios de élite, finales con el marcador en contra y conversaciones íntimas con campeones que aprendieron a transformar la presión en su mejor aliada. No se trata solo de ganar: se trata de volverte invencible por dentro.</p>
+      <div>
+        <span class="sec-label" style="margin-top:24px;">Disponibilidad</span>
+        <div class="libro-buy-btns">
+          <span class="prox-badge"><i class="ti ti-clock"></i> Disponible para compra próximamente</span>
         </div>
-        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
-        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">Atleta Total</h3>
-        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
       </div>
     </div>
+    <div class="libro-right">
+      <img src="libro-atleta-total.jpg" alt="Atleta Total — Marcelo Michel Leaño" class="libro-cover" loading="lazy" />
+    </div>
   </div>
+  <div class="libro-info">
+    <h2>Temas del libro</h2>
+    <div class="libro-themes">
+      <div class="theme-card"><i class="ti ti-message-circle"></i><h3>Diálogo Interno</h3><p>Dominar la conversación que tienes contigo mismo cuando todo está en juego.</p></div>
+      <div class="theme-card"><i class="ti ti-flame"></i><h3>Adversidad como Combustible</h3><p>Convertir los golpes y los marcadores en contra en material para tu crecimiento.</p></div>
+      <div class="theme-card"><i class="ti ti-shield"></i><h3>Mentalidad Inquebrantable</h3><p>Desarrollar una fortaleza mental que resista cualquier tormenta, dentro y fuera de la cancha.</p></div>
+      <div class="theme-card"><i class="ti ti-users"></i><h3>Liderar con el Ejemplo</h3><p>Elevar el nivel de quienes te rodean a partir de cómo tú mismo compites y te conduces.</p></div>
+    </div>
+  </div>
+  </div><!-- /book-3 -->
 
   <!-- LIBRO 4 -->
   <div id="book-4" style="display:none;">
-    <div class="libro-info" style="background:var(--negro);">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px;background:var(--grafito2);border:1px solid rgba(255,255,255,0.06);border-radius:4px;text-align:center;">
-        <div style="width:64px;height:64px;border-radius:50%;background:rgba(230,64,24,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-          <i class="ti ti-book" style="font-size:28px;color:var(--naranja);"></i>
+  <div class="libro-hero">
+    <div class="libro-left">
+      <span class="sec-label">Próximo libro</span>
+      <h1>No busques<br>tu propósito</h1>
+      <span class="libro-subtitle">Descúbrelo en los demás</span>
+      <p>¿Y si llevas años buscando tu propósito en el único lugar donde no está? Nos enseñaron a mirar hacia dentro: encuentra tu pasión, descubre tu verdadero yo. El resultado es una generación entera paralizada por la introspección infinita — haciendo mucho por encontrarse, y sintiéndose cada vez más perdida.</p>
+      <p>Marcelo Michel Leaño descubrió otra cosa estudiando a líderes, maestros y emprendedores que mantuvieron su fuego encendido durante décadas: ninguno encontró su propósito buscándolo dentro de sí mismo. Lo descubrieron <em style="font-style:italic;color:rgba(255,255,255,0.85);">convirtiéndose en el propósito de otros</em>.</p>
+      <p>Este no es un libro más de autoayuda; es una declaración de guerra contra el narcisismo disfrazado de desarrollo personal. A través de las cinco etapas del fuego interior te invita a dejar de ser el protagonista de tu propia historia para convertirte en el mentor de la historia de otros. Porque la verdadera realización no viene de alcanzar tus sueños: viene de ayudar a otros a alcanzar los suyos.</p>
+      <div>
+        <span class="sec-label" style="margin-top:24px;">Disponibilidad</span>
+        <div class="libro-buy-btns">
+          <span class="prox-badge"><i class="ti ti-clock"></i> Disponible para compra próximamente</span>
         </div>
-        <p style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--naranja2);margin-bottom:12px;">Próximo libro</p>
-        <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--blanco);margin-bottom:16px;">No busques tu propósito, descúbrelo en los demás</h3>
-        <p style="font-size:15px;color:var(--gris);max-width:420px;line-height:1.8;">Se publicará próximamente.</p>
       </div>
     </div>
+    <div class="libro-right">
+      <img src="libro-proposito.jpg" alt="No busques tu propósito, descúbrelo en los demás — Marcelo Michel Leaño" class="libro-cover" loading="lazy" />
+    </div>
   </div>
+  <div class="libro-info">
+    <h2>Temas del libro</h2>
+    <div class="libro-themes">
+      <div class="theme-card"><i class="ti ti-search"></i><h3>La Trampa de la Introspección</h3><p>Por qué la búsqueda infinita del "yo verdadero" se volvió la parálisis de una generación.</p></div>
+      <div class="theme-card"><i class="ti ti-flame"></i><h3>Las 5 Etapas del Fuego Interior</h3><p>Chispa, llama, forja, faro y antorcha: el mapa del propósito que no se encuentra — se enciende.</p></div>
+      <div class="theme-card"><i class="ti ti-school"></i><h3>De Protagonista a Mentor</h3><p>El verdadero liderazgo no se trata de brillar, sino de hacer brillar a otros.</p></div>
+      <div class="theme-card"><i class="ti ti-users-group"></i><h3>El Legado que Trasciende</h3><p>Transmitir tu fuego a las siguientes generaciones para que siga ardiendo cuando ya no estés.</p></div>
+    </div>
+  </div>
+  </div><!-- /book-4 -->
 
 </div>
 
