@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon-32.png">
+<title>Evaluación 360° CIMA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 1280×720 slide stage scaled to fit, one shared WebGL layer behind the text; reflows to a scrolling page on phones.
+   CIMA brand, deliberately one light look (closing slide in ink). */
+:root{
+  --orange:#FA4B1E; --orange-soft:#FFE6DD; --ink:#1A1A1A; --paper:#FCFBF9; --paper-2:#F4F0EB;
+  --mute:#6E6660; --faint:#A79E97; --line:#E7E1DA;
+  --amber:#C98A1B; --green:#2E7D52; --green-soft:#E1F1E7;
+  --display:"Playfair Display", Georgia, "Times New Roman", serif;
+  --body:"DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:-.015em}
+p{margin:0}
+em{font-style:italic;color:var(--orange)}
+
+/* ---------- stage ---------- */
+.stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;background:var(--paper);transition:background .6s}
+.stage.inkbg{background:var(--ink)}
+.deck{width:1280px;height:720px;position:relative;flex:none;transform-origin:center center;background:var(--paper);transition:background .6s}
+.deck.inkbg{background:var(--ink)}
+#gl{position:absolute;inset:0;width:1280px;height:720px;z-index:1;pointer-events:none}
+.slide{position:absolute;inset:0;z-index:2;padding:72px 84px 80px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s}
+.slide.on{opacity:1;visibility:visible}
+
+/* ---------- type ---------- */
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.kicker::before{content:"";width:34px;height:1px;background:currentColor}
+.kicker b{color:var(--orange);font-weight:500}
+.h1{font-size:68px;line-height:1.02}
+.h2{font-size:46px;line-height:1.08}
+.lede{font-size:19px;line-height:1.55;color:var(--mute);max-width:52ch}
+.col{max-width:560px;position:relative}
+.mono{font-family:var(--mono)}
+
+/* reveal on enter */
+.rv{opacity:1}
+.on .rv{animation:rise .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms + 120ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- chrome ---------- */
+.foot{position:absolute;left:84px;right:84px;bottom:30px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.foot b{color:var(--orange);font-weight:500}
+.prog{position:fixed;left:0;bottom:env(safe-area-inset-bottom,0px);height:2px;width:0;background:var(--orange);z-index:6;transition:width .5s ease}
+.nav{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;align-items:center;z-index:6}
+.nav button{appearance:none;border:1px solid var(--line);background:rgba(252,251,249,.85);color:var(--ink);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:15px;display:grid;place-items:center;backdrop-filter:blur(6px)}
+.nav button:hover{border-color:var(--orange);color:var(--orange)}
+.nav button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.count{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--mute);background:rgba(252,251,249,.85);border:1px solid var(--line);border-radius:20px;padding:9px 12px;font-variant-numeric:tabular-nums}
+
+/* ---------- animated line icons ---------- */
+.ai{width:28px;height:28px;flex:none;fill:none;stroke:var(--orange);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.ai *{stroke-dasharray:1;stroke-dashoffset:0}
+.on .ai *{animation:draw 1.3s cubic-bezier(.6,.1,.2,1) both;animation-delay:calc(var(--i,0) * 90ms + 300ms)}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.ai .dot{fill:var(--orange);stroke:none}
+.on .spin{animation:spin 6s linear infinite;transform-origin:12px 12px;transform-box:view-box}
+.on .pulse{animation:pulse 2.2s ease-in-out infinite;transform-origin:12px 12px;transform-box:view-box}
+.on .swing{animation:swing 2.6s ease-in-out infinite;transform-origin:12px 3px;transform-box:view-box}
+.on .blink{animation:blink 3.4s ease-in-out infinite;transform-origin:12px 12px;transform-box:view-box}
+.on .bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.25);opacity:.55}}
+@keyframes swing{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(14deg)}80%{transform:rotate(-12deg)}90%{transform:rotate(6deg)}}
+@keyframes blink{0%,44%,52%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.icb{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;flex:none}
+
+/* ---------- 1 cover ---------- */
+.logo{display:block;height:auto;width:250px;max-width:100%}
+.cover .col{display:flex;flex-direction:column;height:100%;justify-content:space-between;max-width:600px}
+.cover .h1{font-size:76px}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--line);border-radius:30px;color:var(--mute);background:rgba(255,255,255,.7);display:flex;gap:8px;align-items:center}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--orange);display:block}
+.on .chip i{animation:pulse 2.2s ease-in-out infinite}
+.tag360{position:absolute;right:84px;bottom:72px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase;text-align:right;line-height:1.8}
+
+/* ---------- 2 problem ---------- */
+.pains{display:grid;gap:0;margin-top:34px;max-width:560px}
+.pain{display:grid;grid-template-columns:52px 1fr;gap:18px;padding:16px 0;border-top:1px solid var(--line);align-items:center}
+.pain:last-child{border-bottom:1px solid var(--line)}
+.pain h3{font-family:var(--body);font-weight:700;font-size:17px;margin-bottom:4px;letter-spacing:0}
+.pain p{font-size:15px;line-height:1.5;color:var(--mute)}
+.cap3d{position:absolute;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:8px}
+.cap3d i{width:10px;height:10px;border-radius:2px;display:block}
+
+/* ---------- 3 what is ---------- */
+.legend{display:grid;gap:0;margin-top:30px;max-width:520px}
+.legend div{display:grid;grid-template-columns:14px 150px 1fr;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:15.5px;color:var(--mute)}
+.legend div:last-child{border-bottom:1px solid var(--line)}
+.legend b{color:var(--ink);font-weight:700}
+.legend i{width:12px;height:12px;border-radius:50%;display:block}
+
+/* ---------- 4 model ---------- */
+.cimas{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:38px}
+.cima{border:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(4px);border-radius:16px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.cima .L{font-family:var(--display);font-size:72px;line-height:.8;color:var(--orange)}
+.cima h3{font-size:24px}
+.cima p{font-size:14px;line-height:1.45;color:var(--mute)}
+.cima .it{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.45}
+.cima .it span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.cima .meter{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:2px}
+.cima .meter i{display:block;height:100%;width:var(--w);background:var(--orange);transform-origin:left}
+.on .cima .meter i{animation:grow 1.4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms + 500ms)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.scale7{display:flex;align-items:center;gap:6px;margin-top:22px;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.08em}
+.scale7 span{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;background:#fff;color:var(--ink)}
+.scale7 span.hi{background:var(--orange);border-color:var(--orange);color:#fff}
+
+/* ---------- 5 process ---------- */
+.steps{display:grid;gap:0;margin-top:28px;max-width:540px}
+.st{display:grid;grid-template-columns:96px 1fr;gap:18px;padding:9px 0;border-top:1px solid var(--line);transition:opacity .4s}
+.st:last-child{border-bottom:1px solid var(--line)}
+.st .wk{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:4px}
+.st h3{font-family:var(--body);font-weight:700;font-size:16.5px;letter-spacing:0;margin-bottom:3px}
+.st p{font-size:14px;line-height:1.45;color:var(--mute)}
+.st.act .wk{color:var(--orange)}
+.st.act h3::after{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--orange);margin-left:10px;vertical-align:middle;animation:pulse 1.6s infinite}
+.stats{display:flex;gap:44px;margin-top:16px}
+.stats div{font-size:13px;color:var(--mute)}
+.stats b{display:block;font-family:var(--display);font-weight:400;font-size:28px;color:var(--ink);line-height:1.05}
+
+/* ---------- 6 respondent ---------- */
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:22px 34px;margin-top:34px;max-width:560px}
+.fact{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+.fact b{display:block;font-weight:700;font-size:16px;margin-bottom:3px}
+.fact span{font-size:14px;line-height:1.45;color:var(--mute)}
+.phone{position:absolute;right:150px;top:72px;width:300px;height:576px;border-radius:44px;background:var(--ink);padding:11px;box-shadow:0 40px 80px -30px rgba(26,26,26,.45),0 0 0 1px #2a2a2a}
+.screen{height:100%;border-radius:34px;background:var(--paper);overflow:hidden;padding:26px 18px 16px;display:flex;flex-direction:column;gap:7px}
+.screen .bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
+.screen .bar i{display:block;height:100%;width:20%;background:var(--orange);transition:width .5s}
+.screen .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-top:6px}
+.screen .q{font-family:var(--display);font-size:19px;line-height:1.22;margin-bottom:4px;min-height:48px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:12.5px;display:flex;justify-content:space-between;background:#fff;transition:background .25s,border-color .25s,color .25s}
+.opt small{font-family:var(--mono);color:var(--faint)}
+.opt.sel{background:var(--orange);border-color:var(--orange);color:#fff}
+.opt.sel small{color:#fff}
+.tap{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(250,75,30,.25);border:2px solid var(--orange);pointer-events:none;opacity:0;transition:top .45s cubic-bezier(.3,.7,.2,1),opacity .2s;right:60px}
+.tap.show{opacity:1}
+
+/* ---------- 7 reports ---------- */
+.reports{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:28px}
+.rc{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.88);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rc .hd{display:flex;justify-content:space-between;align-items:center}
+.rc h3{font-size:24px}
+.pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);padding:4px 9px;border-radius:20px}
+.rb{display:grid;grid-template-columns:250px 1fr;gap:14px;align-items:center}
+.radar text{font-family:var(--mono);font-size:10.5px;fill:var(--mute);letter-spacing:.04em}
+.radar .ring{fill:none;stroke:var(--line)}
+.radar .self{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:5 4}
+.radar .oth{fill:rgba(250,75,30,.14);stroke:var(--orange);stroke-width:2.2}
+.on .radar .oth{animation:radar 1.4s cubic-bezier(.2,.7,.2,1) both .5s;transform-origin:150px 150px;transform-box:view-box}
+@keyframes radar{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;line-height:1.4}
+.ul li{display:grid;grid-template-columns:14px 1fr;gap:8px}
+.ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:7px}
+.heat{width:100%;border-collapse:separate;border-spacing:4px;font-size:13px;font-variant-numeric:tabular-nums}
+.heat th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);font-weight:400;text-transform:uppercase;padding:2px}
+.heat th:first-child,.heat td:first-child{text-align:left}
+.heat td{text-align:center;padding:7px 2px;border-radius:7px;background:var(--paper-2)}
+.heat td:first-child{background:none;color:var(--ink);font-size:13px;white-space:nowrap}
+.heat td.g{background:var(--green-soft);color:var(--green);font-weight:700}
+.heat td.r{background:var(--orange-soft);color:#C2350F;font-weight:700}
+.heat td.x{background:none;font-weight:700}
+.on .heat td{animation:pop .5s ease both;animation-delay:calc(var(--d,0) * 40ms + 400ms)}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.note{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--faint);line-height:1.6}
+
+/* ---------- 8 NOM ---------- */
+.guides{display:grid;gap:0;margin-top:28px;max-width:540px}
+.gd{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line);align-items:baseline}
+.gd:last-child{border-bottom:1px solid var(--line)}
+.gd .n{font-family:var(--display);font-size:26px;color:var(--orange)}
+.gd .n small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase;margin-top:2px}
+.gd h3{font-family:var(--body);font-weight:700;font-size:16px;letter-spacing:0;margin-bottom:2px}
+.gd p{font-size:14px;color:var(--mute);line-height:1.45}
+.bridge{margin-top:22px;max-width:540px;display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:center;font-size:15.5px;line-height:1.5;color:var(--mute)}
+.bridge b{color:var(--ink)}
+
+/* ---------- 9 coach ---------- */
+.coach{padding:0;flex-direction:row}
+.coach .ph{flex:0 0 500px;position:relative;overflow:hidden}
+.coach .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 28%}
+.on .coach .ph img,.coach.on .ph img{animation:kb 14s ease-out both}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+.coach .tx{flex:1;padding:72px 76px 80px;display:flex;flex-direction:column;justify-content:center}
+.creds{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin-top:26px}
+.creds div{padding-top:12px;border-top:1px solid var(--line);font-size:14.5px;line-height:1.45;color:var(--mute)}
+.creds b{display:block;color:var(--ink);font-size:15.5px;margin-bottom:2px}
+.track{display:flex;align-items:center;gap:0;margin-top:26px}
+.track div{flex:1;position:relative;padding-top:18px;font-size:12.5px;color:var(--mute)}
+.track div::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:var(--line)}
+.track div::after{content:"";position:absolute;left:0;top:0;width:11px;height:11px;border-radius:50%;background:var(--paper);border:2px solid var(--orange)}
+.on .track div::after{animation:pulse 2.4s ease-in-out infinite;animation-delay:calc(var(--i,0) * 400ms)}
+.track b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:500}
+
+/* ---------- 10 packages ---------- */
+.pkgs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px;align-items:end}
+.pkg{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.9);padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pkg.star{background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:0 30px 60px -30px rgba(26,26,26,.5)}
+.pkg .top{display:flex;justify-content:space-between;align-items:center}
+.pkg .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.pkg.star .k{color:var(--orange)}
+.pkg h3{font-size:30px}
+.pkg .d{font-size:14px;line-height:1.45;color:var(--mute)}
+.pkg.star .d{color:#C9C1BB}
+.pkg ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px;line-height:1.4}
+.pkg li{display:grid;grid-template-columns:16px 1fr;gap:8px}
+.pkg li::before{content:"";width:9px;height:5px;border-left:1.6px solid var(--orange);border-bottom:1.6px solid var(--orange);transform:rotate(-45deg);margin-top:5px}
+.pkg li.plus{font-weight:700}
+.pkg.star .icb{background:#262626;border-color:#333}
+.alt{display:flex;align-items:center;gap:6px}
+.alt i{display:block;width:8px;border-radius:2px;background:var(--line)}
+.alt i.on2{background:var(--orange)}
+.pkg.star .alt i{background:#3a3a3a}.pkg.star .alt i.on2{background:var(--orange)}
+.extras{margin-top:16px;font-size:13.5px;color:var(--mute);display:flex;gap:6px 28px;flex-wrap:wrap}
+.extras b{color:var(--ink)}
+
+/* ---------- 11 trust ---------- */
+.rules{display:grid;gap:0;margin-top:26px;max-width:560px}
+.rule{display:grid;grid-template-columns:52px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line);align-items:center}
+.rule:last-child{border-bottom:1px solid var(--line)}
+.rule h3{font-family:var(--body);font-weight:700;font-size:16px;letter-spacing:0;margin-bottom:3px}
+.rule p{font-size:14px;line-height:1.45;color:var(--mute)}
+
+/* ---------- 12 close (ink) ---------- */
+.close{color:var(--paper);justify-content:center}
+.close .h1{font-size:92px;line-height:.98}
+.close .lede{color:#C9C1BB}
+.next{display:grid;grid-template-columns:repeat(3,180px);gap:26px;margin-top:34px}
+.next div{border-top:1px solid #3a3a3a;padding-top:12px;font-size:14px;line-height:1.45;color:#C9C1BB}
+.next b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);font-weight:500;margin-bottom:4px}
+.contact{margin-top:30px;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--paper)}
+.contact a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--orange)}
+.close .foot{color:#77706B}
+.close .logo{width:210px;margin-bottom:34px}
+
+/* ---------- phones: reflow into a scrolling page, no 3D ---------- */
+html.flow,html.flow body{height:auto}
+html.flow .stage{position:static;display:block;overflow:visible}
+html.flow .deck{width:auto;height:auto;transform:none!important;background:none}
+html.flow #gl,html.flow .nav,html.flow .prog,html.flow .tag360,html.flow .tap{display:none}
+html.flow .slide{position:relative;inset:auto;opacity:1;visibility:visible;padding-block:52px 40px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+html.flow .slide.close{background:var(--ink)}
+html.flow .foot{position:static;margin-top:28px;font-size:9.5px;gap:10px}
+html.flow .h1,html.flow .cover .h1{font-size:42px}
+html.flow .close .h1{font-size:48px}
+html.flow .h2{font-size:31px}
+html.flow .lede{font-size:16.5px}
+html.flow .cover .col{height:auto;gap:30px}
+html.flow .cimas{grid-template-columns:1fr 1fr}
+html.flow .cima .L{font-size:52px}
+html.flow .facts,html.flow .reports,html.flow .creds,html.flow .pkgs,html.flow .next{grid-template-columns:1fr}
+html.flow .rb{grid-template-columns:1fr}
+html.flow .radar{max-width:260px;margin:0 auto}
+html.flow .phone{position:relative;right:auto;top:auto;margin:34px auto 0;width:270px;height:520px}
+html.flow .coach{flex-direction:column;padding:0}
+html.flow .coach .ph{flex:none;height:320px}
+html.flow .coach .tx{padding:36px max(20px,env(safe-area-inset-right,0px)) 40px max(20px,env(safe-area-inset-left,0px))}
+html.flow .stats{flex-wrap:wrap;gap:20px 32px}
+html.flow .heat-wrap{overflow-x:auto}
+html.flow .legend div{grid-template-columns:14px 1fr;}
+html.flow .legend div span{grid-column:2}
+html.flow .st{grid-template-columns:1fr;gap:4px}
+html.flow .track{flex-wrap:wrap;gap:16px}
+html.flow .track div{flex:1 1 40%}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog" aria-hidden="true"></div>
+<main class="stage" id="stage">
+<div class="deck" id="deck">
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<!-- 01 · Portada -->
+<section class="slide cover" data-scene="orbit" aria-label="Portada">
+  <div class="col">
+    <img class="logo rv" src="logo-cima.png" alt="CIMA Leadership Institute" style="--i:0">
+    <div>
+      <div class="kicker rv" style="--i:1">Evaluación <b>360°</b> · Liderazgo</div>
+      <h1 class="h1 rv" style="--i:2">Liderazgo visto desde <em>todos los ángulos.</em></h1>
+      <p class="lede rv" style="margin-top:22px;--i:3">Cómo ven a sus líderes quienes trabajan con ellos todos los días, y qué hacer con eso.</p>
+    </div>
+    <div class="chips rv" style="--i:4"><span class="chip"><i></i>Plataforma propia</span><span class="chip"><i></i>NOM-035</span><span class="chip"><i></i>Coaching con Marcelo Michel Leaño</span></div>
+  </div>
+  <div class="tag360 rv" style="--i:5">Jefe · Pares · Colaboradores<br>+ Autoevaluación</div>
+</section>
+
+<!-- 02 · Problema -->
+<section class="slide" data-scene="mirror" aria-label="El punto de partida">
+  <div class="col">
+    <div class="kicker rv">01 · El punto de partida</div>
+    <h2 class="h2 rv" style="--i:1">Un líder escucha a su jefe una vez al año. <em>Su equipo lo vive todos los días.</em></h2>
+    <div class="pains">
+      <div class="pain rv" style="--i:2"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:2"><g class="blink"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></g><path d="M4 20 20 4"/></svg></div><div><h3>Puntos ciegos</h3><p>La mayoría de los líderes se califica distinto de como lo percibe su equipo, y nadie se lo dice de frente.</p></div></div>
+      <div class="pain rv" style="--i:3"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><g class="spin"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><polyline points="18 3 18 7 14 7"/><polyline points="6 21 6 17 10 17"/></g></svg></div><div><h3>Rotación y clima</h3><p>La relación con el jefe directo es de las razones más comunes para quedarse o irse.</p></div></div>
+      <div class="pain rv" style="--i:4"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><path d="M12 2.5 4 5.5v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10v-6z"/><polyline class="bob" points="8.5 12 11 14.5 15.5 9.5"/></svg></div><div><h3>Obligación legal</h3><p>La NOM-035 exige identificar factores de riesgo psicosocial, y el liderazgo es uno de ellos.</p></div></div>
+    </div>
+  </div>
+  <div class="cap3d rv" style="left:830px;top:600px;--i:5"><i style="background:var(--orange)"></i>Cómo me veo</div>
+  <div class="cap3d rv" style="left:1010px;top:600px;--i:6"><i style="background:var(--ink)"></i>Cómo me ven</div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>02 / 12</span></div>
+</section>
+
+<!-- 03 · Qué es -->
+<section class="slide" data-scene="orbit" aria-label="Qué es una evaluación 360">
+  <div class="col">
+    <div class="kicker rv">02 · Qué es</div>
+    <h2 class="h2 rv" style="--i:1">Cuatro miradas sobre <em>la misma persona.</em></h2>
+    <p class="lede rv" style="margin-top:18px;--i:2">Cada líder es evaluado por quienes lo rodean y por sí mismo, con las mismas conductas observables. La diferencia entre las miradas es donde está el aprendizaje.</p>
+    <div class="legend">
+      <div class="rv" style="--i:3"><i style="background:var(--ink)"></i><b>Autoevaluación</b><span>Cómo se ve a sí mismo.</span></div>
+      <div class="rv" style="--i:4"><i style="background:var(--orange)"></i><b>Jefe directo</b><span>Resultados y dirección.</span></div>
+      <div class="rv" style="--i:5"><i style="background:var(--amber)"></i><b>Pares</b><span>Colaboración entre áreas, 2 a 3 personas.</span></div>
+      <div class="rv" style="--i:6"><i style="background:var(--green)"></i><b>Colaboradores</b><span>Cómo se vive su liderazgo, 3 a 4 personas.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>6 a 9 evaluadores por líder</span><span>03 / 12</span></div>
+</section>
+
+<!-- 04 · Modelo -->
+<section class="slide" data-scene="grid" aria-label="Modelo de Liderazgo CIMA">
+  <div class="kicker rv">03 · Qué medimos</div>
+  <h2 class="h2 rv" style="--i:1">Modelo de Liderazgo CIMA®: <em>cinco dimensiones</em> que se pueden observar.</h2>
+  <div class="cimas">
+    <div class="cima rv" style="--i:2"><div class="L">C</div><h3>Conciencia</h3><p>Ve la realidad con claridad y decide sin evadir.</p><div class="meter" style="--w:72%;--i:2"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Toma decisiones difíciles a tiempo, sin posponerlas.</div></div>
+    <div class="cima rv" style="--i:3"><div class="L">I</div><h3>Identidad</h3><p>Actúa con coherencia y estándares altos.</p><div class="meter" style="--w:86%;--i:3"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Lo que dice coincide con lo que hace.</div></div>
+    <div class="cima rv" style="--i:4"><div class="L">M</div><h3>Mentalidad</h3><p>Mantiene enfoque y temple bajo presión.</p><div class="meter" style="--w:64%;--i:4"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Convierte los tropiezos en aprendizaje para el equipo.</div></div>
+    <div class="cima rv" style="--i:5"><div class="L">A</div><h3>Alma</h3><p>Lidera con propósito y cuida a las personas.</p><div class="meter" style="--w:78%;--i:5"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Explica el porqué y el propósito detrás de lo que pide.</div></div>
+    <div class="cima rv" style="--i:6"><div class="L">S</div><h3>Sistemas</h3><p>Convierte la visión en ejecución disciplinada.</p><div class="meter" style="--w:84%;--i:6"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Da seguimiento puntual a acuerdos y compromisos.</div></div>
+  </div>
+  <div class="scale7 rv" style="--i:7">ESCALA&nbsp;&nbsp;<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span class="hi">6</span><span>7</span>&nbsp;&nbsp;DE NUNCA A SIEMPRE · 20 CONDUCTAS · AJUSTABLE A CADA EMPRESA</div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>04 / 12</span></div>
+</section>
+
+<!-- 05 · Proceso -->
+<section class="slide" data-scene="plates5" aria-label="Cómo funciona">
+  <div class="col">
+    <div class="kicker rv">04 · Cómo funciona</div>
+    <h2 class="h2 rv" style="--i:1;font-size:42px">Del arranque al plan de desarrollo <em>en seis semanas.</em></h2>
+    <div class="steps" id="steps">
+      <div class="st rv" style="--i:2"><div class="wk">Semana 1</div><div><h3>Arranque</h3><p>Modelo, líderes y quién evalúa a quién, con dirección.</p></div></div>
+      <div class="st rv" style="--i:3"><div class="wk">Semanas 2–3</div><div><h3>Aplicación</h3><p>Enlaces por correo o WhatsApp y avance en tiempo real.</p></div></div>
+      <div class="st rv" style="--i:4"><div class="wk">Semana 4</div><div><h3>Reportes</h3><p>Individual confidencial por líder y ejecutivo para dirección.</p></div></div>
+      <div class="st rv" style="--i:5"><div class="wk">Semanas 4–5</div><div><h3>Retroalimentación</h3><p>Sesión 1 a 1 de 60 minutos con un coach certificado.</p></div></div>
+      <div class="st rv" style="--i:6"><div class="wk">Semana 6 +</div><div><h3>Desarrollo</h3><p>Plan Individual de Desarrollo, coaching y segunda medición.</p></div></div>
+    </div>
+    <div class="stats rv" style="--i:7"><div><b>10–12 min</b>por cuestionario</div><div><b>0</b>cuentas que crear</div><div><b>≥ 3</b>respuestas por grupo</div></div>
+  </div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>05 / 12</span></div>
+</section>
+
+<!-- 06 · Evaluador -->
+<section class="slide" data-scene="grid" aria-label="La experiencia del evaluador">
+  <div class="col">
+    <div class="kicker rv">05 · Para quien evalúa</div>
+    <h2 class="h2 rv" style="--i:1">Se contesta desde el celular, <em>en un descanso.</em></h2>
+    <p class="lede rv" style="margin-top:18px;--i:2">Sin descargas ni contraseñas. Un enlace personal que sólo sirve una vez.</p>
+    <div class="facts">
+      <div class="fact rv" style="--i:3"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div><div><b>1 enlace personal</b><span>por correo o WhatsApp</span></div></div>
+      <div class="fact rv" style="--i:4"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><div><b>20 conductas</b><span>escala de 0 a 7 y dos preguntas abiertas</span></div></div>
+      <div class="fact rv" style="--i:5"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:5"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/><path d="M10.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/></svg></div><div><b>Anónimo</b><span>pares y colaboradores sólo se ven agrupados</span></div></div>
+      <div class="fact rv" style="--i:6"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:6"><g class="swing"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></g></svg></div><div><b>Recordatorios</b><span>a quien todavía no contesta</span></div></div>
+    </div>
+  </div>
+  <div class="phone rv" style="--i:3" aria-hidden="true">
+    <div class="screen">
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="k" id="qk">Identidad · 5 de 20</div>
+      <div class="q" id="qq">Lo que dice coincide con lo que hace.</div>
+      <div id="opts"></div>
+    </div>
+    <div class="tap" id="tap"></div>
+  </div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>06 / 12</span></div>
+</section>
+
+<!-- 07 · Reportes -->
+<section class="slide" data-scene="grid" aria-label="Lo que reciben">
+  <div class="kicker rv">06 · Lo que reciben</div>
+  <h2 class="h2 rv" style="--i:1">Un reporte para cada líder <em>y otro para dirección.</em></h2>
+  <div class="reports">
+    <div class="rc rv" style="--i:2">
+      <div class="hd"><h3>Reporte individual</h3><span class="pill">Ejemplo</span></div>
+      <div class="rb">
+        <svg class="radar" viewBox="-44 0 388 300" role="img" aria-label="Ejemplo: autoevaluación contra la mirada de los demás por competencia">
+          <polygon class="ring" points="150,84 212.8,129.6 188.8,203.4 111.2,203.4 87.2,129.6"/>
+          <polygon class="ring" points="150,40 254.6,116 214.7,239 85.3,239 45.4,116"/>
+          <g stroke="#E7E1DA"><line x1="150" y1="150" x2="150" y2="40"/><line x1="150" y1="150" x2="254.6" y2="116"/><line x1="150" y1="150" x2="214.7" y2="239"/><line x1="150" y1="150" x2="85.3" y2="239"/><line x1="150" y1="150" x2="45.4" y2="116"/></g>
+          <polygon class="self" points="150,52 244,119.5 207,228 93,228 56,119.5"/>
+          <polygon class="oth" points="150,62 240,120.8 199.2,217.6 98.3,221.2 60,120.8"/>
+          <text x="150" y="26" text-anchor="middle">CONCIENCIA</text>
+          <text x="262" y="112">IDENTIDAD</text>
+          <text x="214" y="262" text-anchor="middle">MENTALIDAD</text>
+          <text x="86" y="262" text-anchor="middle">ALMA</text>
+          <text x="38" y="112" text-anchor="end">SISTEMAS</text>
+        </svg>
+        <ul class="ul"><li>Él contra los demás, por competencia</li><li>Comparativo por tipo de evaluador</li><li>Puntos ciegos y fortalezas ocultas</li><li>Conductas mejor y peor evaluadas</li><li>Comentarios anónimos textuales</li></ul>
+      </div>
+      <p class="note">LÍNEA PUNTEADA: AUTOEVALUACIÓN · ÁREA NARANJA: JEFE, PARES Y COLABORADORES</p>
+    </div>
+    <div class="rc rv" style="--i:3">
+      <div class="hd"><h3>Reporte ejecutivo</h3><span class="pill">Ejemplo</span></div>
+      <div class="heat-wrap">
+      <table class="heat">
+        <thead><tr><th>Líder</th><th>C</th><th>I</th><th>M</th><th>A</th><th>S</th><th>Índice</th></tr></thead>
+        <tbody>
+          <tr><td>Gerente Ventas</td><td style="--d:1">5.6</td><td class="g" style="--d:2">6.0</td><td class="r" style="--d:3">4.8</td><td style="--d:4">5.6</td><td class="g" style="--d:5">6.0</td><td class="x" style="--d:6">5.6</td></tr>
+          <tr><td>Gerente Operaciones</td><td class="g" style="--d:3">6.2</td><td style="--d:4">5.5</td><td style="--d:5">5.3</td><td class="r" style="--d:6">4.5</td><td class="g" style="--d:7">6.3</td><td class="x" style="--d:8">5.6</td></tr>
+          <tr><td>Gerente Finanzas</td><td style="--d:5">5.3</td><td class="g" style="--d:6">6.4</td><td style="--d:7">5.6</td><td style="--d:8">5.2</td><td class="r" style="--d:9">4.6</td><td class="x" style="--d:10">5.4</td></tr>
+          <tr><td>Gerente Talento</td><td class="g" style="--d:7">5.9</td><td class="g" style="--d:8">6.2</td><td style="--d:9">5.5</td><td class="g" style="--d:10">6.4</td><td style="--d:11">5.3</td><td class="x" style="--d:12">5.9</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <ul class="ul"><li>Índice 360° del equipo y fortaleza colectiva</li><li>Prioridad de desarrollo para la organización</li><li>Patrones de equipo, sin exponer a nadie</li></ul>
+      <p class="note">ESCALA 0–7 · VERDE: FORTALEZA (5.9+) · NARANJA: OPORTUNIDAD (4.8 O MENOS) · DATOS ILUSTRATIVOS</p>
+    </div>
+  </div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>07 / 12</span></div>
+</section>
+
+<!-- 08 · NOM-035 -->
+<section class="slide" data-scene="plates3" aria-label="NOM-035">
+  <div class="col">
+    <div class="kicker rv">07 · NOM-035-STPS-2018</div>
+    <h2 class="h2 rv" style="--i:1">Cumplir la norma y <em>atacar la causa</em> en el mismo proceso.</h2>
+    <div class="guides">
+      <div class="gd rv" style="--i:2"><div class="n">Guía I<small>Todas</small></div><div><h3>Acontecimientos traumáticos severos</h3><p>Identifica a quien requiere valoración clínica.</p></div></div>
+      <div class="gd rv" style="--i:3"><div class="n">Guía II<small>16 a 50</small></div><div><h3>Factores de riesgo psicosocial</h3><p>Centros de trabajo de 16 a 50 colaboradores.</p></div></div>
+      <div class="gd rv" style="--i:4"><div class="n">Guía III<small>Más de 50</small></div><div><h3>Riesgo psicosocial y entorno organizacional</h3><p>Centros de trabajo de más de 50 colaboradores.</p></div></div>
+    </div>
+    <div class="bridge rv" style="--i:5"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:5"><circle cx="12" cy="12" r="8.5"/><circle class="pulse" cx="12" cy="12" r="4"/><circle class="dot" cx="12" cy="12" r="1.4"/></svg></div><p>La norma mide <b>Liderazgo y relaciones en el trabajo</b>. El 360° muestra <b>qué líderes y qué conductas</b> generan ese riesgo, para corregirlo con coaching.</p></div>
+  </div>
+  <div class="foot"><span>Informe por categoría y dominio, listo para la STPS</span><span>08 / 12</span></div>
+</section>
+
+<!-- 09 · Coach -->
+<section class="slide coach" data-scene="none" aria-label="Coaching con Marcelo Michel Leaño">
+  <div class="ph"><img src="marcelo.jpg" alt="Marcelo Michel Leaño"></div>
+  <div class="tx">
+    <div class="kicker rv">08 · Del diagnóstico a la acción</div>
+    <h2 class="h2 rv" style="--i:1">El reporte no cambia a nadie. <em>La conversación sí.</em></h2>
+    <p class="lede rv" style="margin-top:18px;--i:2">Cada líder revisa sus resultados con Marcelo Michel Leaño y sale con un Plan Individual de Desarrollo de máximo dos metas, escritas como conductas que su equipo va a notar.</p>
+    <div class="creds rv" style="--i:3">
+      <div><b>Coach certificado</b>Metodología propia de alto rendimiento.</div>
+      <div><b>Exdirector técnico en Liga MX</b>Campeón con Necaxa; dirigió a Chivas.</div>
+      <div><b>Conferencista internacional</b>Liderazgo y alto desempeño.</div>
+      <div><b>Autor de <i>Nos vemos en la cima</i></b>Editorial Porrúa.</div>
+    </div>
+    <div class="track rv" style="--i:4"><div style="--i:0"><b>Sesión 1</b>Resultados y plan</div><div style="--i:1"><b>Día 21</b>Seguimiento</div><div style="--i:2"><b>Día 45</b>Cierre</div><div style="--i:3"><b>Mes 6</b>Segunda medición</div></div>
+  </div>
+</section>
+
+<!-- 10 · Paquetes -->
+<section class="slide" data-scene="grid" aria-label="Paquetes">
+  <div class="kicker rv">09 · Paquetes</div>
+  <h2 class="h2 rv" style="--i:1">Tres niveles, según lo que la empresa <em>quiere lograr.</em></h2>
+  <div class="pkgs">
+    <div class="pkg rv" style="--i:2">
+      <div class="top"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:2"><g class="bob"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg></div><div class="alt"><i class="on2" style="height:8px"></i><i style="height:14px"></i><i style="height:20px"></i></div></div>
+      <div class="k">El diagnóstico</div><h3>Esencial</h3>
+      <p class="d">La foto completa de cómo perciben a cada líder, 100% en línea.</p>
+      <ul><li>Modelo CIMA® o modelo genérico</li><li>Evaluadores sugeridos por organigrama</li><li>Aplicación en línea con enlace personal</li><li>Seguimiento y recordatorios</li><li>Reporte individual por líder</li><li>Reporte ejecutivo con mapa de calor</li></ul>
+    </div>
+    <div class="pkg star rv" style="--i:3">
+      <div class="top"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><path d="M4 5h11v8H9l-3.5 3v-3H4z"/><path class="bob" d="M15 9h5v8h-1.5v3L15 17h-4v-2"/></svg></div><div class="alt"><i class="on2" style="height:8px"></i><i class="on2" style="height:14px"></i><i style="height:20px"></i></div></div>
+      <div class="k">Recomendado</div><h3>Profesional</h3>
+      <p class="d">Cada líder entiende sus resultados y sale con un plan.</p>
+      <ul><li>Todo lo de Esencial</li><li class="plus">Competencias ajustadas a su cultura</li><li class="plus">Retroalimentación 1 a 1 (60 min)</li><li class="plus">Plan Individual de Desarrollo</li></ul>
+    </div>
+    <div class="pkg rv" style="--i:4">
+      <div class="top"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><path d="M2.5 20 9 9l4 6 2.5-3.5L21.5 20z"/><path d="M15.5 11.5V3.5"/><path class="swing" d="M15.5 3.5h4.5l-1.3 1.6 1.3 1.6h-4.5"/></svg></div><div class="alt"><i class="on2" style="height:8px"></i><i class="on2" style="height:14px"></i><i class="on2" style="height:20px"></i></div></div>
+      <div class="k">La transformación</div><h3>Liderazgo CIMA</h3>
+      <p class="d">Diagnóstico, coaching con Marcelo Michel Leaño y medición del avance.</p>
+      <ul><li>Todo lo de Profesional</li><li class="plus">3 sesiones de coaching por líder</li><li class="plus">Seguimiento del plan en la plataforma</li><li class="plus">Segunda medición a los 6 meses</li></ul>
+    </div>
+  </div>
+  <div class="extras rv" style="--i:5"><span><b>Se suma a cualquier paquete:</b> NOM-035 por colaborador · modelo de competencias a la medida · sesiones extra de coaching</span><span><b>Inversión:</b> por persona evaluada, en una propuesta a la medida</span></div>
+  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>10 / 12</span></div>
+</section>
+
+<!-- 11 · Confianza -->
+<section class="slide" data-scene="particles" aria-label="Confidencialidad">
+  <div class="col">
+    <div class="kicker rv">10 · Confianza</div>
+    <h2 class="h2 rv" style="--i:1">La gente dice la verdad <em>cuando sabe que está protegida.</em></h2>
+    <div class="rules">
+      <div class="rule rv" style="--i:2"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:2"><circle cx="12" cy="7" r="2.6"/><circle cx="6" cy="16" r="2.6"/><circle cx="18" cy="16" r="2.6"/><path class="pulse" d="M12 12.5 8.5 14.5M12 12.5l3.5 2"/></svg></div><div><h3>Anonimato real</h3><p>Pares y colaboradores se muestran sólo con 3 respuestas o más; si no, se agrupan.</p></div></div>
+      <div class="rule rv" style="--i:3"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path class="bob" d="M8 11V8a4 4 0 0 1 8 0v3"/><circle class="dot" cx="12" cy="15.8" r="1.3"/></svg></div><div><h3>Reportes bajo control</h3><p>La empresa decide si Capital Humano ve los reportes individuales o sólo el ejecutivo.</p></div></div>
+      <div class="rule rv" style="--i:4"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><path d="M12 21C7 17.5 3.5 14.5 3.5 10A4.5 4.5 0 0 1 12 7.5 4.5 4.5 0 0 1 20.5 10c0 4.5-3.5 7.5-8.5 11z" class="pulse"/></svg></div><div><h3>Para desarrollar, no para castigar</h3><p>Recomendamos no ligarlo a sueldo ni bonos: así la gente califica con honestidad.</p></div></div>
+      <div class="rule rv" style="--i:5"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:5"><path d="M4 5h16v11H9l-5 4z"/><path class="bob" d="M9 10.5h6"/></svg></div><div><h3>Notas de coaching privadas</h3><p>Lo que se habla en las sesiones queda entre el líder y su coach.</p></div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Mínimo 3 respuestas por grupo</span><span>11 / 12</span></div>
+</section>
+
+<!-- 12 · Cierre -->
+<section class="slide close" data-scene="mountain" data-ink="1" aria-label="Siguiente paso">
+  <div class="col" style="max-width:640px">
+    <img class="logo rv" src="logo-blanco.png" alt="CIMA Leadership Institute">
+    <h1 class="h1 rv" style="--i:1">Nos vemos en <em>la cima.</em></h1>
+    <p class="lede rv" style="margin-top:20px;--i:2">El primer paso es una reunión de 30 minutos para entender a su equipo y armar la propuesta.</p>
+    <div class="next rv" style="--i:3">
+      <div><b>01 · Diagnóstico</b>Líderes, niveles y lo que la empresa quiere resolver.</div>
+      <div><b>02 · Propuesta</b>Paquete, calendario e inversión en 48 horas.</div>
+      <div><b>03 · Arranque</b>Junta con dirección y lanzamiento en la semana 1.</div>
+    </div>
+    <p class="contact rv" style="--i:4"><a href="https://www.cimaleadership.com.mx/" target="_blank" rel="noopener">cimaleadership.com.mx</a> &nbsp;·&nbsp; simon@cimaleadership.com.mx</p>
+  </div>
+  <div class="foot"><span>CIMA Leadership Institute®</span><span>12 / 12</span></div>
+</section>
+
+</div>
+</main>
+
+<nav class="nav" aria-label="Navegación de la presentación">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <span class="count" id="count">01 / 12</span>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <button id="full" aria-label="Pantalla completa" title="Pantalla completa">⤢</button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var root=document.documentElement, deck=document.getElementById('deck'), stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide')), N=slides.length, cur=0, scale=1;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.ai *').forEach(function(e){ if(!/^(g)$/i.test(e.tagName)) e.setAttribute('pathLength','1'); });
+  function pad(n){return (n<10?'0':'')+n}
+
+  /* ---------------- WebGL layer ---------------- */
+  var GL=null;
+  function initGL(){
+    if(!window.THREE) return;
+    try{
+      var T=THREE, canvas=document.getElementById('gl');
+      var r=new T.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+      r.setClearColor(0x000000,0);
+      var scene=new T.Scene(), cam=new T.PerspectiveCamera(32,1280/720,.1,100);
+      cam.position.set(0,1.1,12); cam.lookAt(0,0,0);
+      scene.add(new T.AmbientLight(0xffffff,.72));
+      var dl=new T.DirectionalLight(0xffffff,.75); dl.position.set(5,9,7); scene.add(dl);
+      var ORANGE=0xFA4B1E, INK=0x1A1A1A, AMBER=0xC98A1B, GREEN=0x2E7D52;
+      function mat(c,o){return new T.MeshStandardMaterial({color:c,roughness:.45,metalness:.05,transparent:true,opacity:o==null?1:o})}
+      function lmat(c,o){return new T.LineBasicMaterial({color:c,transparent:true,opacity:o})}
+      function reg(g){g.traverse(function(o){if(o.material){o.userData.base=o.material.opacity;}}); g.userData.v=0; scene.add(g); return g;}
+
+      // floor grid
+      var grid=new T.GridHelper(40,40,0xd9d1c9,0xe9e3dc); grid.position.y=-2.6; grid.material.transparent=true; grid.material.opacity=.55; scene.add(grid);
+
+      // ORBIT: the 360 network
+      var orbit=new T.Group(), rings=[], nodes=[];
+      var core=new T.Mesh(new T.SphereGeometry(.52,48,32),new T.MeshStandardMaterial({color:ORANGE,roughness:.35,emissive:ORANGE,emissiveIntensity:.18,transparent:true,opacity:1}));
+      orbit.add(core);
+      var halo=new T.Mesh(new T.SphereGeometry(.8,32,24),mat(ORANGE,.08)); orbit.add(halo);
+      var spec=[[1.55,[.9,0,.2],[[ORANGE,0]]],[2.2,[1.25,.5,0],[[AMBER,0],[AMBER,Math.PI]]],[2.85,[1.05,-.6,.35],[[GREEN,.4],[GREEN,2.5],[GREEN,4.6]]]];
+      spec.forEach(function(s,ri){
+        var piv=new T.Object3D(); piv.rotation.set(s[1][0],s[1][1],s[1][2]); orbit.add(piv);
+        var ring=new T.Mesh(new T.TorusGeometry(s[0],.007,6,160),mat(INK,.28)); piv.add(ring); rings.push(piv);
+        s[2].forEach(function(n){var m=new T.Mesh(new T.SphereGeometry(.15,24,16),mat(n[0],1)); piv.add(m); nodes.push({m:m,R:s[0],a:n[1],sp:.25/(ri+1)+.1});});
+      });
+      var selfRing=new T.Mesh(new T.TorusGeometry(.78,.012,8,120),mat(INK,.75)); selfRing.rotation.x=1.2; orbit.add(selfRing);
+      var linkGeo=new T.BufferGeometry(); linkGeo.setAttribute('position',new T.BufferAttribute(new Float32Array(nodes.length*6),3));
+      var links=new T.LineSegments(linkGeo,lmat(ORANGE,.35)); orbit.add(links);
+      orbit.rotation.x=.18; reg(orbit);
+
+      // MIRROR: self vs others
+      var mirror=new T.Group();
+      var pSelf=new T.Mesh(new T.BoxGeometry(2.1,2.7,.05),mat(ORANGE,.55)); pSelf.position.set(-.55,0,.5);
+      var pOth=new T.Mesh(new T.BoxGeometry(2.1,2.7,.05),mat(INK,.82)); pOth.position.set(.55,-.25,-.5);
+      [pSelf,pOth].forEach(function(p){var e=new T.LineSegments(new T.EdgesGeometry(p.geometry),lmat(p===pSelf?ORANGE:INK,.9)); p.add(e); mirror.add(p);});
+      var gapLine=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-.55,1.6,.5),new T.Vector3(.55,1.35,-.5)]),lmat(ORANGE,.8)); mirror.add(gapLine);
+      mirror.rotation.y=-.55; reg(mirror);
+
+      // PLATES: stacked layers
+      function plates(n,w,d){
+        var g=new T.Group(), list=[];
+        for(var k=0;k<n;k++){
+          var m=new T.Mesh(new T.BoxGeometry(w,.09,d),mat(0xD9D2CB,.7));
+          var e=new T.LineSegments(new T.EdgesGeometry(m.geometry),lmat(0x8F857D,.5)); m.add(e);
+          m.position.y=(k-(n-1)/2)*.62; g.add(m); list.push({m:m,e:e,y:m.position.y,lift:0});
+        }
+        g.rotation.set(.52,-.72,0); g.userData.list=list; return reg(g);
+      }
+      var p5=plates(5,3.4,2.3), p3=plates(3,3.2,2.2);
+
+      // PARTICLES: scattered → grouped in threes
+      var parts=new T.Group(), dots=[];
+      for(var k=0;k<21;k++){
+        var m=new T.Mesh(new T.SphereGeometry(.11,16,12),mat(k%7===0?ORANGE:INK,k%7===0?1:.75));
+        var gi=Math.floor(k/3), ang=gi/7*Math.PI*2, cx=Math.cos(ang)*1.9, cz=Math.sin(ang)*1.9, cy=(gi%2?.5:-.4);
+        var sub=(k%3)/3*Math.PI*2;
+        dots.push({m:m,a:new T.Vector3((Math.random()-.5)*5.5,(Math.random()-.5)*3.6,(Math.random()-.5)*3),b:new T.Vector3(cx+Math.cos(sub)*.32,cy+Math.sin(sub)*.32,cz)});
+        parts.add(m);
+      }
+      var hulls=[]; for(var h=0;h<7;h++){var ang2=h/7*Math.PI*2; var c=new T.Mesh(new T.TorusGeometry(.55,.006,6,64),mat(ORANGE,.6)); c.position.set(Math.cos(ang2)*1.9,(h%2?.5:-.4),Math.sin(ang2)*1.9); parts.add(c); hulls.push(c);}
+      reg(parts);
+
+      // MOUNTAIN: low-poly peak + the sun dot from the logo
+      var mount=new T.Group();
+      var cone=new T.ConeGeometry(2.6,3.4,7,4);
+      var solid=new T.Mesh(cone,new T.MeshStandardMaterial({color:0x2e2a28,flatShading:true,roughness:.7,transparent:true,opacity:.75}));
+      var wire=new T.LineSegments(new T.WireframeGeometry(cone),lmat(ORANGE,.8));
+      var sun=new T.Mesh(new T.SphereGeometry(.26,32,24),new T.MeshStandardMaterial({color:ORANGE,emissive:ORANGE,emissiveIntensity:.6,transparent:true,opacity:1}));
+      sun.position.set(-1.1,2.25,.4);
+      mount.add(solid); mount.add(wire); mount.add(sun); mount.position.y=-.6; reg(mount);
+
+      var pose={
+        orbit:{g:orbit,x:3.1,y:.15,s:1},
+        mirror:{g:mirror,x:3.1,y:.25,s:1},
+        plates5:{g:p5,x:3.2,y:.1,s:1},
+        plates3:{g:p3,x:3.2,y:0,s:1},
+        particles:{g:parts,x:3.3,y:.1,s:1},
+        mountain:{g:mount,x:3.3,y:-.35,s:.85}
+      };
+      var groups=[orbit,mirror,p5,p3,parts,mount];
+      GL={r:r,scene:scene,cam:cam,grid:grid,pose:pose,groups:groups,orbit:orbit,nodes:nodes,links:links,core:core,halo:halo,selfRing:selfRing,mirror:mirror,p5:p5,p3:p3,parts:parts,dots:dots,hulls:hulls,mount:mount,sun:sun,want:null,gridV:1,t0:performance.now(),T:T,gridTarget:1};
+      groups.forEach(function(g){g.visible=false;});
+    }catch(e){GL=null;}
+  }
+  function sizeGL(){ if(!GL) return; var dpr=Math.min(window.devicePixelRatio||1,2); GL.r.setPixelRatio(dpr*scale); GL.r.setSize(1280,720,false); }
+  function setScene(name,ink){ if(!GL) return; GL.want=GL.pose[name]||null; GL.gridTarget=(name==='none'||ink)?0:1; }
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!GL||root.classList.contains('flow')||document.hidden) return;
+    var t=(now-GL.t0)/1000, sp=reduce?0:1, T=GL.T;
+    GL.groups.forEach(function(g){
+      var target=(GL.want&&GL.want.g===g)?1:0;
+      g.userData.v+= (target-g.userData.v)*.07;
+      var v=g.userData.v; g.visible=v>.01;
+      if(!g.visible) return;
+      var p=null; for(var k in GL.pose){if(GL.pose[k].g===g)p=GL.pose[k];}
+      g.position.x=p.x; g.position.y=p.y+(1-v)*-.8 + (g===GL.mount?-.6:0)*0;
+      var s=p.s*(.86+.14*v); g.scale.set(s,s,s);
+      g.traverse(function(o){ if(o.material&&o.userData.base!=null){ o.material.opacity=o.userData.base*v; } });
+    });
+    GL.gridV+=(GL.gridTarget-GL.gridV)*.06; GL.grid.material.opacity=.55*GL.gridV; GL.grid.visible=GL.gridV>.01;
+
+    // orbit
+    if(GL.orbit.visible){
+      GL.orbit.rotation.y=t*.12*sp;
+      var pos=GL.links.geometry.attributes.position, w=new T.Vector3();
+      GL.nodes.forEach(function(n,i){ n.a+=.008*n.sp*6*sp; n.m.position.set(Math.cos(n.a)*n.R,Math.sin(n.a)*n.R,0);
+        n.m.getWorldPosition(w); GL.orbit.worldToLocal(w); pos.setXYZ(i*2,0,0,0); pos.setXYZ(i*2+1,w.x,w.y,w.z); });
+      pos.needsUpdate=true;
+      var pl=1+Math.sin(t*2)*.06*sp; GL.halo.scale.set(pl*1.1,pl*1.1,pl*1.1); GL.selfRing.rotation.z=t*.6*sp;
+    }
+    if(GL.mirror.visible){ GL.mirror.rotation.y=-.55+Math.sin(t*.6)*.18*sp; GL.mirror.children[0].position.x=-.55+Math.sin(t*.9)*.08*sp; }
+    [GL.p5,GL.p3].forEach(function(g){
+      if(!g.visible) return;
+      var L=g.userData.list, act=Math.floor(t/1.7)%L.length;
+      if(g===GL.p5) setStep(act);
+      L.forEach(function(it,k){ var on=(k===act); it.lift+=((on?.28:0)-it.lift)*.08;
+        it.m.position.y=it.y+it.lift; it.m.material.color.setHex(on?0xFA4B1E:0xD9D2CB); it.m.userData.base=on?.92:.62;
+        it.e.material.color.setHex(on?0xFA4B1E:0x8F857D); });
+      g.rotation.y=-.72+Math.sin(t*.4)*.12*sp;
+    });
+    if(GL.parts.visible){
+      var ph=(Math.sin(t*.7)+1)/2, e=ph*ph*(3-2*ph);
+      GL.dots.forEach(function(d){ d.m.position.lerpVectors(d.a,d.b,e); });
+      GL.hulls.forEach(function(h){ h.userData.base=.6*e; h.lookAt(GL.cam.position); });
+      GL.parts.rotation.y=t*.15*sp;
+    }
+    if(GL.mount.visible){ GL.mount.rotation.y=t*.15*sp; GL.sun.position.y=2.25+Math.sin(t*1.2)*.12*sp; }
+    GL.r.render(GL.scene,GL.cam);
+  }
+  var lastStep=-1;
+  function setStep(k){ if(k===lastStep) return; lastStep=k; var st=document.querySelectorAll('#steps .st'); st.forEach(function(e,i){e.classList.toggle('act',i===k)}); }
+
+  /* ---------------- phone demo ---------------- */
+  var LAB=['Nunca','Casi nunca','Muy pocas veces','Pocas veces','A veces','Con frecuencia','Casi siempre','Siempre'];
+  var Q=[['Identidad · 5 de 20','Lo que dice coincide con lo que hace.',6],['Identidad · 6 de 20','Asume la responsabilidad de los resultados de su equipo.',5],['Mentalidad · 9 de 20','Mantiene la calma en momentos de presión.',4],['Alma · 13 de 20','Explica el porqué detrás de lo que pide.',7]];
+  var opts=document.getElementById('opts'); opts.style.display='grid'; opts.style.gap='6px';
+  opts.innerHTML=LAB.map(function(t,v){return '<div class="opt" data-v="'+v+'">'+t+' <small>'+v+'</small></div>'}).join('');
+  var qi=0, phoneTimer=null;
+  function phoneStep(){
+    var q=Q[qi%Q.length]; document.getElementById('qk').textContent=q[0]; document.getElementById('qq').textContent=q[1];
+    document.getElementById('qbar').style.width=(20+ (qi%Q.length)*20)+'%';
+    var os=opts.querySelectorAll('.opt'); os.forEach(function(o){o.classList.remove('sel')});
+    var tap=document.getElementById('tap'), target=os[q[2]];
+    setTimeout(function(){ tap.style.top=(target.offsetTop+ opts.offsetTop - 2 + 11)+'px'; tap.classList.add('show'); },500);
+    setTimeout(function(){ target.classList.add('sel'); },1050);
+    setTimeout(function(){ tap.classList.remove('show'); },1500);
+    qi++;
+  }
+  function phone(on){ clearInterval(phoneTimer); if(on&&!reduce){ phoneStep(); phoneTimer=setInterval(phoneStep,2600);} else { opts.querySelectorAll('.opt')[6].classList.add('sel'); } }
+
+  /* ---------------- navigation ---------------- */
+  function fromHash(){var m=/^#d-(\d+)$/.exec(location.hash);return m?Math.min(Math.max(+m[1]-1,0),N-1):0}
+  function show(n,push){
+    cur=Math.min(Math.max(n,0),N-1);
+    slides.forEach(function(s,k){ if(k===cur){ s.classList.remove('on'); void s.offsetWidth; s.classList.add('on'); } else s.classList.remove('on'); });
+    var s=slides[cur], ink=!!s.dataset.ink;
+    deck.classList.toggle('inkbg',ink); stage.classList.toggle('inkbg',ink);
+    setScene(s.dataset.scene,ink);
+    phone(cur===5);
+    document.getElementById('count').textContent=pad(cur+1)+' / '+pad(N);
+    document.getElementById('prog').style.width=((cur+1)/N*100)+'%';
+    if(push){try{history.replaceState(null,'','#d-'+(cur+1))}catch(e){}}
+  }
+  function fit(){
+    var w=window.innerWidth,h=window.innerHeight, flow=w<760||(w<1000&&h>w);
+    root.classList.toggle('flow',flow);
+    if(flow){ deck.style.transform=''; slides.forEach(function(s){s.classList.add('on')}); }
+    else { scale=Math.min(w/1280,h/720); deck.style.transform='scale('+scale+')'; sizeGL(); slides.forEach(function(s,k){ if(k!==cur) s.classList.remove('on'); }); }
+  }
+  document.getElementById('prev').onclick=function(){show(cur-1,true)};
+  document.getElementById('next').onclick=function(){show(cur+1,true)};
+  document.getElementById('full').onclick=function(){ try{ if(document.fullscreenElement) document.exitFullscreen(); else root.requestFullscreen().catch(function(){}); }catch(e){} };
+  document.addEventListener('keydown',function(e){
+    if(root.classList.contains('flow')) return;
+    if(['ArrowRight','PageDown',' ','Enter'].indexOf(e.key)>-1){e.preventDefault();show(cur+1,true)}
+    else if(['ArrowLeft','PageUp','Backspace'].indexOf(e.key)>-1){e.preventDefault();show(cur-1,true)}
+    else if(e.key==='Home')show(0,true); else if(e.key==='End')show(N-1,true);
+  });
+  var x0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){ if(x0===null||root.classList.contains('flow'))return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>50) show(cur+(dx<0?1:-1),true); x0=null; });
+  stage.addEventListener('click',function(e){ if(root.classList.contains('flow')||e.target.closest('a,button'))return; show(cur+(e.clientX>window.innerWidth/3?1:-1),true); });
+  window.addEventListener('resize',fit);
+  window.addEventListener('hashchange',function(){show(fromHash(),false)});
+
+  initGL(); fit(); show(fromHash(),false); if(root.classList.contains('flow')) phone(false);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
