@@ -107,16 +107,16 @@ em{font-style:italic;color:var(--orange)}
 .legend i{width:12px;height:12px;border-radius:50%;display:block}
 
 /* ---------- 4 model ---------- */
-.cimas{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:38px}
-.cima{border:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(4px);border-radius:16px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
-.cima .L{font-family:var(--display);font-size:72px;line-height:.8;color:var(--orange)}
-.cima h3{font-size:24px}
-.cima p{font-size:14px;line-height:1.45;color:var(--mute)}
-.cima .it{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.45}
-.cima .it span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
-.cima .meter{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:2px}
-.cima .meter i{display:block;height:100%;width:var(--w);background:var(--orange);transform-origin:left}
-.on .cima .meter i{animation:grow 1.4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms + 500ms)}
+.comps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:38px}
+.comp{border:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(4px);border-radius:16px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.comp .L{font-family:var(--display);font-size:72px;line-height:.8;color:var(--orange)}
+.comp h3{font-size:24px}
+.comp p{font-size:14px;line-height:1.45;color:var(--mute)}
+.comp .it{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.45}
+.comp .it span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.comp .meter{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:2px}
+.comp .meter i{display:block;height:100%;width:var(--w);background:var(--orange);transform-origin:left}
+.on .comp .meter i{animation:grow 1.4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 90ms + 500ms)}
 @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .scale7{display:flex;align-items:center;gap:6px;margin-top:22px;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.08em}
 .scale7 span{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;background:#fff;color:var(--ink)}
@@ -263,8 +263,8 @@ html.flow .close .h1{font-size:48px}
 html.flow .h2{font-size:31px}
 html.flow .lede{font-size:16.5px}
 html.flow .cover .col{height:auto;gap:30px}
-html.flow .cimas{grid-template-columns:1fr 1fr}
-html.flow .cima .L{font-size:52px}
+html.flow .comps{grid-template-columns:1fr 1fr}
+html.flow .comp .L{font-size:52px}
 html.flow .facts,html.flow .reports,html.flow .creds,html.flow .pkgs,html.flow .next{grid-template-columns:1fr}
 html.flow .rb{grid-template-columns:1fr}
 html.flow .radar{max-width:260px;margin:0 auto}
@@ -336,18 +336,18 @@ html.flow .track div{flex:1 1 40%}
 </section>
 
 <!-- 04 · Modelo -->
-<section class="slide" data-scene="grid" aria-label="Modelo de Liderazgo CIMA">
+<section class="slide" data-scene="grid" aria-label="Modelo de Liderazgo 360">
   <div class="kicker rv">03 · Qué medimos</div>
-  <h2 class="h2 rv" style="--i:1">Modelo de Liderazgo CIMA®: <em>cinco dimensiones</em> que se pueden observar.</h2>
-  <div class="cimas">
-    <div class="cima rv" style="--i:2"><div class="L">C</div><h3>Conciencia</h3><p>Ve la realidad con claridad y decide sin evadir.</p><div class="meter" style="--w:72%;--i:2"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Toma decisiones difíciles a tiempo, sin posponerlas.</div></div>
-    <div class="cima rv" style="--i:3"><div class="L">I</div><h3>Identidad</h3><p>Actúa con coherencia y estándares altos.</p><div class="meter" style="--w:86%;--i:3"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Lo que dice coincide con lo que hace.</div></div>
-    <div class="cima rv" style="--i:4"><div class="L">M</div><h3>Mentalidad</h3><p>Mantiene enfoque y temple bajo presión.</p><div class="meter" style="--w:64%;--i:4"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Convierte los tropiezos en aprendizaje para el equipo.</div></div>
-    <div class="cima rv" style="--i:5"><div class="L">A</div><h3>Alma</h3><p>Lidera con propósito y cuida a las personas.</p><div class="meter" style="--w:78%;--i:5"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Explica el porqué y el propósito detrás de lo que pide.</div></div>
-    <div class="cima rv" style="--i:6"><div class="L">S</div><h3>Sistemas</h3><p>Convierte la visión en ejecución disciplinada.</p><div class="meter" style="--w:84%;--i:6"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Da seguimiento puntual a acuerdos y compromisos.</div></div>
+  <h2 class="h2 rv" style="--i:1">Cinco competencias que los expertos miden, <em>en conductas que se pueden observar.</em></h2>
+  <div class="comps">
+    <div class="comp rv" style="--i:2"><div class="L">01</div><h3>Integridad y confianza</h3><p>Actúa con honestidad y es un ejemplo en el que se puede confiar.</p><div class="meter" style="--w:72%;--i:2"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Cumple lo que promete.</div></div>
+    <div class="comp rv" style="--i:3"><div class="L">02</div><h3>Capacidad personal</h3><p>Domina su trabajo, resuelve problemas y no deja de aprender.</p><div class="meter" style="--w:86%;--i:3"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Pide retroalimentación y la usa para mejorar.</div></div>
+    <div class="comp rv" style="--i:4"><div class="L">03</div><h3>Enfoque en resultados</h3><p>Fija metas retadoras y hace que las cosas sucedan.</p><div class="meter" style="--w:64%;--i:4"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Da seguimiento a los acuerdos hasta que se cumplen.</div></div>
+    <div class="comp rv" style="--i:5"><div class="L">04</div><h3>Liderazgo de personas</h3><p>Comunica, inspira y desarrolla a su equipo.</p><div class="meter" style="--w:78%;--i:5"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Reconoce el buen trabajo y celebra los logros.</div></div>
+    <div class="comp rv" style="--i:6"><div class="L">05</div><h3>Visión y cambio</h3><p>Marca el rumbo y lleva al equipo hacia él.</p><div class="meter" style="--w:84%;--i:6"><i></i></div><div class="it"><span>Ejemplo de conducta</span>Impulsa los cambios y ayuda al equipo a adoptarlos.</div></div>
   </div>
-  <div class="scale7 rv" style="--i:7">ESCALA&nbsp;&nbsp;<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span class="hi">6</span><span>7</span>&nbsp;&nbsp;DE NUNCA A SIEMPRE · 20 CONDUCTAS · AJUSTABLE A CADA EMPRESA</div>
-  <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>04 / 12</span></div>
+  <div class="scale7 rv" style="--i:7">ESCALA&nbsp;&nbsp;<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span class="hi">6</span><span>7</span>&nbsp;&nbsp;DE NUNCA A SIEMPRE · 30 CONDUCTAS · AJUSTABLE A CADA EMPRESA</div>
+  <div class="foot"><span>Estructura basada en los modelos de <b>CCL · Korn Ferry · Zenger Folkman · Kouzes y Posner</b></span><span>04 / 12</span></div>
 </section>
 
 <!-- 05 · Proceso -->
@@ -362,7 +362,7 @@ html.flow .track div{flex:1 1 40%}
       <div class="st rv" style="--i:5"><div class="wk">Semanas 4–5</div><div><h3>Retroalimentación</h3><p>Sesión 1 a 1 de 60 minutos con un coach certificado.</p></div></div>
       <div class="st rv" style="--i:6"><div class="wk">Semana 6 +</div><div><h3>Desarrollo</h3><p>Plan Individual de Desarrollo, coaching y segunda medición.</p></div></div>
     </div>
-    <div class="stats rv" style="--i:7"><div><b>10–12 min</b>por cuestionario</div><div><b>0</b>cuentas que crear</div><div><b>≥ 3</b>respuestas por grupo</div></div>
+    <div class="stats rv" style="--i:7"><div><b>12–15 min</b>por cuestionario</div><div><b>0</b>cuentas que crear</div><div><b>≥ 3</b>respuestas por grupo</div></div>
   </div>
   <div class="foot"><span>CIMA Leadership Institute® · Evaluación 360°</span><span>05 / 12</span></div>
 </section>
@@ -375,7 +375,7 @@ html.flow .track div{flex:1 1 40%}
     <p class="lede rv" style="margin-top:18px;--i:2">Sin descargas ni contraseñas. Un enlace personal que sólo sirve una vez.</p>
     <div class="facts">
       <div class="fact rv" style="--i:3"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div><div><b>1 enlace personal</b><span>por correo o WhatsApp</span></div></div>
-      <div class="fact rv" style="--i:4"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><div><b>20 conductas</b><span>escala de 0 a 7 y dos preguntas abiertas</span></div></div>
+      <div class="fact rv" style="--i:4"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:4"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><div><b>30 conductas</b><span>escala de 0 a 7 y dos preguntas abiertas</span></div></div>
       <div class="fact rv" style="--i:5"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:5"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/><path d="M10.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/></svg></div><div><b>Anónimo</b><span>pares y colaboradores sólo se ven agrupados</span></div></div>
       <div class="fact rv" style="--i:6"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:6"><g class="swing"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></g></svg></div><div><b>Recordatorios</b><span>a quien todavía no contesta</span></div></div>
     </div>
@@ -383,8 +383,8 @@ html.flow .track div{flex:1 1 40%}
   <div class="phone rv" style="--i:3" aria-hidden="true">
     <div class="screen">
       <div class="bar"><i id="qbar"></i></div>
-      <div class="k" id="qk">Identidad · 5 de 20</div>
-      <div class="q" id="qq">Lo que dice coincide con lo que hace.</div>
+      <div class="k" id="qk">Integridad y confianza · 1 de 30</div>
+      <div class="q" id="qq">Cumple lo que promete.</div>
       <div id="opts"></div>
     </div>
     <div class="tap" id="tap"></div>
@@ -406,11 +406,11 @@ html.flow .track div{flex:1 1 40%}
           <g stroke="#E7E1DA"><line x1="150" y1="150" x2="150" y2="40"/><line x1="150" y1="150" x2="254.6" y2="116"/><line x1="150" y1="150" x2="214.7" y2="239"/><line x1="150" y1="150" x2="85.3" y2="239"/><line x1="150" y1="150" x2="45.4" y2="116"/></g>
           <polygon class="self" points="150,52 244,119.5 207,228 93,228 56,119.5"/>
           <polygon class="oth" points="150,62 240,120.8 199.2,217.6 98.3,221.2 60,120.8"/>
-          <text x="150" y="26" text-anchor="middle">CONCIENCIA</text>
-          <text x="262" y="112">IDENTIDAD</text>
-          <text x="214" y="262" text-anchor="middle">MENTALIDAD</text>
-          <text x="86" y="262" text-anchor="middle">ALMA</text>
-          <text x="38" y="112" text-anchor="end">SISTEMAS</text>
+          <text x="150" y="26" text-anchor="middle">INTEGRIDAD</text>
+          <text x="262" y="112">CAPACIDAD</text>
+          <text x="214" y="262" text-anchor="middle">RESULTADOS</text>
+          <text x="86" y="262" text-anchor="middle">PERSONAS</text>
+          <text x="38" y="112" text-anchor="end">VISIÓN</text>
         </svg>
         <ul class="ul"><li>Él contra los demás, por competencia</li><li>Comparativo por tipo de evaluador</li><li>Puntos ciegos y fortalezas ocultas</li><li>Conductas mejor y peor evaluadas</li><li>Comentarios anónimos textuales</li></ul>
       </div>
@@ -420,7 +420,7 @@ html.flow .track div{flex:1 1 40%}
       <div class="hd"><h3>Reporte ejecutivo</h3><span class="pill">Ejemplo</span></div>
       <div class="heat-wrap">
       <table class="heat">
-        <thead><tr><th>Líder</th><th>C</th><th>I</th><th>M</th><th>A</th><th>S</th><th>Índice</th></tr></thead>
+        <thead><tr><th>Líder</th><th>Int</th><th>Cap</th><th>Res</th><th>Per</th><th>Vis</th><th>Índice</th></tr></thead>
         <tbody>
           <tr><td>Gerente Ventas</td><td style="--d:1">5.6</td><td class="g" style="--d:2">6.0</td><td class="r" style="--d:3">4.8</td><td style="--d:4">5.6</td><td class="g" style="--d:5">6.0</td><td class="x" style="--d:6">5.6</td></tr>
           <tr><td>Gerente Operaciones</td><td class="g" style="--d:3">6.2</td><td style="--d:4">5.5</td><td style="--d:5">5.3</td><td class="r" style="--d:6">4.5</td><td class="g" style="--d:7">6.3</td><td class="x" style="--d:8">5.6</td></tr>
@@ -477,7 +477,7 @@ html.flow .track div{flex:1 1 40%}
       <div class="top"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:2"><g class="bob"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg></div><div class="alt"><i class="on2" style="height:8px"></i><i style="height:14px"></i><i style="height:20px"></i></div></div>
       <div class="k">El diagnóstico</div><h3>Esencial</h3>
       <p class="d">La foto completa de cómo perciben a cada líder, 100% en línea.</p>
-      <ul><li>Modelo CIMA® o modelo genérico</li><li>Evaluadores sugeridos por organigrama</li><li>Aplicación en línea con enlace personal</li><li>Seguimiento y recordatorios</li><li>Reporte individual por líder</li><li>Reporte ejecutivo con mapa de calor</li></ul>
+      <ul><li>Modelo de Liderazgo 360° o genérico</li><li>Evaluadores sugeridos por organigrama</li><li>Aplicación en línea con enlace personal</li><li>Seguimiento y recordatorios</li><li>Reporte individual por líder</li><li>Reporte ejecutivo con mapa de calor</li></ul>
     </div>
     <div class="pkg star rv" style="--i:3">
       <div class="top"><div class="icb"><svg class="ai" viewBox="0 0 24 24" style="--i:3"><path d="M4 5h11v8H9l-3.5 3v-3H4z"/><path class="bob" d="M15 9h5v8h-1.5v3L15 17h-4v-2"/></svg></div><div class="alt"><i class="on2" style="height:8px"></i><i class="on2" style="height:14px"></i><i style="height:20px"></i></div></div>
@@ -687,7 +687,7 @@ html.flow .track div{flex:1 1 40%}
 
   /* ---------------- phone demo ---------------- */
   var LAB=['Nunca','Casi nunca','Muy pocas veces','Pocas veces','A veces','Con frecuencia','Casi siempre','Siempre'];
-  var Q=[['Identidad · 5 de 20','Lo que dice coincide con lo que hace.',6],['Identidad · 6 de 20','Asume la responsabilidad de los resultados de su equipo.',5],['Mentalidad · 9 de 20','Mantiene la calma en momentos de presión.',4],['Alma · 13 de 20','Explica el porqué detrás de lo que pide.',7]];
+  var Q=[['Integridad y confianza · 1 de 30','Cumple lo que promete.',6],['Integridad y confianza · 4 de 30','Reconoce sus errores y se hace responsable de ellos.',5],['Capacidad personal · 11 de 30','Pide retroalimentación y la usa para mejorar.',4],['Liderazgo de personas · 23 de 30','Reconoce el buen trabajo y celebra los logros.',7]];
   var opts=document.getElementById('opts'); opts.style.display='grid'; opts.style.gap='6px';
   opts.innerHTML=LAB.map(function(t,v){return '<div class="opt" data-v="'+v+'">'+t+' <small>'+v+'</small></div>'}).join('');
   var qi=0, phoneTimer=null;
