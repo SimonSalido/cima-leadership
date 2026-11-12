@@ -274,7 +274,7 @@ const SCALE = [
 
 /* Modelos de competencias (genéricos y editables por empresa) */
 const DEFAULT_MODELS = [
-  { id:'m_lid', name:'Modelo de Liderazgo 360°', desc:'Cinco competencias y 30 conductas observables, construido sobre los modelos de referencia mundial en evaluación 360°: Center for Creative Leadership (Benchmarks®), Korn Ferry (Leadership Architect™), Zenger Folkman (The Extraordinary Leader) y Kouzes y Posner (LPI®). Ideal para directivos y mandos medios.',
+  { id:'m_lid', name:'Modelo de Liderazgo 360°', desc:'Modelo propio de CIMA Leadership Institute: cinco competencias y 30 conductas observables. Ideal para directivos y mandos medios.',
     comps:[
       {id:'INT', name:'Integridad y confianza', desc:'Actúa con honestidad y es un ejemplo en el que se puede confiar.', items:[
         'Cumple lo que promete.',
@@ -373,7 +373,7 @@ const DEFAULT_SETTINGS = {
 /* Qué incluye cada paquete (fuente única para la tabla comparativa y la propuesta) */
 const PKG_ORDER = ['esencial', 'profesional', 'liderazgo'];
 const FEATURES = [
-  {t:'Modelo de Liderazgo 360° (estándar internacional) o modelo genérico de competencias', in:['esencial','profesional','liderazgo']},
+  {t:'Modelo de Liderazgo 360° de CIMA o modelo genérico de competencias', in:['esencial','profesional','liderazgo']},
   {t:'Alta de colaboradores y evaluadores sugeridos según el organigrama', in:['esencial','profesional','liderazgo']},
   {t:'Aplicación 100% en línea con enlace personal (sin crear cuenta)', in:['esencial','profesional','liderazgo']},
   {t:'Seguimiento en tiempo real y recordatorios a evaluadores', in:['esencial','profesional','liderazgo']},
@@ -1247,7 +1247,7 @@ function viewProposal(id){
       <p>${esc(pr.context || 'Fortalecer el liderazgo de la organización a partir de información objetiva sobre cómo se perciben las conductas de cada líder, y convertir esos resultados en planes de desarrollo concretos con seguimiento.')}</p>
       ${pr.nom ? `<p>Además, la propuesta incluye la identificación de factores de riesgo psicosocial conforme a la <b>NOM-035-STPS-2018</b>, obligatoria para todos los centros de trabajo. La categoría <i>Liderazgo y relaciones en el trabajo</i> de la norma se conecta directamente con los resultados del 360°, lo que permite atacar la causa y no sólo el síntoma.</p>` : ''}</div>
     <div class="sec"><span class="eyebrow">Metodología</span><h2>Cómo lo hacemos</h2>
-      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : pr.pkg === 'esencial' ? 'Modelo de Liderazgo 360°: 5 competencias y 30 conductas observables' : 'Modelo de Liderazgo 360° ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada persona. El modelo sigue la estructura de los instrumentos de referencia mundial: Center for Creative Leadership, Korn Ferry, Zenger Folkman y Kouzes y Posner.`],
+      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : pr.pkg === 'esencial' ? 'Modelo de Liderazgo 360°: 5 competencias y 30 conductas observables' : 'Modelo de Liderazgo 360° ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada persona.`],
          ['Aplicación', `Cada evaluador recibe un enlace personal por correo o WhatsApp. Responder toma de 12 a 15 minutos desde el celular. El anonimato está garantizado: los resultados de pares y colaboradores sólo se muestran cuando hay al menos ${MIN_ANON} respuestas.${pr.nom ? ' En paralelo se aplican las guías de la NOM-035.' : ''}`],
          ['Resultados', 'Reporte individual confidencial (perfil por competencia, puntos ciegos, fortalezas ocultas y comentarios textuales) y reporte ejecutivo con mapa de calor del equipo.' + (pr.nom ? ' Informe NOM-035 por categoría y dominio, listo para la STPS.' : '')],
          ['Desarrollo', pr.pkg === 'esencial' ? 'Presentación de resultados a la dirección con recomendaciones de desarrollo.' : `Sesión de retroalimentación 1 a 1 y Plan Individual de Desarrollo${pr.pkg === 'liderazgo' ? `, más proceso de coaching con ${esc(S.coachName)} y re-medición 360° a los 6 meses` : ''}.`]
@@ -1272,7 +1272,7 @@ function updProp(id, f, v){ const pr = db.proposals.find(x => x.id === id); pr[f
    MODELOS DE COMPETENCIAS
    ===================================================================== */
 function viewModels(){
-  const html = `<div class="head"><div><span class="eyebrow">Configuración</span><h1>Modelos de competencias</h1><p>Usa el Modelo de Liderazgo 360°, basado en los instrumentos de referencia mundial, o crea modelos a la medida de cada cliente. Cada proceso 360° usa un modelo.</p></div>${can.admin() ? `<button class="btn pri" onclick="dupModel()"><i class="ti ti-copy"></i> Nuevo modelo (copia)</button>` : ''}</div>
+  const html = `<div class="head"><div><span class="eyebrow">Configuración</span><h1>Modelos de competencias</h1><p>Usa el Modelo de Liderazgo 360° de CIMA o crea modelos a la medida de cada cliente. Cada proceso 360° usa un modelo.</p></div>${can.admin() ? `<button class="btn pri" onclick="dupModel()"><i class="ti ti-copy"></i> Nuevo modelo (copia)</button>` : ''}</div>
   ${db.models.map(m => `<div class="card"><div class="row"><h3 style="margin:0">${esc(m.name)}</h3><span class="chip">${m.comps.length} competencias · ${m.comps.reduce((s, c) => s + c.items.length, 0)} reactivos</span><span class="sp"></span>${can.admin() ? `<button class="btn sm" onclick="editModel('${m.id}')"><i class="ti ti-pencil"></i> Editar</button>` : ''}</div>
     <p class="small muted" style="margin:6px 0 12px">${esc(m.desc)}</p>
     <div class="grid g3">${m.comps.map(cp => `<div style="background:var(--paper2);border-radius:10px;padding:12px 14px"><b>${esc(cp.name)}</b><p class="small muted">${esc(cp.desc)}</p><ul class="small" style="padding-left:16px;margin-top:6px">${cp.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div></div>`).join('')}`;
@@ -1350,18 +1350,17 @@ function viewGuide(){
     <div class="sec"><span class="eyebrow">En pocas palabras</span><h2>¿Qué es una evaluación 360°?</h2>
       <p>Es una forma de conocer cómo perciben a un líder las personas que trabajan con él: su jefe, sus compañeros, su equipo y él mismo. Juntamos esas miradas y las convertimos en un reporte claro y en un plan de desarrollo.</p>
       <p>Se hace en la plataforma digital de CIMA Leadership Institute. Para los evaluadores no hay que instalar nada ni crear cuentas.</p></div>
-    <div class="sec"><span class="eyebrow">Metodología</span><h2>Qué medimos y en qué nos basamos</h2>
-      <p>Usamos el <b>Modelo de Liderazgo 360°</b>: cinco competencias y 30 conductas observables. Sigue la estructura de los instrumentos de referencia mundial, y cada competencia aparece en ellos:</p>
+    <div class="sec"><span class="eyebrow">Metodología</span><h2>Qué medimos y cómo lo medimos</h2>
+      <p>Usamos el <b>Modelo de Liderazgo 360°</b> de CIMA Leadership Institute: cinco competencias y 30 conductas observables.</p>
       <ul>${DEFAULT_MODELS[0].comps.map(cp => `<li><b>${esc(cp.name)}.</b> ${esc(cp.desc)}</li>`).join('')}</ul>
-      <p>Así trabajan los expertos, y así trabajamos nosotros:</p>
+      <p>Cinco principios guían la medición:</p>
       <ul>
-        <li><b>Conductas, no opiniones.</b> Se califica qué tan seguido se observa cada conducta, como en el LPI® de Kouzes y Posner (30 conductas en cinco prácticas).</li>
-        <li><b>Competencias agrupadas en pocos dominios.</b> Carácter, capacidad personal, resultados, personas y cambio, como en The Extraordinary Leader de Zenger Folkman y en Leadership Architect™ de Korn Ferry.</li>
-        <li><b>Varias miradas por separado.</b> Autoevaluación, jefe, pares y colaboradores, con grupos protegidos de al menos ${MIN_ANON} personas, como en Benchmarks® del Center for Creative Leadership.</li>
+        <li><b>Conductas, no opiniones.</b> Se califica qué tan seguido se observa cada conducta, no la personalidad de quien la hace.</li>
+        <li><b>Pocas competencias, bien definidas.</b> Cinco competencias con seis conductas cada una, para que el resultado sea fácil de leer y de convertir en acciones.</li>
+        <li><b>Varias miradas por separado.</b> Autoevaluación, jefe, pares y colaboradores, con grupos protegidos de al menos ${MIN_ANON} personas.</li>
         <li><b>Brechas entre cómo me veo y cómo me ven.</b> Puntos ciegos y fortalezas ocultas son el centro de la conversación de retroalimentación.</li>
         <li><b>Para desarrollar, no para calificar.</b> El resultado se entrega con un coach y termina en un plan de desarrollo, no en una decisión de sueldo.</li>
-      </ul>
-      <p class="small muted">Las conductas están redactadas por CIMA Leadership Institute. Las marcas mencionadas pertenecen a sus dueños y se citan sólo como referencia metodológica; CIMA no está afiliada a ellas.</p></div>
+      </ul></div>
     <div class="sec"><span class="eyebrow">El proceso</span><h2>Paso a paso</h2>
       ${step(1, 'Arranque (semana 1)', 'Capital Humano nos comparte la lista de colaboradores: nombre, correo o WhatsApp, puesto, área y jefe directo. Acordamos a quién se evalúa y con qué modelo de competencias.')}
       ${step(2, 'Evaluadores (semana 1)', 'La plataforma propone quién evalúa a cada líder según el organigrama: su jefe, de 3 a 5 compañeros y su equipo directo. Capital Humano lo revisa y lo ajusta con nosotros.')}
