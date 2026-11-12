@@ -147,12 +147,13 @@ h3{font-size:16px;font-weight:700}
 .q-comp .cd{font-size:12.5px;color:var(--slate);margin-bottom:10px}
 .q-item{padding:12px 0;border-top:1px solid var(--paper2)}
 .q-item p{font-size:14px;margin-bottom:8px}
-.scale{display:flex;gap:6px;flex-wrap:wrap}
-.scale label{flex:1;min-width:54px;text-align:center;border:1px solid var(--rule);border-radius:8px;padding:7px 4px;font-size:12px;cursor:pointer;color:var(--ink2);background:var(--paper);user-select:none}
+.scale{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+@media (max-width:640px){.scale{grid-template-columns:repeat(4,1fr)}}
+.scale label{min-width:0;line-height:1.2;text-align:center;border:1px solid var(--rule);border-radius:8px;padding:7px 4px;font-size:12px;cursor:pointer;color:var(--ink2);background:var(--paper);user-select:none}
 .scale label b{display:block;font-size:15px}
 .scale input{display:none}
 .scale input:checked + label{background:var(--cima);border-color:var(--cima);color:#fff}
-.scale label.na{flex:.9;color:var(--slate)}
+.scale label.na{grid-column:1/-1;color:var(--slate);padding:5px 4px}
 .progress-fixed{position:sticky;top:0;background:var(--paper);padding:10px 0;z-index:5}
 
 /* report */
@@ -265,39 +266,51 @@ const RELS = {
   cliente:     {label:'Clientes internos', color:'#5B5BD6'}
 };
 const LEVELS = ['Directivo', 'Mando medio', 'Operativo'];
+/* Escala 0–7. "No observado" se guarda como -1 y no cuenta en los promedios. */
+const SCALE_MAX = 7, NA = -1;
 const SCALE = [
-  {v:1, t:'Nunca'}, {v:2, t:'Rara vez'}, {v:3, t:'A veces'}, {v:4, t:'Casi siempre'}, {v:5, t:'Siempre'}
+  {v:0, t:'Nunca'}, {v:1, t:'Casi nunca'}, {v:2, t:'Muy pocas veces'}, {v:3, t:'Pocas veces'}, {v:4, t:'A veces'}, {v:5, t:'Con frecuencia'}, {v:6, t:'Casi siempre'}, {v:7, t:'Siempre'}
 ];
 
 /* Modelos de competencias (genéricos y editables por empresa) */
 const DEFAULT_MODELS = [
-  { id:'m_cima', name:'Modelo de Liderazgo CIMA®', desc:'Basado en las 5 dimensiones C·I·M·A·S de la metodología Marcelo Michel Leaño. Ideal para directivos y mandos medios.',
+  { id:'m_lid', name:'Modelo de Liderazgo 360°', desc:'Cinco competencias y 30 conductas observables, construido sobre los modelos de referencia mundial en evaluación 360°: Center for Creative Leadership (Benchmarks®), Korn Ferry (Leadership Architect™), Zenger Folkman (The Extraordinary Leader) y Kouzes y Posner (LPI®). Ideal para directivos y mandos medios.',
     comps:[
-      {id:'C', name:'Conciencia', desc:'Ve la realidad con claridad y decide sin evadir.', items:[
-        'Reconoce sus errores abiertamente y aprende de ellos.',
-        'Toma decisiones difíciles a tiempo, sin posponerlas.',
-        'Pide retroalimentación y la escucha sin ponerse a la defensiva.',
-        'Habla con la verdad aunque el mensaje sea incómodo.']},
-      {id:'I', name:'Identidad', desc:'Actúa con coherencia y estándares altos.', items:[
-        'Lo que dice coincide con lo que hace.',
-        'Mantiene estándares altos de calidad en su trabajo y el del equipo.',
-        'Representa los valores de la organización con su ejemplo.',
-        'Asume la responsabilidad de los resultados de su equipo.']},
-      {id:'M', name:'Mentalidad', desc:'Mantiene enfoque y temple bajo presión.', items:[
-        'Mantiene la calma y el enfoque en momentos de presión.',
-        'Se adapta con rapidez cuando cambian las condiciones.',
-        'Convierte los tropiezos en aprendizaje para el equipo.',
-        'Transmite confianza en que las metas se pueden lograr.']},
-      {id:'A', name:'Alma', desc:'Lidera con propósito y cuida a las personas.', items:[
-        'Se interesa genuinamente por las personas, no solo por los resultados.',
-        'Explica el porqué y el propósito detrás de lo que se pide.',
-        'Reconoce el esfuerzo y los logros de los demás.',
-        'Genera un ambiente de confianza donde se puede opinar.']},
-      {id:'S', name:'Sistemas', desc:'Convierte la visión en ejecución disciplinada.', items:[
-        'Define prioridades claras y las comunica.',
-        'Da seguimiento puntual a acuerdos y compromisos.',
-        'Delega con claridad y desarrolla a su gente.',
-        'Organiza reuniones y procesos que realmente sirven.']}
+      {id:'INT', name:'Integridad y confianza', desc:'Actúa con honestidad y es un ejemplo en el que se puede confiar.', items:[
+        'Cumple lo que promete.',
+        'Actúa de acuerdo con los valores que pide a los demás.',
+        'Habla con honestidad, incluso cuando el mensaje es incómodo.',
+        'Reconoce sus errores y se hace responsable de ellos.',
+        'Trata a todas las personas con respeto, sin importar su puesto.',
+        'Mantiene la calma y la compostura en situaciones de presión.']},
+      {id:'CAP', name:'Capacidad personal', desc:'Domina su trabajo, resuelve problemas y no deja de aprender.', items:[
+        'Conoce a fondo su área y el negocio.',
+        'Analiza los problemas hasta llegar a la causa de fondo.',
+        'Toma decisiones a tiempo, aun con información incompleta.',
+        'Propone formas nuevas y mejores de hacer las cosas.',
+        'Pide retroalimentación y la usa para mejorar.',
+        'Aprende rápido cuando enfrenta situaciones nuevas.']},
+      {id:'RES', name:'Enfoque en resultados', desc:'Fija metas retadoras y hace que las cosas sucedan.', items:[
+        'Establece metas retadoras y claras para su equipo.',
+        'Define prioridades y mantiene al equipo enfocado en ellas.',
+        'Toma la iniciativa sin esperar a que se lo pidan.',
+        'Da seguimiento a los acuerdos hasta que se cumplen.',
+        'Hace que cada persona responda por sus compromisos.',
+        'Entrega los resultados comprometidos en tiempo y con calidad.']},
+      {id:'PER', name:'Liderazgo de personas', desc:'Comunica, inspira y desarrolla a su equipo.', items:[
+        'Comunica con claridad lo que espera de cada persona.',
+        'Escucha con atención y toma en cuenta opiniones distintas a la suya.',
+        'Inspira y motiva al equipo a dar su mejor esfuerzo.',
+        'Da retroalimentación y acompañamiento para que su gente crezca.',
+        'Reconoce el buen trabajo y celebra los logros.',
+        'Fomenta la colaboración dentro del equipo y con otras áreas.']},
+      {id:'VIS', name:'Visión y cambio', desc:'Marca el rumbo y lleva al equipo hacia él.', items:[
+        'Transmite una visión clara de hacia dónde va el equipo.',
+        'Conecta el trabajo diario con la estrategia de la organización.',
+        'Impulsa los cambios y ayuda al equipo a adoptarlos.',
+        'Cuestiona la forma habitual de hacer las cosas para mejorarla.',
+        'Toma riesgos calculados y aprende de los resultados.',
+        'Mantiene al equipo atento a los clientes y al entorno.']}
     ]},
   { id:'m_gen', name:'Competencias Organizacionales', desc:'Modelo genérico para cualquier nivel: comunicación, equipo, resultados, servicio y adaptabilidad.',
     comps:[
@@ -360,7 +373,7 @@ const DEFAULT_SETTINGS = {
 /* Qué incluye cada paquete (fuente única para la tabla comparativa y la propuesta) */
 const PKG_ORDER = ['esencial', 'profesional', 'liderazgo'];
 const FEATURES = [
-  {t:'Modelo de Liderazgo CIMA® o modelo genérico de competencias', in:['esencial','profesional','liderazgo']},
+  {t:'Modelo de Liderazgo 360° (estándar internacional) o modelo genérico de competencias', in:['esencial','profesional','liderazgo']},
   {t:'Alta de colaboradores y evaluadores sugeridos según el organigrama', in:['esencial','profesional','liderazgo']},
   {t:'Aplicación 100% en línea con enlace personal (sin crear cuenta)', in:['esencial','profesional','liderazgo']},
   {t:'Seguimiento en tiempo real y recordatorios a evaluadores', in:['esencial','profesional','liderazgo']},
@@ -428,6 +441,15 @@ const DB = {
     snapshotAll();
     /* Primer arranque: siembra los modelos de competencias base */
     if (me.role === 'admin' && !db.models.length) { db.models = JSON.parse(JSON.stringify(DEFAULT_MODELS)); DB.save(); }
+    /* Migración: el modelo C·I·M·A·S se sustituye por el Modelo de Liderazgo 360°. Si algún proceso ya lo usa, se conserva para no romper sus reportes. */
+    if (me.role === 'admin' && db.models.some(m => m.id === 'm_cima')) {
+      if (!db.models.some(m => m.id === 'm_lid')) db.models.push(JSON.parse(JSON.stringify(DEFAULT_MODELS[0])));
+      if (db.campaigns.some(c => c.modelId === 'm_cima')) { const old = DB.model('m_cima'); if (!/anterior/.test(old.name)) old.name += ' (anterior)'; }
+      else db.models = db.models.filter(m => m.id !== 'm_cima');
+      DB.save();
+    }
+    /* El modelo estándar siempre va primero (es el predeterminado al crear un proceso) */
+    db.models.sort((a, b) => (b.id === 'm_lid') - (a.id === 'm_lid'));
   },
   save(){
     const ups = {}, dels = {};
@@ -477,7 +499,7 @@ function suggestRaters(d, eid){
    CÁLCULOS 360 (con regla de anonimato: mínimo 3 por grupo)
    ===================================================================== */
 const MIN_ANON = 3;
-function compScore(a, comp){ const v = comp.items.map((_, i) => (a.answers || {})[comp.id + '_' + i]).filter(x => x > 0); return avg(v); }
+function compScore(a, comp){ const v = comp.items.map((_, i) => (a.answers || {})[comp.id + '_' + i]).filter(x => typeof x === 'number' && x >= 0); return avg(v); }
 function results360(c, eid){
   const m = DB.model(c.modelId);
   const all = DB.asgOf(c.id).filter(a => a.evaluateeId === eid);
@@ -498,7 +520,7 @@ function results360(c, eid){
   }));
   const items = [];
   m.comps.forEach(cp => cp.items.forEach((t, i) => {
-    const v = avg(others.map(a => (a.answers || {})[cp.id + '_' + i]).filter(x => x > 0));
+    const v = avg(others.map(a => (a.answers || {})[cp.id + '_' + i]).filter(x => typeof x === 'number' && x >= 0));
     if (v != null && others.length >= MIN_ANON) items.push({comp:cp.name, text:t, v});
   }));
   const comments = {};
@@ -891,7 +913,7 @@ function copyLink(t){ const l = linkFor(t); (navigator.clipboard ? navigator.cli
 function inviteText(a){
   const c = DB.camp(a.campaignId), e = DB.person(a.evaluateeId), r = DB.person(a.raterId), o = DB.org(c.orgId);
   const who = a.rel === 'auto' ? 'tu autoevaluación' : 'la evaluación 360° de ' + (e?.name || '');
-  return `Hola ${(r?.name || '').split(' ')[0]}, ${o?.name || ''} te invita a responder ${who}. Toma unos 10 minutos y tus respuestas son confidenciales. Entra aquí: ${linkFor(a.token)}`;
+  return `Hola ${(r?.name || '').split(' ')[0]}, ${o?.name || ''} te invita a responder ${who}. Toma unos 15 minutos y tus respuestas son confidenciales. Entra aquí: ${linkFor(a.token)}`;
 }
 function waLink(a){ return 'https://wa.me/?text=' + encodeURIComponent(inviteText(a)); }
 function exportLinks(cid){
@@ -938,13 +960,13 @@ async function renderRespond(token){
     <div class="q-hero"><span class="eyebrow" style="color:var(--cima-l)">${esc(data.org)}</span>
       <h1>${isSelf ? 'Tu autoevaluación' : 'Evaluación de ' + esc(data.evaluatee)}</h1>
       <p>${isSelf ? 'Responde con honestidad cómo te percibes en cada conducta.' : `Hola ${esc((data.rater || '').split(' ')[0])}: participas como <b style="color:#fff">${RELS[a.rel].label.toLowerCase()}</b>. Piensa en lo que has observado en los últimos 6 meses.`}</p>
-      <p style="margin-top:10px;font-size:12.5px"><i class="ti ti-lock"></i> ${isSelf || a.rel === 'jefe' ? 'Tus respuestas son confidenciales.' : `Tus respuestas son anónimas: sólo se reportan promedios de grupo con al menos ${MIN_ANON} personas.`} · ⏱ 10–12 minutos</p></div>
+      <p style="margin-top:10px;font-size:12.5px"><i class="ti ti-lock"></i> ${isSelf || a.rel === 'jefe' ? 'Tus respuestas son confidenciales.' : `Tus respuestas son anónimas: sólo se reportan promedios de grupo con al menos ${MIN_ANON} personas.`} · ⏱ 12–15 minutos</p></div>
     <div class="progress-fixed"><div class="row"><div class="bar" style="flex:1"><i id="qbar" style="width:0%"></i></div><span class="small muted" id="qcount">0/${total}</span></div></div>
     <form id="qform">
     ${m.comps.map((cp, ci) => `<div class="q-comp"><div class="ch"><b>${ci + 1}</b><h3>${esc(cp.name)}</h3></div><div class="cd">${esc(cp.desc)}</div>
       ${cp.items.map((t, i) => { const k = cp.id + '_' + i; return `<div class="q-item"><p>${esc(t)}</p><div class="scale">
         ${SCALE.map(s => `<input type="radio" name="${k}" id="${k}_${s.v}" value="${s.v}"><label for="${k}_${s.v}"><b>${s.v}</b>${s.t}</label>`).join('')}
-        <input type="radio" name="${k}" id="${k}_0" value="0"><label class="na" for="${k}_0"><b>–</b>No observado</label></div></div>`; }).join('')}
+        <input type="radio" name="${k}" id="${k}_na" value="${NA}"><label class="na" for="${k}_na">No lo he observado</label></div></div>`; }).join('')}
     </div>`).join('')}
     ${!isSelf ? `<div class="q-comp"><h3 style="margin-bottom:10px">Comentarios (opcional)</h3>${OPEN_QS.map(q => `<div class="f"><label>${esc(q.q)}</label><textarea name="open_${q.id}"></textarea></div>`).join('')}<p class="small muted">Evita datos que te identifiquen. Los comentarios se muestran textuales, sin nombre.</p></div>` : ''}
     <button type="button" id="qsend" class="btn pri" style="width:100%;justify-content:center;padding:14px" onclick="submitQ()">Enviar evaluación <i class="ti ti-send"></i></button>
@@ -968,10 +990,10 @@ async function submitQ(){
    ===================================================================== */
 function radarSVG(labels, series, size = 340){
   const n = labels.length, cx = size / 2, cy = size / 2, R = size / 2 - 58;
-  const pt = (i, v) => { const ang = -Math.PI / 2 + i * 2 * Math.PI / n, rr = R * (v - 1) / 4; return [cx + rr * Math.cos(ang), cy + rr * Math.sin(ang)]; };
+  const pt = (i, v) => { const ang = -Math.PI / 2 + i * 2 * Math.PI / n, rr = R * v / SCALE_MAX; return [cx + rr * Math.cos(ang), cy + rr * Math.sin(ang)]; };
   let g = '';
-  [1, 2, 3, 4, 5].forEach(l => g += `<polygon points="${labels.map((_, i) => pt(i, l).join(',')).join(' ')}" fill="none" stroke="#E5E0D7" stroke-width="1"/>`);
-  labels.forEach((lb, i) => { const [x, y] = pt(i, 5), [lx, ly] = pt(i, 5.95); g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E5E0D7"/><text x="${lx}" y="${ly}" text-anchor="${Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end'}" dominant-baseline="middle">${esc(lb)}</text>`; });
+  [1, 2, 3, 4, 5, 6, 7].forEach(l => g += `<polygon points="${labels.map((_, i) => pt(i, l).join(',')).join(' ')}" fill="none" stroke="#E5E0D7" stroke-width="1"/>`);
+  labels.forEach((lb, i) => { const [x, y] = pt(i, SCALE_MAX), [lx, ly] = pt(i, SCALE_MAX * 1.19); g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E5E0D7"/><text x="${lx}" y="${ly}" text-anchor="${Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end'}" dominant-baseline="middle">${esc(lb)}</text>`; });
   series.forEach(s => { if (s.values.some(v => v == null)) return; g += `<polygon points="${s.values.map((v, i) => pt(i, v).join(',')).join(' ')}" fill="${s.color}" fill-opacity="${s.fill ?? .14}" stroke="${s.color}" stroke-width="2" ${s.dash ? 'stroke-dasharray="5 4"' : ''}/>`; });
   return `<svg class="radar" viewBox="-70 0 ${size + 140} ${size}" width="100%" style="max-width:${size + 140}px" role="img" aria-label="Radar de competencias">${g}</svg>`;
 }
@@ -981,7 +1003,7 @@ function viewReport(cid, eid){
   const e = DB.person(eid), o = DB.org(c.orgId), r = results360(c, eid);
   if (!r.ready) return {crumbs:'Reporte', html:`<div class="card empty"><i class="ti ti-hourglass"></i>Aún no hay suficientes respuestas (mínimo ${MIN_ANON} evaluadores además de la autoevaluación) para generar el reporte sin comprometer el anonimato.</div>`};
   const gaps = r.comps.filter(x => x.self != null).map(x => ({...x, gap:x.self - x.others})).sort((a, b) => b.gap - a.gap);
-  const blind = gaps.filter(x => x.gap >= .4), hiddenS = gaps.filter(x => x.gap <= -.4);
+  const blind = gaps.filter(x => x.gap >= .7), hiddenS = gaps.filter(x => x.gap <= -.7);
   const sorted = [...r.items].sort((a, b) => b.v - a.v);
   const plan = db.coaching.find(k => k.personId === eid && k.campaignId === cid);
   const groupColors = {jefe:'#e64018', par:'#B7791F', colaborador:'#2E7D52', cliente:'#5B5BD6', mix:'#8a6d3b'};
@@ -991,8 +1013,8 @@ function viewReport(cid, eid){
     <button class="btn sm pri" onclick="window.print()"><i class="ti ti-printer"></i> Descargar PDF</button></div>
   <div class="rep-head"><div><span class="eyebrow" style="color:var(--cima-l)">Reporte individual confidencial · ${esc(c.name)}</span><h1>${esc(e.name)}</h1><p>${esc(e.position)} · ${esc(e.area)} · ${esc(o.name)}</p></div><img src="${LOGO}" alt="CIMA"></div>
   <div class="grid g4" style="margin-top:16px">
-    <div class="kpi"><div class="n">${r1(r.overall)}<small>/5</small></div><div class="l">Índice 360° (otros)</div></div>
-    <div class="kpi"><div class="n">${r1(avg(r.comps.map(x => x.self).filter(x => x != null)))}<small>/5</small></div><div class="l">Autoevaluación</div></div>
+    <div class="kpi"><div class="n">${r1(r.overall)}<small>/${SCALE_MAX}</small></div><div class="l">Índice 360° (otros)</div></div>
+    <div class="kpi"><div class="n">${r1(avg(r.comps.map(x => x.self).filter(x => x != null)))}<small>/${SCALE_MAX}</small></div><div class="l">Autoevaluación</div></div>
     <div class="kpi"><div class="n">${r.others.length}</div><div class="l">Evaluadores (sin contar autoevaluación)</div></div>
     <div class="kpi"><div class="n">${Math.round(r.done.length / r.all.length * 100)}<small>%</small></div><div class="l">Tasa de respuesta</div></div>
   </div>
@@ -1004,8 +1026,8 @@ function viewReport(cid, eid){
     <div class="card"><h3>Comparativo por tipo de evaluador</h3>
       <div class="legend" style="margin-bottom:8px"><span><i style="background:#1A1A1A"></i>Auto</span>${r.groups.map(g => `<span><i style="background:${groupColors[g.key]}"></i>${g.label} (${g.list.length})</span>`).join('')}</div>
       ${r.comps.map(cp => `<div class="cmp-row"><b class="small">${esc(cp.name)}</b><div class="cmp-bars">
-        ${cp.self != null ? `<div style="width:${cp.self / 5 * 100}%;background:#1A1A1A"></div>` : ''}
-        ${cp.groups.map(g => `<div style="width:${(g.v || 0) / 5 * 100}%;background:${groupColors[g.key]}" title="${g.label}: ${r1(g.v)}"></div>`).join('')}
+        ${cp.self != null ? `<div style="width:${cp.self / SCALE_MAX * 100}%;background:#1A1A1A"></div>` : ''}
+        ${cp.groups.map(g => `<div style="width:${(g.v || 0) / SCALE_MAX * 100}%;background:${groupColors[g.key]}" title="${g.label}: ${r1(g.v)}"></div>`).join('')}
       </div><b>${r1(cp.others)}</b></div>`).join('')}
       ${r.hiddenCount ? `<p class="small muted" style="margin-top:8px"><i class="ti ti-lock"></i> ${r.hiddenCount} respuesta(s) se incluyen sólo en el promedio total para proteger el anonimato.</p>` : ''}
     </div>
@@ -1026,7 +1048,7 @@ function viewReport(cid, eid){
   return {crumbs:`<a href="#/empresa/${o.id}">${esc(o.name)}</a> / <a href="#/proceso/${cid}">${esc(c.name)}</a> / ${esc(e.name)}`, html};
 }
 
-function heatColor(v){ if (v == null) return '#f4f1ec'; const t = Math.max(0, Math.min(1, (v - 2.5) / 2.3)); const a = [253, 231, 228], b = [227, 242, 233]; return `rgb(${a.map((x, i) => Math.round(x + (b[i] - x) * t)).join(',')})`; }
+function heatColor(v){ if (v == null) return '#f4f1ec'; const t = Math.max(0, Math.min(1, (v - 2.6) / 4)); const a = [253, 231, 228], b = [227, 242, 233]; return `rgb(${a.map((x, i) => Math.round(x + (b[i] - x) * t)).join(',')})`; }
 function viewGroup(cid){
   const c = DB.camp(cid); if (!c || !can.reports(c.orgId)) return {crumbs:'', html:'<div class="empty">No disponible.</div>'};
   const o = DB.org(c.orgId), m = DB.model(c.modelId);
@@ -1039,7 +1061,7 @@ function viewGroup(cid){
   <div class="rep-head"><div><span class="eyebrow" style="color:var(--cima-l)">Reporte ejecutivo para dirección</span><h1>${esc(c.name)}</h1><p>${esc(o.name)} · ${ready.length} de ${rows.length} reportes disponibles</p></div><img src="${LOGO}" alt="CIMA"></div>
   ${ready.length ? `
   <div class="grid g3" style="margin-top:16px">
-    <div class="kpi"><div class="n">${r1(avg(orgAvg.filter(x => x != null)))}<small>/5</small></div><div class="l">Índice 360° del grupo</div></div>
+    <div class="kpi"><div class="n">${r1(avg(orgAvg.filter(x => x != null)))}<small>/${SCALE_MAX}</small></div><div class="l">Índice 360° del grupo</div></div>
     <div class="kpi"><div class="n" style="font-size:20px">${esc(best[0]?.n)}</div><div class="l">Fortaleza colectiva (${r1(best[0]?.v)})</div></div>
     <div class="kpi"><div class="n" style="font-size:20px">${esc(best[best.length - 1]?.n)}</div><div class="l">Prioridad de desarrollo (${r1(best[best.length - 1]?.v)})</div></div>
   </div>
@@ -1049,7 +1071,7 @@ function viewGroup(cid){
       ${rows.map(x => `<tr><td class="small"><b>${esc(x.e.name)}</b></td>${x.r.ready ? x.r.comps.map(cp => `<td class="h" style="background:${heatColor(cp.others)}">${r1(cp.others)}</td>`).join('') + `<td class="h">${r1(x.r.overall)}</td>` : `<td colspan="${m.comps.length + 1}" class="small muted">Respuestas insuficientes</td>`}</tr>`).join('')}
     </tbody></table></div><p class="small muted" style="margin-top:8px">Verde: fortaleza · Rosa: área de oportunidad.</p></div>
   </div>
-  <div class="card" style="margin-top:16px"><h3>Recomendación CIMA</h3><p>El grupo muestra su mayor fortaleza en <b>${esc(best[0]?.n)}</b> y su principal oportunidad en <b>${esc(best[best.length - 1]?.n)}</b>. Recomendamos un taller grupal enfocado en esta dimensión y procesos de coaching individual para las personas con brechas mayores a 0.5 puntos entre autoevaluación y evaluación de otros.</p></div>`
+  <div class="card" style="margin-top:16px"><h3>Recomendación CIMA</h3><p>El grupo muestra su mayor fortaleza en <b>${esc(best[0]?.n)}</b> y su principal oportunidad en <b>${esc(best[best.length - 1]?.n)}</b>. Recomendamos un taller grupal enfocado en esta competencia y procesos de coaching individual para las personas con brechas mayores a 0.5 puntos entre autoevaluación y evaluación de otros.</p></div>`
   : `<div class="card empty" style="margin-top:16px"><i class="ti ti-hourglass"></i>Aún no hay reportes individuales listos.</div>`}`;
   return {crumbs:`<a href="#/empresa/${o.id}">${esc(o.name)}</a> / <a href="#/proceso/${cid}">${esc(c.name)}</a> / Reporte ejecutivo`, html};
 }
@@ -1225,8 +1247,8 @@ function viewProposal(id){
       <p>${esc(pr.context || 'Fortalecer el liderazgo de la organización a partir de información objetiva sobre cómo se perciben las conductas de cada líder, y convertir esos resultados en planes de desarrollo concretos con seguimiento.')}</p>
       ${pr.nom ? `<p>Además, la propuesta incluye la identificación de factores de riesgo psicosocial conforme a la <b>NOM-035-STPS-2018</b>, obligatoria para todos los centros de trabajo. La categoría <i>Liderazgo y relaciones en el trabajo</i> de la norma se conecta directamente con los resultados del 360°, lo que permite atacar la causa y no sólo el síntoma.</p>` : ''}</div>
     <div class="sec"><span class="eyebrow">Metodología</span><h2>Cómo lo hacemos</h2>
-      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : pr.pkg === 'esencial' ? 'Modelo de Liderazgo CIMA® C·I·M·A·S' : 'Modelo de Liderazgo CIMA® ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada persona.`],
-         ['Aplicación', `Cada evaluador recibe un enlace personal por correo o WhatsApp. Responder toma de 10 a 12 minutos desde el celular. El anonimato está garantizado: los resultados de pares y colaboradores sólo se muestran cuando hay al menos ${MIN_ANON} respuestas.${pr.nom ? ' En paralelo se aplican las guías de la NOM-035.' : ''}`],
+      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : pr.pkg === 'esencial' ? 'Modelo de Liderazgo 360°: 5 competencias y 30 conductas observables' : 'Modelo de Liderazgo 360° ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada persona. El modelo sigue la estructura de los instrumentos de referencia mundial: Center for Creative Leadership, Korn Ferry, Zenger Folkman y Kouzes y Posner.`],
+         ['Aplicación', `Cada evaluador recibe un enlace personal por correo o WhatsApp. Responder toma de 12 a 15 minutos desde el celular. El anonimato está garantizado: los resultados de pares y colaboradores sólo se muestran cuando hay al menos ${MIN_ANON} respuestas.${pr.nom ? ' En paralelo se aplican las guías de la NOM-035.' : ''}`],
          ['Resultados', 'Reporte individual confidencial (perfil por competencia, puntos ciegos, fortalezas ocultas y comentarios textuales) y reporte ejecutivo con mapa de calor del equipo.' + (pr.nom ? ' Informe NOM-035 por categoría y dominio, listo para la STPS.' : '')],
          ['Desarrollo', pr.pkg === 'esencial' ? 'Presentación de resultados a la dirección con recomendaciones de desarrollo.' : `Sesión de retroalimentación 1 a 1 y Plan Individual de Desarrollo${pr.pkg === 'liderazgo' ? `, más proceso de coaching con ${esc(S.coachName)} y re-medición 360° a los 6 meses` : ''}.`]
         ].map((p, i) => `<div class="phase"><b>${i + 1}</b><div><h3>${p[0]}</h3><p style="margin:2px 0 0">${p[1]}</p></div></div>`).join('')}</div>
@@ -1250,7 +1272,7 @@ function updProp(id, f, v){ const pr = db.proposals.find(x => x.id === id); pr[f
    MODELOS DE COMPETENCIAS
    ===================================================================== */
 function viewModels(){
-  const html = `<div class="head"><div><span class="eyebrow">Configuración</span><h1>Modelos de competencias</h1><p>Usa el Modelo de Liderazgo CIMA® o crea modelos a la medida de cada cliente. Cada proceso 360° usa un modelo.</p></div>${can.admin() ? `<button class="btn pri" onclick="dupModel()"><i class="ti ti-copy"></i> Nuevo modelo (copia)</button>` : ''}</div>
+  const html = `<div class="head"><div><span class="eyebrow">Configuración</span><h1>Modelos de competencias</h1><p>Usa el Modelo de Liderazgo 360°, basado en los instrumentos de referencia mundial, o crea modelos a la medida de cada cliente. Cada proceso 360° usa un modelo.</p></div>${can.admin() ? `<button class="btn pri" onclick="dupModel()"><i class="ti ti-copy"></i> Nuevo modelo (copia)</button>` : ''}</div>
   ${db.models.map(m => `<div class="card"><div class="row"><h3 style="margin:0">${esc(m.name)}</h3><span class="chip">${m.comps.length} competencias · ${m.comps.reduce((s, c) => s + c.items.length, 0)} reactivos</span><span class="sp"></span>${can.admin() ? `<button class="btn sm" onclick="editModel('${m.id}')"><i class="ti ti-pencil"></i> Editar</button>` : ''}</div>
     <p class="small muted" style="margin:6px 0 12px">${esc(m.desc)}</p>
     <div class="grid g3">${m.comps.map(cp => `<div style="background:var(--paper2);border-radius:10px;padding:12px 14px"><b>${esc(cp.name)}</b><p class="small muted">${esc(cp.desc)}</p><ul class="small" style="padding-left:16px;margin-top:6px">${cp.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div></div>`).join('')}`;
@@ -1328,17 +1350,29 @@ function viewGuide(){
     <div class="sec"><span class="eyebrow">En pocas palabras</span><h2>¿Qué es una evaluación 360°?</h2>
       <p>Es una forma de conocer cómo perciben a un líder las personas que trabajan con él: su jefe, sus compañeros, su equipo y él mismo. Juntamos esas miradas y las convertimos en un reporte claro y en un plan de desarrollo.</p>
       <p>Se hace en la plataforma digital de CIMA Leadership Institute. Para los evaluadores no hay que instalar nada ni crear cuentas.</p></div>
+    <div class="sec"><span class="eyebrow">Metodología</span><h2>Qué medimos y en qué nos basamos</h2>
+      <p>Usamos el <b>Modelo de Liderazgo 360°</b>: cinco competencias y 30 conductas observables. Sigue la estructura de los instrumentos de referencia mundial, y cada competencia aparece en ellos:</p>
+      <ul>${DEFAULT_MODELS[0].comps.map(cp => `<li><b>${esc(cp.name)}.</b> ${esc(cp.desc)}</li>`).join('')}</ul>
+      <p>Así trabajan los expertos, y así trabajamos nosotros:</p>
+      <ul>
+        <li><b>Conductas, no opiniones.</b> Se califica qué tan seguido se observa cada conducta, como en el LPI® de Kouzes y Posner (30 conductas en cinco prácticas).</li>
+        <li><b>Competencias agrupadas en pocos dominios.</b> Carácter, capacidad personal, resultados, personas y cambio, como en The Extraordinary Leader de Zenger Folkman y en Leadership Architect™ de Korn Ferry.</li>
+        <li><b>Varias miradas por separado.</b> Autoevaluación, jefe, pares y colaboradores, con grupos protegidos de al menos ${MIN_ANON} personas, como en Benchmarks® del Center for Creative Leadership.</li>
+        <li><b>Brechas entre cómo me veo y cómo me ven.</b> Puntos ciegos y fortalezas ocultas son el centro de la conversación de retroalimentación.</li>
+        <li><b>Para desarrollar, no para calificar.</b> El resultado se entrega con un coach y termina en un plan de desarrollo, no en una decisión de sueldo.</li>
+      </ul>
+      <p class="small muted">Las conductas están redactadas por CIMA Leadership Institute. Las marcas mencionadas pertenecen a sus dueños y se citan sólo como referencia metodológica; CIMA no está afiliada a ellas.</p></div>
     <div class="sec"><span class="eyebrow">El proceso</span><h2>Paso a paso</h2>
       ${step(1, 'Arranque (semana 1)', 'Capital Humano nos comparte la lista de colaboradores: nombre, correo o WhatsApp, puesto, área y jefe directo. Acordamos a quién se evalúa y con qué modelo de competencias.')}
       ${step(2, 'Evaluadores (semana 1)', 'La plataforma propone quién evalúa a cada líder según el organigrama: su jefe, de 3 a 5 compañeros y su equipo directo. Capital Humano lo revisa y lo ajusta con nosotros.')}
-      ${step(3, 'Aplicación (semanas 2 y 3)', 'Cada evaluador recibe un enlace personal por correo o WhatsApp. Contesta desde el celular o la computadora en 10 a 12 minutos. Mandamos recordatorios a quien falte.')}
+      ${step(3, 'Aplicación (semanas 2 y 3)', 'Cada evaluador recibe un enlace personal por correo o WhatsApp. Contesta desde el celular o la computadora en 12 a 15 minutos. Mandamos recordatorios a quien falte.')}
       ${step(4, 'Resultados (semana 4)', 'Generamos el reporte individual de cada líder y el reporte ejecutivo para la dirección.')}
       ${step(5, 'Desarrollo', 'Según el paquete contratado: sesión de retroalimentación 1 a 1, Plan Individual de Desarrollo, coaching con Marcelo Michel Leaño y nueva medición a los 6 meses.')}</div>
     <div class="sec"><span class="eyebrow">Quién hace qué</span><h2>Lo que vive cada persona</h2>
       <h3>Capital Humano</h3>
       <p>Entra a <b>cimaleadership.com.mx → Evaluación 360° → Ingresar a la plataforma</b> con el correo y la contraseña que le damos de alta. Ve sólo la información de su empresa: colaboradores, procesos y el avance en tiempo real${' '}(quién ya contestó y quién falta). Si así se acuerda, también puede ver y descargar los reportes.</p>
       <h3>Evaluadores</h3>
-      <p>Reciben un enlace, lo abren y contestan. No necesitan usuario ni contraseña. Califican conductas concretas en una escala de 1 (nunca) a 5 (siempre), pueden marcar “no observado” y dejar comentarios opcionales.</p>
+      <p>Reciben un enlace, lo abren y contestan. No necesitan usuario ni contraseña. Califican conductas concretas en una escala de 0 (nunca) a 7 (siempre), pueden marcar “no observado” y dejar comentarios opcionales.</p>
       <h3>Líderes evaluados</h3>
       <p>Contestan su autoevaluación. Al final reciben su reporte: cómo se ven ellos comparado con cómo los ven los demás, sus fortalezas, sus puntos ciegos y las conductas a desarrollar.</p>
       <h3>Dirección</h3>
@@ -1352,7 +1386,7 @@ function viewGuide(){
     <div class="sec"><span class="eyebrow">NOM-035</span><h2>Si contrataste la NOM-035</h2>
       <p>Aplicamos las guías oficiales de la NOM-035-STPS-2018 que correspondan al tamaño del centro de trabajo y entregamos los resultados por categoría y dominio, con el nivel de riesgo de cada uno. La categoría <i>Liderazgo y relaciones en el trabajo</i> se cruza con los resultados del 360° para atender la causa y no sólo el síntoma.</p></div>
     <div class="sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2>
-      ${faq('¿Cuánto tiempo toma contestar?', 'Entre 10 y 12 minutos por persona evaluada.')}
+      ${faq('¿Cuánto tiempo toma contestar?', 'Entre 12 y 15 minutos por persona evaluada. Son 30 conductas y dos preguntas abiertas opcionales.')}
       ${faq('¿Se puede contestar desde el celular?', 'Sí. El enlace funciona en celular, tableta y computadora.')}
       ${faq('¿Qué pasa si alguien pierde su enlace?', 'Capital Humano o CIMA se lo reenvían desde la plataforma.')}
       ${faq('¿Mi jefe va a saber lo que contesté?', 'No. Las respuestas de compañeros y colaboradores sólo se ven como promedio de grupo y los comentarios no llevan nombre.')}
