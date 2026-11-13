@@ -221,7 +221,7 @@ h3{font-size:16px;font-weight:700}
 
 <script>
 /* =====================================================================
-   CIMA 360° — Plataforma de Evaluación 360 · NOM-035 · Coaching
+   CIMA 360° — Plataforma de Evaluación 360 · NOM-035
    ---------------------------------------------------------------------
    Datos y acceso: Supabase (mismo proyecto que el Aula y el Plan de Vida).
    Tablas con prefijo e360_ (ver supabase/e360_schema.sql).
@@ -362,29 +362,23 @@ const nomGuide = n => n <= 15 ? 'Guía I' : n <= 50 ? 'Guías I y II' : 'Guías 
 const DEFAULT_SETTINGS = {
   coachName:'Marcelo Michel Leaño',
   packages:{
-    esencial:   {name:'Esencial',       price:3000,  desc:'El diagnóstico: la foto completa de cómo perciben a cada líder, 100% en línea.'},
-    profesional:{name:'Profesional',    price:6000,  desc:'Diagnóstico + retroalimentación: cada líder entiende sus resultados y sale con un plan.'},
-    liderazgo:  {name:'Liderazgo CIMA', price:12500, desc:'Transformación: diagnóstico, coaching con Marcelo Michel Leaño y medición del avance.'}
+    cumbre:{name:'Cumbre 360°', price:850, desc:'Evaluamos a todos los colaboradores y entregamos un resumen ejecutivo profesional y una sesión de retroalimentación grupal con los líderes de equipo.'}
   },
   nomPerEmployee:180,
-  designFee:20000,
-  extraSession:3500
+  designFee:10000,
+  v2:true
 };
 /* Qué incluye cada paquete (fuente única para la tabla comparativa y la propuesta) */
-const PKG_ORDER = ['esencial', 'profesional', 'liderazgo'];
+const PKG_ORDER = ['cumbre'];
 const FEATURES = [
-  {t:'Modelo de Liderazgo 360° de CIMA o modelo genérico de competencias', in:['esencial','profesional','liderazgo']},
-  {t:'Alta de colaboradores y evaluadores sugeridos según el organigrama', in:['esencial','profesional','liderazgo']},
-  {t:'Aplicación 100% en línea con enlace personal (sin crear cuenta)', in:['esencial','profesional','liderazgo']},
-  {t:'Seguimiento en tiempo real y recordatorios a evaluadores', in:['esencial','profesional','liderazgo']},
-  {t:'Reporte individual confidencial en PDF por persona evaluada', in:['esencial','profesional','liderazgo']},
-  {t:'Reporte ejecutivo para dirección con mapa de calor del equipo', in:['esencial','profesional','liderazgo']},
-  {t:'Ajuste de competencias y conductas a la cultura de la empresa', in:['profesional','liderazgo']},
-  {t:'Sesión de retroalimentación 1 a 1 por persona (60 min)', in:['profesional','liderazgo']},
-  {t:'Plan Individual de Desarrollo (PID) por persona', in:['profesional','liderazgo']},
-  {t:'3 sesiones de coaching ejecutivo con Marcelo Michel Leaño por persona', in:['liderazgo']},
-  {t:'Seguimiento del PID en la plataforma', in:['liderazgo']},
-  {t:'Re-medición 360° a los 6 meses con comparativo de avance', in:['liderazgo']}
+  {t:'Modelo de Liderazgo 360° de CIMA (5 competencias, 30 conductas) ajustado a la cultura de la empresa', in:['cumbre']},
+  {t:'Evaluación 360° a todos los colaboradores, con evaluadores sugeridos según el organigrama', in:['cumbre']},
+  {t:'Aplicación 100% en línea con enlace personal (sin crear cuenta)', in:['cumbre']},
+  {t:'Seguimiento en tiempo real y recordatorios a evaluadores', in:['cumbre']},
+  {t:'Reporte individual confidencial en PDF por persona evaluada', in:['cumbre']},
+  {t:'Resumen ejecutivo profesional para la dirección, con mapa de calor de la organización', in:['cumbre']},
+  {t:'Sesión grupal de retroalimentación con los líderes de equipo', in:['cumbre']},
+  {t:'Recomendaciones de desarrollo para cada equipo', in:['cumbre']}
 ];
 const pkgFeatures = k => FEATURES.filter(f => f.in.includes(k)).map(f => f.t);
 
@@ -393,8 +387,8 @@ const pkgFeatures = k => FEATURES.filter(f => f.in.includes(k)).map(f => f.t);
    Todo se carga al entrar (RLS filtra lo que cada rol puede ver) y cada
    cambio se sincroniza: DB.save() detecta qué registros cambiaron.
    ===================================================================== */
-const TABLES = {orgs:'e360_orgs', people:'e360_people', models:'e360_models', campaigns:'e360_campaigns', assignments:'e360_assignments', coaching:'e360_coaching', proposals:'e360_proposals', users:'e360_members'};
-const emptyDb = () => ({orgs:[], people:[], models:[], campaigns:[], assignments:[], coaching:[], proposals:[], users:[], settings:JSON.parse(JSON.stringify(DEFAULT_SETTINGS))});
+const TABLES = {orgs:'e360_orgs', people:'e360_people', models:'e360_models', campaigns:'e360_campaigns', assignments:'e360_assignments', proposals:'e360_proposals', users:'e360_members'};
+const emptyDb = () => ({orgs:[], people:[], models:[], campaigns:[], assignments:[], proposals:[], users:[], settings:JSON.parse(JSON.stringify(DEFAULT_SETTINGS))});
 let db = emptyDb();
 let snap = {};
 let saveChain = Promise.resolve();
@@ -402,8 +396,7 @@ let saveChain = Promise.resolve();
 function orgIdFor(coll, o){
   if (coll === 'orgs') return o.id;
   if (coll === 'assignments') return DB.camp(o.campaignId)?.orgId || null;
-  if (coll === 'coaching') return DB.person(o.personId)?.orgId || null;
-  if (coll === 'models') return null;
+    if (coll === 'models') return null;
   return o.orgId || null;
 }
 function toRow(coll, o){
@@ -427,9 +420,10 @@ const DB = {
     const staff = me.role === 'admin' || me.role === 'coach';
     [d.orgs, d.people, d.models, d.campaigns] = await Promise.all(['orgs', 'people', 'models', 'campaigns'].map(q));
     if (staff) {
-      [d.assignments, d.coaching, d.proposals, d.users] = await Promise.all(['assignments', 'coaching', 'proposals', 'users'].map(q));
+      [d.assignments, d.proposals, d.users] = await Promise.all(['assignments', 'proposals', 'users'].map(q));
       const {data:st} = await sb.from('e360_settings').select('data').eq('id', 'main').maybeSingle();
-      if (st?.data) d.settings = {...d.settings, ...st.data, packages:{...d.settings.packages, ...(st.data.packages || {})}};
+      if (st?.data && !st.data.v2) { st.data.designFee = 10000; delete st.data.extraSession; st.data.v2 = true; }
+      if (st?.data) d.settings = {...d.settings, ...st.data, packages:{cumbre:{...d.settings.packages.cumbre, ...(st.data.packages?.cumbre || {})}}};
     } else {
       /* Capital Humano: si la empresa no comparte reportes individuales, sólo recibe el avance (sin respuestas) */
       const org = d.orgs[0];
@@ -448,6 +442,9 @@ const DB = {
       else db.models = db.models.filter(m => m.id !== 'm_cima');
       DB.save();
     }
+    if (me.role === 'admin' && db.proposals.some(p => p.extraSessions)) { db.proposals.forEach(p => { p.extraSessions = 0; }); DB.save(); }
+    /* Paquete único Cumbre 360°: las propuestas con paquetes anteriores pasan a Cumbre */
+    if (me.role === 'admin' && db.proposals.some(p => !db.settings.packages[p.pkg])) { db.proposals.forEach(p => { if (!db.settings.packages[p.pkg]) p.pkg = 'cumbre'; }); DB.save(); }
     /* El modelo estándar siempre va primero (es el predeterminado al crear un proceso) */
     db.models.sort((a, b) => (b.id === 'm_lid') - (a.id === 'm_lid'));
   },
@@ -465,7 +462,7 @@ const DB = {
     const st = JSON.stringify(db.settings), stChanged = st !== snap.settings;
     if (stChanged) snap.settings = st;
     /* Orden: primero padres (empresas, personas, procesos) y luego hijos */
-    const order = ['users', 'orgs', 'models', 'people', 'campaigns', 'assignments', 'coaching', 'proposals'];
+    const order = ['users', 'orgs', 'models', 'people', 'campaigns', 'assignments', 'proposals'];
     saveChain = saveChain.then(async () => {
       try {
         if (stChanged) { const {error} = await sb.from('e360_settings').upsert({id:'main', data:db.settings}); if (error) throw error; }
@@ -538,7 +535,6 @@ const can = {
   admin: () => me?.role === 'admin',
   manageOrgs: () => me?.role === 'admin',
   proposals: () => me?.role === 'admin',
-  coaching: () => me?.role === 'admin' || me?.role === 'coach',
   seeOrg: id => me && (me.role !== 'rh' || me.orgId === id),
   reports: orgId => me && (me.role !== 'rh' || (me.orgId === orgId && !!DB.org(orgId)?.rhSeesIndividual))
 };
@@ -557,7 +553,6 @@ function render(){
     '': viewDashboard, 'inicio': viewDashboard,
     'empresas': viewOrgs, 'empresa': viewOrg,
     'proceso': viewCampaign, 'reporte': viewReport, 'grupal': viewGroup, 'nom': viewNom,
-    'coaching': viewCoaching, 'plan': viewPlan,
     'propuestas': viewProposals, 'propuesta': viewProposal,
     'modelos': viewModels, 'config': viewSettings, 'guia': viewGuide
   };
@@ -571,13 +566,12 @@ function shell(crumbs, html, active){
   const nav = [
     ['inicio', 'ti-layout-dashboard', 'Inicio', true],
     ['empresas', 'ti-building', me.role === 'rh' ? 'Mi empresa' : 'Empresas', true],
-    ['coaching', 'ti-target-arrow', 'Coaching', can.coaching()],
     ['propuestas', 'ti-file-dollar', 'Propuestas', can.proposals()],
     ['modelos', 'ti-list-details', 'Modelos de competencias', me.role !== 'coach'],
     ['config', 'ti-settings', 'Usuarios y precios', can.admin()],
     ['guia', 'ti-help-circle', 'Guía de uso', true]
   ];
-  const isActive = k => k === active || (k === 'empresas' && ['empresa','proceso','reporte','grupal','nom'].includes(active)) || (k === 'coaching' && active === 'plan') || (k === 'propuestas' && active === 'propuesta');
+  const isActive = k => k === active || (k === 'empresas' && ['empresa','proceso','reporte','grupal','nom'].includes(active)) || (k === 'propuestas' && active === 'propuesta');
   $('#root').innerHTML = `
   <div class="app">
     <aside class="side" id="side">
@@ -621,8 +615,8 @@ function loginShell(inner){
       <img src="${LOGO}" alt="CIMA Leadership Institute">
       <div>
         <h1>Evaluación<br><em>360°</em> CIMA</h1>
-        <p>Retroalimentación de jefes, pares y colaboradores, identificación de riesgo psicosocial NOM-035 y un proceso de coaching que convierte los resultados en desarrollo real.</p>
-        <div class="pills"><span>Evaluación 360°</span><span>NOM-035-STPS</span><span>Coaching CIMA</span></div>
+        <p>Retroalimentación de jefes, pares y colaboradores para toda la organización, identificación de riesgo psicosocial NOM-035 y un resumen ejecutivo para la dirección.</p>
+        <div class="pills"><span>Evaluación 360°</span><span>NOM-035-STPS</span><span>Resumen ejecutivo</span></div>
       </div>
       <p style="font-size:12px;color:#6b6b73">CIMA Leadership Institute® · Guadalajara, México</p>
     </div>
@@ -707,10 +701,8 @@ function viewDashboard(){
   const evaluados = camps.filter(c => c.type === '360').reduce((s, c) => s + c.evaluatees.length, 0);
   const asg = db.assignments.filter(a => camps.some(c => c.id === a.campaignId));
   const pend = asg.filter(a => a.status !== 'completada').length;
-  const plans = db.coaching.filter(k => can.seeOrg(DB.person(k.personId)?.orgId));
-  const upcoming = plans.flatMap(k => k.sessions.filter(s => !s.done).map(s => ({...s, k}))).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 5);
   const html = `
-  <div class="head"><div><span class="eyebrow">Hola, ${esc(me.name.split(' ')[0])}</span><h1>Panel general</h1><p>${me.role === 'rh' ? 'Avance de los procesos de evaluación de tu organización.' : 'Resumen de todas las empresas, procesos y planes de coaching.'}</p></div>
+  <div class="head"><div><span class="eyebrow">Hola, ${esc(me.name.split(' ')[0])}</span><h1>Panel general</h1><p>${me.role === 'rh' ? 'Avance de los procesos de evaluación de tu organización.' : 'Resumen de todas las empresas, procesos y propuestas.'}</p></div>
     ${can.manageOrgs() ? `<div class="row"><button class="btn" onclick="newProposal()"><i class="ti ti-file-dollar"></i> Nueva propuesta</button><button class="btn pri" onclick="orgForm()"><i class="ti ti-plus"></i> Nueva empresa</button></div>` : ''}</div>
   <div class="grid g4">
     <div class="kpi"><div class="n">${orgs.length}</div><div class="l">${me.role === 'rh' ? 'Empresa' : 'Empresas cliente'}</div></div>
@@ -725,10 +717,10 @@ function viewDashboard(){
       <td style="min-width:120px">${c.type === '360' ? `<div class="bar"><i style="width:${p.pct}%"></i></div><span class="small muted">${p.done}/${p.total}</span>` : `<span class="small muted">${c.responded}/${c.population} respondieron</span>`}</td>
       <td><a class="btn sm" href="#/${c.type === '360' ? 'proceso' : 'nom'}/${c.id}">Abrir</a></td></tr>`; }).join('')}</tbody></table></div>` : `<div class="empty"><i class="ti ti-clipboard-list"></i>Aún no hay procesos.</div>`}
     </div>
-    <div class="card"><h3>Próximas sesiones de coaching</h3>
-      ${upcoming.length ? upcoming.map(s => `<div class="row" style="padding:9px 0;border-bottom:1px solid var(--paper2)"><div class="av">${initials(DB.person(s.k.personId)?.name)}</div><div><b>${esc(DB.person(s.k.personId)?.name)}</b><br><span class="small muted">${esc(s.topic)}</span></div><span class="sp"></span><span class="chip cima">${fmtDate(s.date)}</span></div>`).join('') : `<div class="empty"><i class="ti ti-calendar"></i>Sin sesiones agendadas.</div>`}
-      ${can.coaching() ? `<div style="margin-top:12px"><a class="btn sm" href="#/coaching">Ver todo el coaching</a></div>` : ''}
-    </div>
+    ${can.proposals() ? `<div class="card"><h3>Propuestas recientes</h3>
+      ${db.proposals.length ? [...db.proposals].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 5).map(pr => `<div class="row" style="padding:9px 0;border-bottom:1px solid var(--paper2)"><div class="av" style="border-radius:10px">${initials(DB.org(pr.orgId)?.name)}</div><div><b>${esc(DB.org(pr.orgId)?.name)}</b><br><span class="small muted">${pr.evaluados} colaboradores · ${money(quote(pr).total)}</span></div><span class="sp"></span>${statusChip(pr.status)}</div>`).join('') : `<div class="empty"><i class="ti ti-file-dollar"></i>Sin propuestas todavía.</div>`}
+      <div style="margin-top:12px"><a class="btn sm" href="#/propuestas">Ver todas las propuestas</a></div>
+    </div>` : ''}
   </div>`;
   return {crumbs:'Inicio', html};
 }
@@ -778,10 +770,10 @@ function saveOrg(id){
 function delOrg(id){
   const o = DB.org(id); if (!o) return;
   const pids = new Set(DB.peopleOf(id).map(p => p.id)), cids = new Set(DB.campsOf(id).map(c => c.id));
-  const n = {people:pids.size, camps:cids.size, coach:db.coaching.filter(k => pids.has(k.personId) || cids.has(k.campaignId)).length, props:db.proposals.filter(p => p.orgId === id).length, users:db.users.filter(u => u.role === 'rh' && u.orgId === id).length};
+  const n = {people:pids.size, camps:cids.size, props:db.proposals.filter(p => p.orgId === id).length, users:db.users.filter(u => u.role === 'rh' && u.orgId === id).length};
   modal(`<h2>Eliminar empresa</h2>
     <p>Se eliminará <b>${esc(o.name)}</b> junto con todo lo suyo:</p>
-    <ul class="small" style="margin:10px 0 14px 18px;line-height:1.7"><li>${n.people} colaboradores</li><li>${n.camps} procesos (360° y NOM-035) con sus respuestas y reportes</li><li>${n.coach} planes de coaching</li><li>${n.props} propuestas</li><li>${n.users} usuarios de Capital Humano (pierden el acceso)</li></ul>
+    <ul class="small" style="margin:10px 0 14px 18px;line-height:1.7"><li>${n.people} colaboradores</li><li>${n.camps} procesos (360° y NOM-035) con sus respuestas y reportes</li><li>${n.props} propuestas</li><li>${n.users} usuarios de Capital Humano (pierden el acceso)</li></ul>
     <p class="small"><b style="color:var(--bad)">Esto no se puede deshacer.</b> Para confirmar, escribe el nombre de la empresa:</p>
     <div class="f"><input id="del_org_name" placeholder="${esc(o.name)}" autocomplete="off"></div>
     <div class="acts"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn pri" style="background:var(--bad);border-color:var(--bad)" onclick="confirmDelOrg('${id}')">Eliminar definitivamente</button></div>`);
@@ -790,7 +782,6 @@ function confirmDelOrg(id){
   const o = DB.org(id); if (!o) return;
   if (val('del_org_name').toLowerCase() !== o.name.trim().toLowerCase()) return toast('El nombre no coincide');
   const pids = new Set(DB.peopleOf(id).map(p => p.id)), cids = new Set(DB.campsOf(id).map(c => c.id));
-  db.coaching = db.coaching.filter(k => !pids.has(k.personId) && !cids.has(k.campaignId));
   db.assignments = db.assignments.filter(a => !cids.has(a.campaignId));
   db.campaigns = db.campaigns.filter(c => c.orgId !== id);
   db.people = db.people.filter(p => p.orgId !== id);
@@ -915,7 +906,7 @@ function viewCampaign(id){
     <div class="kpi"><div class="n">${p.done}<small>/${p.total}</small></div><div class="l">Cuestionarios completados</div></div>
   </div>
   ${c.status === 'borrador' ? `<div class="note warn" style="margin-top:16px"><b>Borrador:</b> revisa los evaluadores de cada persona y da clic en <b>Lanzar proceso</b>. Después descarga los enlaces y envíalos por correo o WhatsApp.</div>` : ''}
-  ${!can.reports(c.orgId) ? `<div class="note" style="margin-top:16px"><i class="ti ti-lock"></i> Los reportes individuales los entrega CIMA Leadership Institute en las sesiones de retroalimentación.</div>` : ''}
+  ${!can.reports(c.orgId) ? `<div class="note" style="margin-top:16px"><i class="ti ti-lock"></i> Los reportes los entrega CIMA Leadership Institute junto con el resumen ejecutivo.</div>` : ''}
   <div class="note" style="margin:16px 0"><b>Anonimato:</b> las respuestas de pares y colaboradores sólo se muestran como promedio de grupo cuando hay al menos ${MIN_ANON} respuestas; si no, se agrupan o se omiten. El jefe directo y la autoevaluación se muestran por separado.</div>
   ${c.evaluatees.map(eid => { const e = DB.person(eid), mine = A.filter(a => a.evaluateeId === eid), d = mine.filter(a => a.status === 'completada').length, res = results360(c, eid); return `
     <div class="card">
@@ -1031,11 +1022,9 @@ function viewReport(cid, eid){
   const gaps = r.comps.filter(x => x.self != null).map(x => ({...x, gap:x.self - x.others})).sort((a, b) => b.gap - a.gap);
   const blind = gaps.filter(x => x.gap >= .7), hiddenS = gaps.filter(x => x.gap <= -.7);
   const sorted = [...r.items].sort((a, b) => b.v - a.v);
-  const plan = db.coaching.find(k => k.personId === eid && k.campaignId === cid);
   const groupColors = {jefe:'#e64018', par:'#B7791F', colaborador:'#2E7D52', cliente:'#5B5BD6', mix:'#8a6d3b'};
   const html = `
   <div class="row no-print" style="margin-bottom:14px"><a class="btn sm ghost" href="#/proceso/${cid}"><i class="ti ti-arrow-left"></i> Volver al proceso</a><span class="sp"></span>
-    ${can.coaching() ? (plan ? `<a class="btn sm" href="#/plan/${plan.id}"><i class="ti ti-target-arrow"></i> Ver plan de coaching</a>` : `<button class="btn sm" onclick="createPlan('${cid}','${eid}')"><i class="ti ti-target-arrow"></i> Crear plan de coaching</button>`) : ''}
     <button class="btn sm pri" onclick="window.print()"><i class="ti ti-printer"></i> Descargar PDF</button></div>
   <div class="rep-head"><div><span class="eyebrow" style="color:var(--cima-l)">Reporte individual confidencial · ${esc(c.name)}</span><h1>${esc(e.name)}</h1><p>${esc(e.position)} · ${esc(e.area)} · ${esc(o.name)}</p></div><img src="${LOGO}" alt="CIMA"></div>
   <div class="grid g4" style="margin-top:16px">
@@ -1070,7 +1059,7 @@ function viewReport(cid, eid){
   </div>
   <div class="card" style="margin-top:16px"><h3>Comentarios textuales</h3><div class="grid g2">
     ${OPEN_QS.map(q => `<div><p class="small" style="font-weight:700;margin-bottom:8px">${esc(q.q)}</p>${(r.comments[q.id] || []).map(t => `<div class="quote">“${esc(t)}”</div>`).join('') || '<p class="small muted">Sin comentarios.</p>'}</div>`).join('')}</div></div>
-  <div class="card" style="margin-top:16px;background:var(--negro);color:#fff;border:none"><div class="row"><div><span class="eyebrow" style="color:var(--cima-l)">Siguiente paso</span><h3 style="color:#fff;margin:0">Sesión de retroalimentación y Plan Individual de Desarrollo</h3><p class="small" style="color:#bdbdc4;margin-top:4px">Con ${esc(db.settings.coachName)}, coach certificado de CIMA Leadership Institute.</p></div></div></div>`;
+  <div class="card" style="margin-top:16px;background:var(--negro);color:#fff;border:none"><div class="row"><div><span class="eyebrow" style="color:var(--cima-l)">Siguiente paso</span><h3 style="color:#fff;margin:0">Sesión de retroalimentación con los líderes de equipo</h3><p class="small" style="color:#bdbdc4;margin-top:4px">Facilitada por ${esc(db.settings.coachName)}, coach certificado de CIMA Leadership Institute, con el resumen ejecutivo y las recomendaciones para cada equipo.</p></div></div></div>`;
   return {crumbs:`<a href="#/empresa/${o.id}">${esc(o.name)}</a> / <a href="#/proceso/${cid}">${esc(c.name)}</a> / ${esc(e.name)}`, html};
 }
 
@@ -1097,7 +1086,7 @@ function viewGroup(cid){
       ${rows.map(x => `<tr><td class="small"><b>${esc(x.e.name)}</b></td>${x.r.ready ? x.r.comps.map(cp => `<td class="h" style="background:${heatColor(cp.others)}">${r1(cp.others)}</td>`).join('') + `<td class="h">${r1(x.r.overall)}</td>` : `<td colspan="${m.comps.length + 1}" class="small muted">Respuestas insuficientes</td>`}</tr>`).join('')}
     </tbody></table></div><p class="small muted" style="margin-top:8px">Verde: fortaleza · Rosa: área de oportunidad.</p></div>
   </div>
-  <div class="card" style="margin-top:16px"><h3>Recomendación CIMA</h3><p>El grupo muestra su mayor fortaleza en <b>${esc(best[0]?.n)}</b> y su principal oportunidad en <b>${esc(best[best.length - 1]?.n)}</b>. Recomendamos un taller grupal enfocado en esta competencia y procesos de coaching individual para las personas con brechas mayores a 0.5 puntos entre autoevaluación y evaluación de otros.</p></div>`
+  <div class="card" style="margin-top:16px"><h3>Recomendación CIMA</h3><p>El grupo muestra su mayor fortaleza en <b>${esc(best[0]?.n)}</b> y su principal oportunidad en <b>${esc(best[best.length - 1]?.n)}</b>. Recomendamos trabajar esta competencia en la sesión de retroalimentación con los líderes de equipo y poner atención especial en las personas con brechas mayores a 0.5 puntos entre autoevaluación y evaluación de otros.</p></div>`
   : `<div class="card empty" style="margin-top:16px"><i class="ti ti-hourglass"></i>Aún no hay reportes individuales listos.</div>`}`;
   return {crumbs:`<a href="#/empresa/${o.id}">${esc(o.name)}</a> / <a href="#/proceso/${cid}">${esc(c.name)}</a> / Reporte ejecutivo`, html};
 }
@@ -1136,7 +1125,7 @@ function viewNom(cid){
     ${cats.map(k => { const l = lv(c.results[k.id]); return `<tr><td><b>${esc(k.name)}</b></td><td class="small muted">${k.doms.map(esc).join(' · ')}</td><td><span class="chip ${l.cls}">${l.name}</span></td><td class="small">${l.id >= 3 ? 'Programa de intervención con evaluaciones específicas y campañas de sensibilización' : l.id === 2 ? 'Revisar política de prevención y programa de intervención' : 'Mantener y difundir la política de prevención'}</td></tr>`; }).join('')}
   </tbody></table></div></div>
   <div class="card" style="margin-top:16px;background:var(--negro);color:#fff;border:none"><span class="eyebrow" style="color:var(--cima-l)">Conexión 360° + NOM-035</span><h3 style="color:#fff">El liderazgo es un factor de riesgo psicosocial</h3>
-    <p class="small" style="color:#bdbdc4">La categoría <b style="color:#fff">Liderazgo y relaciones en el trabajo</b> salió en nivel <b style="color:#fff">${lv(c.results.lid).name.toLowerCase()}</b>. La evaluación 360° identifica qué conductas de liderazgo lo explican, y el coaching CIMA las trabaja persona por persona.</p></div>`
+    <p class="small" style="color:#bdbdc4">La categoría <b style="color:#fff">Liderazgo y relaciones en el trabajo</b> salió en nivel <b style="color:#fff">${lv(c.results.lid).name.toLowerCase()}</b>. La evaluación 360° identifica qué conductas de liderazgo lo explican, y la sesión de retroalimentación con los líderes de equipo las trabaja.</p></div>`
   : `<div class="card" style="margin-top:16px"><h3>Aplicación en curso</h3><p class="small muted" style="margin-bottom:12px">Se aplican la Guía I y la ${isIII ? 'Guía III' : 'Guía II'} a los colaboradores del centro de trabajo.</p>
      <div class="note warn"><b>En preparación:</b> la aplicación en línea de las guías oficiales (DOF 23/10/2018). Mientras tanto, CIMA aplica las guías y captura aquí los resultados con el botón <b>Capturar resultados</b>.</div></div>`}`;
   return {crumbs:`<a href="#/empresa/${o.id}">${esc(o.name)}</a> / NOM-035`, html};
@@ -1158,80 +1147,26 @@ function saveNomCapture(cid){
 }
 
 /* =====================================================================
-   COACHING
-   ===================================================================== */
-function viewCoaching(){
-  const plans = db.coaching;
-  const html = `<div class="head"><div><span class="eyebrow">Seguimiento</span><h1>Coaching</h1><p>Planes Individuales de Desarrollo que nacen del reporte 360° y se trabajan en sesiones con ${esc(db.settings.coachName)}.</p></div></div>
-  ${plans.length ? `<div class="grid g2">${plans.map(k => { const p = DB.person(k.personId), done = k.sessions.filter(s => s.done).length, prog = Math.round(avg(k.goals.map(g => g.progress)) || 0); return `
-    <a class="card" href="#/plan/${k.id}" style="color:inherit;display:block"><div class="row"><div class="av">${initials(p?.name)}</div><div><h3 style="margin:0">${esc(p?.name)}</h3><span class="small muted">${esc(p?.position)} · ${esc(DB.org(p?.orgId)?.name)}</span></div></div>
-      <p class="small" style="margin:12px 0">${esc(k.objective)}</p>
-      <div class="row small muted"><span><i class="ti ti-calendar-check"></i> ${done}/${k.sessions.length} sesiones</span><span class="sp"></span><span>Avance ${prog}%</span></div><div class="bar" style="margin-top:6px"><i style="width:${prog}%"></i></div></a>`; }).join('')}</div>`
-  : `<div class="card empty"><i class="ti ti-target-arrow"></i>Crea un plan desde el reporte individual de cualquier persona evaluada.</div>`}`;
-  return {crumbs:'Coaching', html};
-}
-function createPlan(cid, eid){
-  const r = results360(DB.camp(cid), eid);
-  const low = [...r.comps].filter(x => x.others != null).sort((a, b) => a.others - b.others).slice(0, 2);
-  const k = {id:uid('k'), personId:eid, campaignId:cid, coachId:(db.users.find(u => u.role === 'coach') || me).id, objective:'Desarrollar ' + low.map(x => x.name).join(' y ') + ' a partir de los resultados 360°.',
-    goals:low.map(x => ({id:uid('g'), comp:x.id, text:'Definir conducta observable para mejorar en ' + x.name, progress:0})),
-    sessions:[0, 21, 45].map((d, i) => ({id:uid('s'), date:addDays(today(), d + 3), topic:['Entrega de resultados 360° y definición del PID', 'Seguimiento del plan', 'Cierre y preparación de re-medición'][i], notes:'', done:false}))};
-  db.coaching.push(k); DB.save(); go('plan/' + k.id); render();
-}
-function viewPlan(id){
-  const k = db.coaching.find(x => x.id === id); if (!k) return {crumbs:'Coaching', html:'<div class="empty">Plan no encontrado.</div>'};
-  const p = DB.person(k.personId), c = DB.camp(k.campaignId), m = DB.model(c.modelId);
-  const r = results360(c, k.personId);
-  const html = `
-  <div class="head"><div><span class="eyebrow">Plan Individual de Desarrollo · Coach: ${esc(DB.user(k.coachId)?.name || db.settings.coachName)}</span><h1>${esc(p.name)}</h1><p>${esc(p.position)} · ${esc(DB.org(p.orgId)?.name)}</p></div>
-    <div class="row"><a class="btn" href="#/reporte/${c.id}/${p.id}"><i class="ti ti-report"></i> Reporte 360°</a><button class="btn pri" onclick="window.print()"><i class="ti ti-printer"></i> Imprimir PID</button></div></div>
-  <div class="card"><h3>Objetivo del proceso</h3><div class="f" style="margin:0"><textarea id="k_obj" onchange="updPlan('${id}','objective',this.value)">${esc(k.objective)}</textarea></div></div>
-  <div class="grid g2" style="margin-top:16px">
-    <div class="card"><div class="row" style="margin-bottom:10px"><h3 style="margin:0">Metas de desarrollo</h3><span class="sp"></span><button class="btn sm no-print" onclick="addGoal('${id}')"><i class="ti ti-plus"></i> Meta</button></div>
-      ${k.goals.map(g => { const cp = m.comps.find(x => x.id === g.comp), sc = r.comps.find(x => x.id === g.comp); return `<div style="padding:10px 0;border-bottom:1px solid var(--paper2)">
-        <div class="row"><span class="chip cima">${esc(cp?.name || 'General')}</span>${sc ? `<span class="small muted">Línea base 360°: ${r1(sc.others)}</span>` : ''}<span class="sp"></span><b class="small">${g.progress}%</b></div>
-        <input style="border:1px solid var(--rule);border-radius:8px;padding:8px 10px;width:100%;margin:8px 0;font-family:var(--sans)" value="${esc(g.text)}" onchange="updGoal('${id}','${g.id}','text',this.value)">
-        <input type="range" min="0" max="100" step="5" value="${g.progress}" style="width:100%;accent-color:var(--cima)" onchange="updGoal('${id}','${g.id}','progress',+this.value)"></div>`; }).join('')}</div>
-    <div class="card"><div class="row" style="margin-bottom:10px"><h3 style="margin:0">Sesiones</h3><span class="sp"></span><button class="btn sm no-print" onclick="addSession('${id}')"><i class="ti ti-plus"></i> Sesión</button></div>
-      ${k.sessions.sort((a, b) => a.date.localeCompare(b.date)).map(s => `<div style="padding:10px 0;border-bottom:1px solid var(--paper2)">
-        <div class="row"><label class="row small" style="gap:6px;font-weight:700"><input type="checkbox" ${s.done ? 'checked' : ''} onchange="updSession('${id}','${s.id}','done',this.checked)" style="accent-color:var(--cima)"> ${esc(s.topic)}</label><span class="sp"></span><input type="date" value="${s.date}" onchange="updSession('${id}','${s.id}','date',this.value)" style="border:1px solid var(--rule);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:12px"></div>
-        <textarea placeholder="Notas privadas del coach…" onchange="updSession('${id}','${s.id}','notes',this.value)" style="width:100%;margin-top:6px;border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-family:var(--sans);font-size:13px;min-height:54px">${esc(s.notes)}</textarea></div>`).join('')}</div>
-  </div>
-  <div class="card" style="margin-top:16px"><div class="row"><div><h3 style="margin:0">Re-medición 360°</h3><p class="small muted">Al cerrar el ciclo (3–6 meses) se lanza un nuevo 360° con los mismos evaluadores para medir el avance contra la línea base.</p></div><span class="sp"></span><button class="btn no-print" onclick="toast('En la versión final esto crea un proceso 360° con los mismos evaluadores')"><i class="ti ti-refresh"></i> Programar re-medición</button></div></div>`;
-  return {crumbs:'<a href="#/coaching">Coaching</a> / ' + esc(p.name), html};
-}
-function plan(id){ return db.coaching.find(x => x.id === id); }
-function updPlan(id, f, v){ plan(id)[f] = v; DB.save(); toast('Guardado'); }
-function updGoal(id, gid, f, v){ plan(id).goals.find(g => g.id === gid)[f] = v; DB.save(); if (f === 'progress') render(); }
-function updSession(id, sid, f, v){ plan(id).sessions.find(s => s.id === sid)[f] = v; DB.save(); if (f !== 'notes') render(); else toast('Notas guardadas'); }
-function addGoal(id){ plan(id).goals.push({id:uid('g'), comp:'', text:'Nueva meta', progress:0}); DB.save(); render(); }
-function addSession(id){ const k = plan(id), last = k.sessions.map(s => s.date).sort().pop() || today(); k.sessions.push({id:uid('s'), date:addDays(last, 21), topic:'Sesión de seguimiento', notes:'', done:false}); DB.save(); render(); }
-
-/* =====================================================================
    PROPUESTAS COMERCIALES
    ===================================================================== */
 function quote(pr){
   const S = db.settings, pk = S.packages[pr.pkg];
-  const lines = [{t:`Evaluación 360° · Paquete ${pk.name} (${pr.evaluados} personas × ${money(pk.price)})`, v:pk.price * pr.evaluados}];
+  const lines = [{t:`Evaluación ${pk.name} (${pr.evaluados} colaboradores × ${money(pk.price)})`, v:pk.price * pr.evaluados}];
   if (pr.design) lines.push({t:'Diseño de modelo de competencias desde cero', v:S.designFee});
   if (pr.nom) lines.push({t:`NOM-035 · Identificación de riesgo psicosocial (${pr.nomCount} colaboradores × ${money(S.nomPerEmployee)})`, v:S.nomPerEmployee * pr.nomCount});
-  if (pr.extraSessions) lines.push({t:`Sesiones adicionales de coaching (${pr.extraSessions} × ${money(S.extraSession)})`, v:S.extraSession * pr.extraSessions});
   const sub = lines.reduce((s, l) => s + l.v, 0), disc = sub * (pr.discount || 0) / 100, base = sub - disc;
   return {lines, sub, disc, base, iva:base * IVA, total:base * (1 + IVA)};
 }
-function pkgTable(highlight){
-  const P = db.settings.packages;
-  return `<div class="tbl-wrap"><table class="tbl pkg-tbl"><thead><tr><th style="min-width:240px">Qué incluye</th>${PKG_ORDER.map(k => `<th style="text-align:center;${k === highlight ? 'color:var(--cima)' : ''}">${esc(P[k].name)}</th>`).join('')}</tr></thead><tbody>
-    ${FEATURES.map(f => `<tr><td class="small">${esc(f.t)}</td>${PKG_ORDER.map(k => `<td style="text-align:center;${k === highlight ? 'background:#fdf3ee' : ''}">${f.in.includes(k) ? '<i class="ti ti-circle-check-filled" style="color:var(--cima);font-size:18px"></i>' : '<span class="muted">—</span>'}</td>`).join('')}</tr>`).join('')}
-    <tr><td><b>Precio por persona evaluada</b><br><span class="small muted">más IVA</span></td>${PKG_ORDER.map(k => `<td style="text-align:center;${k === highlight ? 'background:#fdf3ee' : ''}"><b style="font-family:var(--serif);font-size:16px">${money(P[k].price).replace(' MXN', '')}</b></td>`).join('')}</tr>
-    <tr><td class="small muted" colspan="${PKG_ORDER.length + 1}">Adicionales para cualquier paquete: NOM-035 (${money(db.settings.nomPerEmployee)} por colaborador) · diseño de un modelo de competencias desde cero (${money(db.settings.designFee)}) · sesiones extra de coaching (${money(db.settings.extraSession)} c/u).</td></tr>
-  </tbody></table></div>`;
+function pkgTable(){
+  const p = db.settings.packages.cumbre;
+  return `<ul style="margin:8px 0 0 18px;line-height:1.8">${pkgFeatures('cumbre').map(t => `<li class="small">${esc(t)}</li>`).join('')}</ul>
+    <p class="small muted" style="margin-top:10px">Adicionales: NOM-035 (${money(db.settings.nomPerEmployee)} por colaborador) · diseño de un modelo de competencias desde cero (${money(db.settings.designFee)}, pago único).</p>`;
 }
 function viewProposals(){
   const html = `<div class="head"><div><span class="eyebrow">Ventas</span><h1>Propuestas</h1><p>Genera propuestas con la marca CIMA para cualquier empresa. Los precios base se ajustan en <a href="#/config">Usuarios y precios</a>.</p></div><button class="btn pri" onclick="newProposal()"><i class="ti ti-plus"></i> Nueva propuesta</button></div>
-  <div class="grid g3" style="margin-bottom:16px">${PKG_ORDER.map(k => { const p = db.settings.packages[k]; return `<div class="card"><span class="chip cima">${esc(p.name)}</span><div style="font-family:var(--serif);font-size:24px;font-weight:900;margin:10px 0 4px">${money(p.price)}</div><p class="small muted">por persona evaluada + IVA</p><p class="small" style="margin-top:8px">${esc(p.desc)}</p></div>`; }).join('')}</div>
-  <div class="card" style="margin-bottom:16px"><div class="row" style="margin-bottom:8px"><h3 style="margin:0">Comparativo de paquetes</h3><span class="sp"></span><a class="btn sm" href="#/guia"><i class="ti ti-file-description"></i> Guía para el cliente</a></div>${pkgTable()}</div>
-  <div class="card" style="padding:6px 8px"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Empresa</th><th>Paquete</th><th>Personas</th><th>Total c/IVA</th><th>Estatus</th><th>Fecha</th><th></th></tr></thead><tbody>
+  ${(() => { const p = db.settings.packages.cumbre; return `<div class="card" style="margin-bottom:16px"><div class="row" style="align-items:flex-start"><div style="flex:1;min-width:240px"><span class="chip cima">${esc(p.name)}</span><div style="font-family:var(--serif);font-size:24px;font-weight:900;margin:10px 0 4px">${money(p.price)}</div><p class="small muted">por colaborador evaluado + IVA</p><p class="small" style="margin-top:8px">${esc(p.desc)}</p></div><a class="btn sm" href="#/guia"><i class="ti ti-file-description"></i> Guía para el cliente</a></div>
+    <h3 style="margin:16px 0 0">Qué incluye</h3>${pkgTable()}</div>`; })()}
+  <div class="card" style="padding:6px 8px"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Empresa</th><th>Servicio</th><th>Colaboradores</th><th>Total c/IVA</th><th>Estatus</th><th>Fecha</th><th></th></tr></thead><tbody>
   ${db.proposals.map(pr => `<tr><td><b>${esc(DB.org(pr.orgId)?.name)}</b></td><td>${esc(db.settings.packages[pr.pkg].name)}${pr.nom ? ' + NOM-035' : ''}</td><td>${pr.evaluados}</td><td><b>${money(quote(pr).total)}</b></td><td>${statusChip(pr.status)}</td><td class="small">${fmtDate(pr.date)}</td><td style="white-space:nowrap"><a class="btn sm" href="#/propuesta/${pr.id}">Abrir</a> <button class="btn sm ghost" style="color:var(--bad)" title="Eliminar" onclick="delProposal('${pr.id}')"><i class="ti ti-trash"></i></button></td></tr>`).join('') || `<tr><td colspan="7" class="empty">Sin propuestas todavía.</td></tr>`}
   </tbody></table></div></div>`;
   return {crumbs:'Propuestas', html};
@@ -1254,22 +1189,21 @@ function newProposal(orgId){
     </div>
     <h3 style="margin:18px 0 10px">Propuesta</h3>
     <div class="grid g2">
-      <div class="f"><label>Paquete</label><select id="np_pkg" onchange="npTotal()">${PKG_ORDER.map(k => `<option value="${k}" ${k === 'profesional' ? 'selected' : ''}>${esc(S.packages[k].name)} · ${money(S.packages[k].price)}</option>`).join('')}</select></div>
-      <div class="f"><label>Personas a evaluar</label><input id="np_ev" type="number" min="1" value="${Math.min(10, Math.max(3, Math.round(emp * .15)))}" oninput="npTotal()"></div>
+      <div class="f"><label>Servicio</label><input value="${esc(S.packages.cumbre.name)} · ${money(S.packages.cumbre.price)} por colaborador" disabled></div>
+      <div class="f"><label>Colaboradores a evaluar (360°)</label><input id="np_ev" type="number" min="1" value="${emp}" oninput="npTotal()"><span class="hint">Se evalúa a todos los colaboradores</span></div>
       <div class="f"><label><input id="np_nom" type="checkbox" checked onchange="npTotal()"> Incluir NOM-035</label><input id="np_nomc" type="number" min="1" value="${emp}" oninput="npTotal()"><span class="hint">Colaboradores a evaluar</span></div>
       <div class="f"><label>Descuento %</label><input id="np_disc" type="number" min="0" max="50" value="0" oninput="npTotal()"></div>
       <div class="f"><label><input id="np_des" type="checkbox" onchange="npTotal()"> Modelo desde cero</label><span class="hint">${money(S.designFee)} pago único</span></div>
-      <div class="f"><label>Sesiones extra de coaching</label><input id="np_xs" type="number" min="0" value="0" oninput="npTotal()"></div>
     </div>
     <div class="f"><label>Contexto del cliente (aparece en la propuesta)</label><textarea id="np_ctx" placeholder="¿Qué busca la empresa? ¿Qué problema quiere resolver?"></textarea></div>
     <div class="note" id="np_total"></div>
     <div class="acts"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn pri" onclick="genProposal()"><i class="ti ti-file-dollar"></i> Generar propuesta</button></div>`, true);
   npToggle();
 }
-function npToggle(){ const isNew = val('np_org') === '__new'; $('#np_newbox').style.display = isNew ? '' : 'none'; if (!isNew) { const o = DB.org(val('np_org')); if (o?.employees) $('#np_nomc').value = o.employees; } npTotal(); }
-function npEmp(){ const n = +val('np_emp'); if (n) $('#np_nomc').value = n; npTotal(); }
+function npToggle(){ const isNew = val('np_org') === '__new'; $('#np_newbox').style.display = isNew ? '' : 'none'; if (!isNew) { const o = DB.org(val('np_org')); if (o?.employees) { $('#np_nomc').value = o.employees; $('#np_ev').value = o.employees; } } npTotal(); }
+function npEmp(){ const n = +val('np_emp'); if (n) { $('#np_nomc').value = n; $('#np_ev').value = n; } npTotal(); }
 function npData(){
-  return {pkg:val('np_pkg'), evaluados:Math.max(1, +val('np_ev') || 1), nom:$('#np_nom').checked, nomCount:Math.max(1, +val('np_nomc') || 1), design:$('#np_des').checked, extraSessions:Math.max(0, +val('np_xs') || 0), discount:Math.min(50, Math.max(0, +val('np_disc') || 0)), context:val('np_ctx')};
+  return {pkg:'cumbre', evaluados:Math.max(1, +val('np_ev') || 1), nom:$('#np_nom').checked, nomCount:Math.max(1, +val('np_nomc') || 1), design:$('#np_des').checked, extraSessions:0, discount:Math.min(50, Math.max(0, +val('np_disc') || 0)), context:val('np_ctx')};
 }
 function npTotal(){ $('#np_nomc').disabled = !$('#np_nom').checked; const q = quote(npData()); $('#np_total').innerHTML = `Total estimado: <b>${money(q.total)}</b> con IVA (${money(q.base)} + IVA)`; }
 function genProposal(){
@@ -1298,15 +1232,13 @@ function viewProposal(id){
       <a class="btn" href="#/guia"><i class="ti ti-file-description"></i> Guía para el cliente</a>
       <button class="btn ghost" style="color:var(--bad)" onclick="delProposal('${id}')"><i class="ti ti-trash"></i> Eliminar</button>
       <button class="btn pri" onclick="window.print()"><i class="ti ti-printer"></i> Descargar PDF</button></div>
-      <div class="note" style="margin-bottom:14px"><b>Paquete ${esc(pk.name)} incluye:</b> ${pkgFeatures(pr.pkg).map(esc).join(' · ')}</div>
+      <div class="note" style="margin-bottom:14px"><b>${esc(pk.name)} incluye:</b> ${pkgFeatures(pr.pkg).map(esc).join(' · ')}</div>
       <div class="grid g4">
         <div class="f"><label>Empresa</label><select ${ed('orgId', 'text')}>${db.orgs.map(x => `<option value="${x.id}" ${x.id === pr.orgId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></div>
-        <div class="f"><label>Paquete</label><select ${ed('pkg', 'text')}>${Object.entries(S.packages).map(([k, p]) => `<option value="${k}" ${k === pr.pkg ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select></div>
-        <div class="f"><label>Personas a evaluar</label><input type="number" min="1" value="${pr.evaluados}" ${ed('evaluados')}></div>
+        <div class="f"><label>Colaboradores a evaluar</label><input type="number" min="1" value="${pr.evaluados}" ${ed('evaluados')}></div>
         <div class="f"><label>Descuento %</label><input type="number" min="0" max="50" value="${pr.discount}" ${ed('discount')}></div>
         <div class="f"><label><input type="checkbox" ${pr.nom ? 'checked' : ''} ${ed('nom', 'checkbox')}> Incluir NOM-035</label><input type="number" min="1" value="${pr.nomCount}" ${ed('nomCount')} ${pr.nom ? '' : 'disabled'}><span class="hint">Colaboradores a evaluar</span></div>
         <div class="f"><label><input type="checkbox" ${pr.design ? 'checked' : ''} ${ed('design', 'checkbox')}> Modelo desde cero</label><span class="hint">${money(S.designFee)} pago único · diseñar competencias nuevas</span></div>
-        <div class="f"><label>Sesiones extra de coaching</label><input type="number" min="0" value="${pr.extraSessions}" ${ed('extraSessions')}></div>
       </div>
       <div class="f" style="margin:0"><label>Contexto del cliente (aparece en la propuesta)</label><textarea ${ed('context', 'text')} placeholder="¿Qué busca la empresa? ¿Qué problema quiere resolver?">${esc(pr.context)}</textarea></div>
     </div></div>
@@ -1316,24 +1248,23 @@ function viewProposal(id){
       <h1>Propuesta de<br><em>Evaluación 360°</em></h1>
       <p style="font-size:17px;color:#fff">${esc(o.name)}</p><p>Atención: ${esc(o.contact || '—')} · ${fmtDate(pr.date)}</p></div>
     <div class="sec"><span class="eyebrow">Contexto</span><h2>Lo que buscamos lograr juntos</h2>
-      <p>${esc(pr.context || 'Fortalecer el liderazgo de la organización a partir de información objetiva sobre cómo se perciben las conductas de cada líder, y convertir esos resultados en planes de desarrollo concretos con seguimiento.')}</p>
+      <p>${esc(pr.context || 'Fortalecer el liderazgo de la organización a partir de información objetiva sobre cómo se perciben las conductas de cada líder, y convertir esos resultados en acciones de desarrollo concretas para cada equipo.')}</p>
       ${pr.nom ? `<p>Además, la propuesta incluye la identificación de factores de riesgo psicosocial conforme a la <b>NOM-035-STPS-2018</b>, obligatoria para todos los centros de trabajo. La categoría <i>Liderazgo y relaciones en el trabajo</i> de la norma se conecta directamente con los resultados del 360°, lo que permite atacar la causa y no sólo el síntoma.</p>` : ''}</div>
     <div class="sec"><span class="eyebrow">Metodología</span><h2>Cómo lo hacemos</h2>
-      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : pr.pkg === 'esencial' ? 'Modelo de Liderazgo 360°: 5 competencias y 30 conductas observables' : 'Modelo de Liderazgo 360° ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada persona.`],
+      ${[['Diseño', `Definimos el modelo de competencias (${pr.design ? 'diseñado desde cero para su cultura' : 'Modelo de Liderazgo 360° ajustado a su cultura'}), la estructura organizacional y los evaluadores de cada colaborador.`],
          ['Aplicación', `Cada evaluador recibe un enlace personal por correo o WhatsApp. Responder toma de 12 a 15 minutos desde el celular. El anonimato está garantizado: los resultados de pares y colaboradores sólo se muestran cuando hay al menos ${MIN_ANON} respuestas.${pr.nom ? ' En paralelo se aplican las guías de la NOM-035.' : ''}`],
-         ['Resultados', 'Reporte individual confidencial (perfil por competencia, puntos ciegos, fortalezas ocultas y comentarios textuales) y reporte ejecutivo con mapa de calor del equipo.' + (pr.nom ? ' Informe NOM-035 por categoría y dominio, listo para la STPS.' : '')],
-         ['Desarrollo', pr.pkg === 'esencial' ? 'Presentación de resultados a la dirección con recomendaciones de desarrollo.' : `Sesión de retroalimentación 1 a 1 y Plan Individual de Desarrollo${pr.pkg === 'liderazgo' ? `, más proceso de coaching con ${esc(S.coachName)} y re-medición 360° a los 6 meses` : ''}.`]
+         ['Resultados', 'Reporte individual confidencial por colaborador (perfil por competencia, puntos ciegos, fortalezas ocultas y comentarios textuales) y resumen ejecutivo profesional para la dirección con mapa de calor de la organización.' + (pr.nom ? ' Informe NOM-035 por categoría y dominio, listo para la STPS.' : '')],
+         ['Retroalimentación', `Sesión grupal con los líderes de equipo, facilitada por ${esc(S.coachName)}: revisamos el resumen ejecutivo, los resultados de cada equipo y las recomendaciones de desarrollo.`]
         ].map((p, i) => `<div class="phase"><b>${i + 1}</b><div><h3>${p[0]}</h3><p style="margin:2px 0 0">${p[1]}</p></div></div>`).join('')}</div>
-    <div class="sec"><span class="eyebrow">Paquete ${esc(pk.name)}</span><h2>Qué incluye</h2><p>${esc(pk.desc)}</p><ul>${pkgFeatures(pr.pkg).map(i => `<li>${esc(i)}</li>`).join('')}${pr.nom ? '<li>Identificación de factores de riesgo psicosocial NOM-035 con las guías que correspondan e informe de resultados</li>' : ''}${pr.design ? '<li>Diseño de un modelo de competencias desde cero</li>' : ''}${pr.extraSessions ? `<li>${pr.extraSessions} sesiones adicionales de coaching</li>` : ''}</ul>
-      <p class="small muted" style="margin-top:10px">Comparativo de los tres paquetes:</p>${pkgTable(pr.pkg)}</div>
-    ${pr.pkg !== 'esencial' || pr.extraSessions ? `<div class="sec"><span class="eyebrow">Coaching</span><h2>${esc(S.coachName)}</h2><p>Coach certificado, conferencista internacional y exdirector técnico en la Liga MX. Autor de <i>Nos vemos en la cima</i> (Editorial Porrúa). Su metodología lleva a los líderes del diagnóstico a la acción con disciplina de alto rendimiento.</p></div>` : ''}
+    <div class="sec"><span class="eyebrow">${esc(pk.name)}</span><h2>Qué incluye</h2><p>${esc(pk.desc)}</p><ul>${pkgFeatures(pr.pkg).map(i => `<li>${esc(i)}</li>`).join('')}${pr.nom ? '<li>Identificación de factores de riesgo psicosocial NOM-035 con las guías que correspondan e informe de resultados</li>' : ''}${pr.design ? '<li>Diseño de un modelo de competencias desde cero</li>' : ''}</ul></div>
+    <div class="sec"><span class="eyebrow">Facilitador</span><h2>${esc(S.coachName)}</h2><p>Coach certificado, conferencista internacional y exdirector técnico en la Liga MX. Autor de <i>Nos vemos en la cima</i> (Editorial Porrúa). Su metodología lleva a los líderes del diagnóstico a la acción con disciplina de alto rendimiento.</p></div>
     <div class="sec"><span class="eyebrow">Inversión</span><h2>Propuesta económica</h2>
       <table class="price-tbl" style="width:100%;border-collapse:collapse;font-size:14px">
       ${q.lines.map(l => `<tr><td>${esc(l.t)}</td><td>${money(l.v)}</td></tr>`).join('')}
       ${q.disc ? `<tr><td>Descuento (${pr.discount}%)</td><td>−${money(q.disc)}</td></tr>` : ''}
       <tr><td>Subtotal</td><td>${money(q.base)}</td></tr><tr><td>IVA 16%</td><td>${money(q.iva)}</td></tr>
       <tr class="tot"><td>Total</td><td>${money(q.total)}</td></tr></table>
-      <p class="small muted" style="margin-top:14px">Forma de pago: 50% al arranque y 50% a la entrega de reportes. Vigencia de la propuesta: 30 días. Tiempo estimado: 4 a 6 semanas desde el arranque${pr.pkg === 'liderazgo' ? ', más 6 meses de acompañamiento' : ''}.</p></div>
+      <p class="small muted" style="margin-top:14px">Forma de pago: 50% al arranque y 50% a la entrega de reportes. Vigencia de la propuesta: 30 días. Tiempo estimado: 4 a 6 semanas desde el arranque.</p></div>
     <div class="sec" style="background:var(--negro);color:#fff;border:none"><h2 style="color:#fff">Nos vemos en la cima.</h2><p style="color:#bdbdc4">CIMA Leadership Institute® · cimaleadership.com.mx</p></div>
   </div>`;
   return {crumbs:'<a href="#/propuestas">Propuestas</a> / ' + esc(o.name), html};
@@ -1378,15 +1309,14 @@ function viewSettings(){
   const S = db.settings;
   const html = `<div class="head"><div><span class="eyebrow">Administración</span><h1>Usuarios y precios</h1></div></div>
   <div class="card"><div class="row" style="margin-bottom:10px"><h3 style="margin:0">Usuarios</h3><span class="sp"></span><button class="btn sm pri" onclick="userForm()"><i class="ti ti-user-plus"></i> Nuevo usuario</button></div>
-    <p class="small muted" style="margin-bottom:10px"><b>Administrador CIMA:</b> todo · <b>Coach:</b> reportes y planes de coaching · <b>Capital Humano:</b> sólo su empresa (y los reportes individuales sólo si la empresa lo tiene encendido). Los evaluadores no necesitan cuenta.</p>
+    <p class="small muted" style="margin-bottom:10px"><b>Administrador CIMA:</b> todo · <b>Coach:</b> empresas, procesos y reportes · <b>Capital Humano:</b> sólo su empresa (y los reportes individuales sólo si la empresa lo tiene encendido). Los evaluadores no necesitan cuenta.</p>
     <div class="note" style="margin-bottom:12px"><b>Para dar acceso a alguien:</b> 1) agrégalo aquí con su correo y rol; 2) en Supabase → <i>Authentication → Users → Invite user</i>, invita el mismo correo. Le llega un correo para crear su contraseña y entra por <b>Ingresar a la plataforma</b>. Para quitar el acceso, bórralo aquí.</div>
     <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th></th></tr></thead><tbody>
     ${db.users.map(u => `<tr><td><b>${esc(u.name)}</b></td><td class="small">${esc(u.email)}</td><td>${roleName(u)}</td><td>${u.id !== me.id ? `<button class="btn sm ghost" title="Quitar acceso" onclick="delUser('${u.id}')"><i class="ti ti-trash"></i></button>` : '<span class="chip">Tú</span>'}</td></tr>`).join('')}</tbody></table></div></div>
   <div class="card"><h3>Precios base (MXN, antes de IVA)</h3><div class="grid g3">
-    ${Object.entries(S.packages).map(([k, p]) => `<div class="f"><label>${esc(p.name)} · por persona evaluada</label><input type="number" value="${p.price}" onchange="db.settings.packages['${k}'].price=+this.value;DB.save();toast('Precio actualizado')"></div>`).join('')}
+    ${Object.entries(S.packages).map(([k, p]) => `<div class="f"><label>${esc(p.name)} · por colaborador evaluado</label><input type="number" value="${p.price}" onchange="db.settings.packages['${k}'].price=+this.value;DB.save();toast('Precio actualizado')"></div>`).join('')}
     <div class="f"><label>NOM-035 · por colaborador</label><input type="number" value="${S.nomPerEmployee}" onchange="db.settings.nomPerEmployee=+this.value;DB.save();toast('Precio actualizado')"></div>
     <div class="f"><label>Modelo desde cero · pago único</label><input type="number" value="${S.designFee}" onchange="db.settings.designFee=+this.value;DB.save();toast('Precio actualizado')"></div>
-    <div class="f"><label>Sesión extra de coaching</label><input type="number" value="${S.extraSession}" onchange="db.settings.extraSession=+this.value;DB.save();toast('Precio actualizado')"></div>
   </div></div>`;
   return {crumbs:'Usuarios y precios', html};
 }
@@ -1420,7 +1350,7 @@ function viewGuide(){
       <h1>Cómo funciona la<br><em>Evaluación 360°</em></h1>
       <p style="font-size:16px;color:#fff">Guía para Capital Humano, líderes y colaboradores</p></div>
     <div class="sec"><span class="eyebrow">En pocas palabras</span><h2>¿Qué es una evaluación 360°?</h2>
-      <p>Es una forma de conocer cómo perciben a un líder las personas que trabajan con él: su jefe, sus compañeros, su equipo y él mismo. Juntamos esas miradas y las convertimos en un reporte claro y en un plan de desarrollo.</p>
+      <p>Es una forma de conocer cómo perciben a un líder las personas que trabajan con él: su jefe, sus compañeros, su equipo y él mismo. Juntamos esas miradas y las convertimos en un reporte claro y en recomendaciones de desarrollo.</p>
       <p>Se hace en la plataforma digital de CIMA Leadership Institute. Para los evaluadores no hay que instalar nada ni crear cuentas.</p></div>
     <div class="sec"><span class="eyebrow">Metodología</span><h2>Qué medimos y cómo lo medimos</h2>
       <p>Usamos el <b>Modelo de Liderazgo 360°</b> de CIMA Leadership Institute: cinco competencias y 30 conductas observables.</p>
@@ -1431,29 +1361,29 @@ function viewGuide(){
         <li><b>Pocas competencias, bien definidas.</b> Cinco competencias con seis conductas cada una, para que el resultado sea fácil de leer y de convertir en acciones.</li>
         <li><b>Varias miradas por separado.</b> Autoevaluación, jefe, pares y colaboradores, con grupos protegidos de al menos ${MIN_ANON} personas.</li>
         <li><b>Brechas entre cómo me veo y cómo me ven.</b> Puntos ciegos y fortalezas ocultas son el centro de la conversación de retroalimentación.</li>
-        <li><b>Para desarrollar, no para calificar.</b> El resultado se entrega con un coach y termina en un plan de desarrollo, no en una decisión de sueldo.</li>
+        <li><b>Para desarrollar, no para calificar.</b> Los resultados se revisan con los líderes de equipo en una sesión de retroalimentación y terminan en acciones de desarrollo, no en una decisión de sueldo.</li>
       </ul></div>
     <div class="sec"><span class="eyebrow">El proceso</span><h2>Paso a paso</h2>
-      ${step(1, 'Arranque (semana 1)', 'Capital Humano nos comparte la lista de colaboradores: nombre, correo o WhatsApp, puesto, área y jefe directo. Acordamos a quién se evalúa y con qué modelo de competencias.')}
-      ${step(2, 'Evaluadores (semana 1)', 'La plataforma propone quién evalúa a cada líder según el organigrama: su jefe, de 3 a 5 compañeros y su equipo directo. Capital Humano lo revisa y lo ajusta con nosotros.')}
+      ${step(1, 'Arranque (semana 1)', 'Capital Humano nos comparte la lista de colaboradores: nombre, correo o WhatsApp, puesto, área y jefe directo. Se evalúa a todos los colaboradores; acordamos el modelo de competencias.')}
+      ${step(2, 'Evaluadores (semana 1)', 'La plataforma propone quién evalúa a cada colaborador según el organigrama: su jefe, de 3 a 5 compañeros y su equipo directo. Capital Humano lo revisa y lo ajusta con nosotros.')}
       ${step(3, 'Aplicación (semanas 2 y 3)', 'Cada evaluador recibe un enlace personal por correo o WhatsApp. Contesta desde el celular o la computadora en 12 a 15 minutos. Mandamos recordatorios a quien falte.')}
-      ${step(4, 'Resultados (semana 4)', 'Generamos el reporte individual de cada líder y el reporte ejecutivo para la dirección.')}
-      ${step(5, 'Desarrollo', 'Según el paquete contratado: sesión de retroalimentación 1 a 1, Plan Individual de Desarrollo, coaching con Marcelo Michel Leaño y nueva medición a los 6 meses.')}</div>
+      ${step(4, 'Resultados (semana 4)', 'Generamos el reporte individual de cada colaborador evaluado y el resumen ejecutivo profesional para la dirección.')}
+      ${step(5, 'Retroalimentación (semana 5)', 'Sesión grupal con los líderes de equipo, facilitada por Marcelo Michel Leaño: revisamos el resumen ejecutivo, los resultados de cada equipo y las recomendaciones de desarrollo.')}</div>
     <div class="sec"><span class="eyebrow">Quién hace qué</span><h2>Lo que vive cada persona</h2>
       <h3>Capital Humano</h3>
       <p>Entra a <b>cimaleadership.com.mx → Evaluación 360° → Ingresar a la plataforma</b> con el correo y la contraseña que le damos de alta. Ve sólo la información de su empresa: colaboradores, procesos y el avance en tiempo real${' '}(quién ya contestó y quién falta). Si así se acuerda, también puede ver y descargar los reportes.</p>
       <h3>Evaluadores</h3>
       <p>Reciben un enlace, lo abren y contestan. No necesitan usuario ni contraseña. Califican conductas concretas en una escala de 0 (nunca) a 7 (siempre), pueden marcar “no observado” y dejar comentarios opcionales.</p>
-      <h3>Líderes evaluados</h3>
-      <p>Contestan su autoevaluación. Al final reciben su reporte: cómo se ven ellos comparado con cómo los ven los demás, sus fortalezas, sus puntos ciegos y las conductas a desarrollar.</p>
+      <h3>Líderes de equipo</h3>
+      <p>Contestan su autoevaluación y participan en la sesión grupal de retroalimentación, donde revisan los resultados de sus equipos y las conductas a desarrollar.</p>
       <h3>Dirección</h3>
-      <p>Recibe el reporte ejecutivo: el perfil del equipo, el mapa de calor por persona y la recomendación de CIMA sobre dónde invertir en desarrollo.</p></div>
+      <p>Recibe el resumen ejecutivo profesional: el perfil de la organización, el mapa de calor por persona y la recomendación de CIMA sobre dónde invertir en desarrollo.</p></div>
     <div class="sec"><span class="eyebrow">Confidencialidad</span><h2>Así cuidamos las respuestas</h2><ul>
       <li>Las respuestas de compañeros y colaboradores son <b>anónimas</b>: sólo se muestran como promedio cuando hay al menos ${MIN_ANON} personas en el grupo. Si son menos, se juntan con otro grupo.</li>
       <li>Los comentarios se muestran textuales, sin nombre.</li>
       <li>La opinión del jefe directo y la autoevaluación se muestran por separado.</li>
       <li>Cada empresa sólo ve su propia información, y cada usuario entra con su propia cuenta.</li>
-      <li>El reporte individual es confidencial. Cada empresa decide si Capital Humano tiene acceso a él o si lo entrega CIMA en la sesión de retroalimentación.</li></ul></div>
+      <li>El reporte individual es confidencial. Cada empresa decide si Capital Humano tiene acceso a él o si lo entrega CIMA.</li></ul></div>
     <div class="sec"><span class="eyebrow">NOM-035</span><h2>Si contrataste la NOM-035</h2>
       <p>Aplicamos las guías oficiales de la NOM-035-STPS-2018 que correspondan al tamaño del centro de trabajo y entregamos los resultados por categoría y dominio, con el nivel de riesgo de cada uno. La categoría <i>Liderazgo y relaciones en el trabajo</i> se cruza con los resultados del 360° para atender la causa y no sólo el síntoma.</p></div>
     <div class="sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2>
